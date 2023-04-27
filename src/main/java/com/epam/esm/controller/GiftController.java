@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/gift")
@@ -40,6 +41,12 @@ public class GiftController {
             value = "/{id}")
     public GiftCertificateDTO findById(@PathVariable long id) {
         return giftCertificateService.findById(id);
+    }
+
+    @RequestMapping(method = RequestMethod.GET,
+            value = "")
+    public List<GiftCertificateDTO> findAll() {
+        return giftCertificateService.findAll();
     }
 
     @RequestMapping(value = "{/id}",

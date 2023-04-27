@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
-@RequestMapping(name = "/tags")
+@RequestMapping(value = "/tags")
 public class TagController {
 
     private final TagService tagService;
@@ -43,6 +44,12 @@ public class TagController {
             method = RequestMethod.GET)
     public TagDTO tagById(@PathVariable long id) {
         return tagService.findById(id);
+    }
+    @RequestMapping(value = "",
+            method = RequestMethod.GET)
+    public List<TagDTO> findAll() {
+        System.out.println("all");
+        return tagService.findAll();
     }
 
     @RequestMapping(value = "/{id}",
