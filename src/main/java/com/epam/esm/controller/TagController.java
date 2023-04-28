@@ -2,8 +2,8 @@ package com.epam.esm.controller;
 
 import com.epam.esm.controller.dto.TagDTO;
 import com.epam.esm.exception.TagNotFoundException;
-import com.epam.esm.service.TagService;
-import com.epam.esm.service.impl.TagServiceImpl;
+import com.epam.esm.facade.TagFacade;
+;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,17 +18,17 @@ import java.util.List;
 @RequestMapping(value = "/tags")
 public class TagController {
 
-    private final TagService tagService;
+    private final TagFacade tagFacade;
 
     @Autowired
-    public TagController(TagServiceImpl tagService) {
-        this.tagService = tagService;
+    public TagController(TagFacade tagFacade) {
+        this.tagFacade = tagFacade;
     }
 
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<TagDTO> saveTagTDO(@RequestBody TagDTO tagDTO, UriComponentsBuilder ucb) {
-        long tagId = tagService.create(tagDTO);
+        long tagId = tagFacade.create(tagDTO);
 
         HttpHeaders headers = new HttpHeaders();
         URI locationUri = ucb.path("/tags/")
@@ -43,26 +43,26 @@ public class TagController {
     @RequestMapping(value = "/{id}",
             method = RequestMethod.GET)
     public TagDTO tagById(@PathVariable long id) {
-        return tagService.findById(id);
+        return tagFacade.findById(id);
     }
     @RequestMapping(value = "",
             method = RequestMethod.GET)
     public List<TagDTO> findAll() {
         System.out.println("all");
-        return tagService.findAll();
+        return tagFacade.findAll();
     }
 
     @RequestMapping(value = "/{id}",
             method = RequestMethod.DELETE)
     public ResponseEntity<TagDTO> deleteById(long id) {
-        tagService.delete(id);
+        tagFacade.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "/{id}",
             method = RequestMethod.PUT)
     public void updateTag(TagDTO tagDTO) {
-        tagService.update(tagDTO);
+        tagFacade.update(tagDTO);
     }
 
     @ExceptionHandler(TagNotFoundException.class)
