@@ -3,12 +3,13 @@ package com.epam.esm.repository.entity;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+
 @Component
 
 public class BaseEntity {
 
-    private String name;
     private long id;
+    private String name;
 
 
     public String getName() {
@@ -30,8 +31,8 @@ public class BaseEntity {
     @Override
     public String toString() {
         return "BaseEntity{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 
