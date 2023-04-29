@@ -8,7 +8,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = GiftCertificateMapper.class)
 public interface GiftCertificateListMapper {
-    List<GiftCertificateDTO> toDTOList(List<GiftCertificateDTO> list);
+    List<GiftCertificateDTO> toDTOList(List<GiftCertificate> list);
 
-    List<GiftCertificate> toModelList(List<GiftCertificate> list);
+    List<GiftCertificate> toModelList(List<GiftCertificateDTO> list);
 }
