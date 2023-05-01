@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class TagFacadeImpl implements TagFacade {
@@ -39,8 +40,8 @@ public class TagFacadeImpl implements TagFacade {
     }
 
     @Override
-    public void update(TagDTO tagDTO) {
-        tagService.update(tagMapper.toModel(tagDTO));
+    public void update(Map<String, Object> updates) {
+        tagService.update(updates);
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -34,8 +35,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public void update(GiftCertificate giftCertificate) {
-        giftCertificateDAO.update(giftCertificate);
+    public void update(Map<String, Object> updates) {
+        giftCertificateDAO.update(updates);
     }
 
     @Override

@@ -7,8 +7,7 @@ public class BaseDTO {
     private String name;
     private long id;
 
-    public BaseDTO(String name) {
-        this.name = name;
+    public BaseDTO() {
     }
 
     public String getName() {

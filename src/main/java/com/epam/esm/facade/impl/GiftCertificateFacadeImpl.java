@@ -4,11 +4,19 @@ import com.epam.esm.controller.dto.GiftCertificateDTO;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.mapper.GiftCertificateListMapper;
 import com.epam.esm.mapper.GiftCertificateMapper;
+import com.epam.esm.mapper.TagListMapper;
+import com.epam.esm.repository.entity.GiftCertificateTag;
+import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.service.TagService;
+import com.epam.esm.service.impl.GiftCertificateTagServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
@@ -16,12 +24,18 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     private final GiftCertificateMapper giftCertificateMapper;
     private final GiftCertificateListMapper giftCertificateListMapper;
     private final GiftCertificateService giftCertificateService;
+    private final TagListMapper tagListMapper;
+    private final TagService tagService;
+    private final GiftCertificateTagServiceImpl gctService;
 
     @Autowired
-    public GiftCertificateFacadeImpl(GiftCertificateMapper giftCertificateMapper, GiftCertificateListMapper giftCertificateListMapper, GiftCertificateService giftCertificateService) {
+    public GiftCertificateFacadeImpl(GiftCertificateMapper giftCertificateMapper, GiftCertificateListMapper giftCertificateListMapper, GiftCertificateService giftCertificateService, TagListMapper tagListMapper, TagService tagService, GiftCertificateTagServiceImpl gctService) {
         this.giftCertificateMapper = giftCertificateMapper;
         this.giftCertificateListMapper = giftCertificateListMapper;
         this.giftCertificateService = giftCertificateService;
+        this.tagListMapper = tagListMapper;
+        this.tagService = tagService;
+        this.gctService = gctService;
     }
 
     @Override
@@ -31,7 +45,9 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
 
     @Override
     public GiftCertificateDTO findById(long id) {
-        return giftCertificateMapper.toDTO(giftCertificateService.findById(id));
+        GiftCertificateDTO giftCertificateDTO = giftCertificateMapper.toDTO(giftCertificateService.findById(id));
+        giftCertificateDTO.setTags(tagListMapper.toDTOList(tagService.findAllByGiftCertificateId(id)));
+        return giftCertificateDTO;
     }
 
     @Override
@@ -40,8 +56,18 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     }
 
     @Override
-    public void update(GiftCertificateDTO giftCertificateDTO) {
-        giftCertificateService.update(giftCertificateMapper.toModel(giftCertificateDTO));
+    public void update(Map<String, Object> updates) {
+        ArrayList<LinkedHashMap<Object, Object>> tagsList = (ArrayList<LinkedHashMap<Object, Object>>) updates.get("tags");
+        if (tagsList.size() != 0) {
+            tagsList.forEach(map -> {
+                map.forEach((k, v) -> {
+                    if (k.equals("name")
+                            && !tagService.existByName((String) v)) {
+                        gctService.create(new GiftCertificateTag((Long) updates.get("id"), tagService.create(new Tag(v.toString()))));
+                    }
+                });
+            });
+        }
     }
 
     @Override

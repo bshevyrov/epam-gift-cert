@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Component
 
-public class BaseEntity {
+public abstract class BaseEntity {
 
     private long id;
     private String name;

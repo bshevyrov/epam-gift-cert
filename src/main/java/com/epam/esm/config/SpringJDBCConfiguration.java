@@ -1,11 +1,12 @@
 package com.epam.esm.config;
 
 import com.epam.esm.dao.GiftCertificateDAO;
+import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.Impl.GiftCertificateDAOImpl;
+import com.epam.esm.dao.Impl.GiftCertificateTagDAOImpl;
 import com.epam.esm.dao.Impl.TagDAOImpl;
 import com.epam.esm.dao.TagDAO;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -13,7 +14,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @Configuration
-@ComponentScan("com.epam.esm")
 public class SpringJDBCConfiguration {
     @Bean
     public DataSource dataSource() {
@@ -46,4 +46,10 @@ public class SpringJDBCConfiguration {
         return giftCertificateDAO;
     }
 
+    @Bean
+    public GiftCertificateTagDAO giftCertificateTagDAO() {
+        GiftCertificateTagDAOImpl giftCertificateTagDAO = new GiftCertificateTagDAOImpl();
+        giftCertificateTagDAO.setJDBCTemplate(jdbcTemplate());
+        return giftCertificateTagDAO;
+    }
 }

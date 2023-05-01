@@ -3,6 +3,7 @@ package com.epam.esm.facade;
 import com.epam.esm.controller.dto.BaseDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BaseFacade<E extends BaseDTO> {
     long create(E entity);
@@ -11,7 +12,7 @@ public interface BaseFacade<E extends BaseDTO> {
 
     List<E> findAll();
 
-    void update(E entity);
+    void update(Map<String,Object> updates);
 
     void delete(long id);
 }
