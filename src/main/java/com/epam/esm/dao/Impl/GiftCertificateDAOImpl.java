@@ -2,7 +2,7 @@ package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.veiw.exception.GiftCertificateNotFound;
+import com.epam.esm.exception.GiftCertificateNotFound;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -37,7 +37,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     @Override
     public List<GiftCertificate> findAll() {
         String query = "SELECT * FROM gift_certificate";
-        return (List<GiftCertificate>) npjt.query(query, new BeanPropertyRowMapper(GiftCertificate.class));
+        return npjt.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
     }
 
     @Override
@@ -83,5 +83,11 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         sb.append("WHERE id = ")
                 .append(map.get(":id").toString());
         return sb.toString();
+    }
+
+    @Override
+    public List<GiftCertificate> findByTagName(String name) {
+        String query = "SELECT gs.id,gs.name, gs.description,gs.price,gs.duration,gs.price,gs.create_date,gs.last_update_date FROM gift_certificate as gs INNER JOIN gift_certificate_has_tag gcht on gs.id = gcht.gift_certificate_id INNER JOIN tag t on gcht.tag_id = t.id WHERE t.name = :name";
+        return npjt.query(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(GiftCertificate.class));
     }
 }

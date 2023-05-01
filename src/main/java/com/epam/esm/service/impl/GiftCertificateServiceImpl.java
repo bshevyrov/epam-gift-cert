@@ -43,4 +43,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public void delete(long id) {
         giftCertificateDAO.deleteById(id);
     }
+
+    @Override
+    public List<GiftCertificate> findByTagName(String name) {
+        return giftCertificateDAO.findByTagName(name);
+    }
 }

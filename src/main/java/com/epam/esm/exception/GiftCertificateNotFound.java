@@ -1,4 +1,4 @@
-package com.epam.esm.veiw.exception;
+package com.epam.esm.exception;
 
 public class GiftCertificateNotFound extends RuntimeException{
      private long giftId;

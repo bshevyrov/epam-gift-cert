@@ -1,8 +1,8 @@
-package com.epam.esm.controller;
+package com.epam.esm.veiw.controller;
 
 import com.epam.esm.veiw.Error;
 import com.epam.esm.veiw.dto.TagDTO;
-import com.epam.esm.veiw.exception.TagNotFoundException;
+import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.facade.TagFacade;
 ;
 import org.springframework.beans.factory.annotation.Autowired;

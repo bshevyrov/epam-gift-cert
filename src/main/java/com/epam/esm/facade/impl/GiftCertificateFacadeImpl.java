@@ -74,4 +74,9 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     public void delete(long id) {
         giftCertificateService.delete(id);
     }
+
+    @Override
+    public List<GiftCertificateDTO> findByTagName(String name) {
+        return giftCertificateListMapper.toDTOList(giftCertificateService.findByTagName(name));
+    }
 }

@@ -1,8 +1,8 @@
-package com.epam.esm.controller;
+package com.epam.esm.veiw.controller;
 
 import com.epam.esm.veiw.Error;
 import com.epam.esm.veiw.dto.GiftCertificateDTO;
-import com.epam.esm.veiw.exception.GiftCertificateNotFound;
+import com.epam.esm.exception.GiftCertificateNotFound;
 import com.epam.esm.facade.GiftCertificateFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -65,6 +65,13 @@ public class GiftController {
         updates.put("id", id);
         giftCertificateFacade.update(updates);
     }
+
+    @RequestMapping(value = "/tag/{name}",
+    method = RequestMethod.GET)
+    public List<GiftCertificateDTO> findByTagName(@PathVariable String name){
+       return giftCertificateFacade.findByTagName(name);
+    }
+
 
     @ExceptionHandler(GiftCertificateNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
