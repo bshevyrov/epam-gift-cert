@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.repository.entity.BaseEntity;
-import org.springframework.stereotype.Component;
+import com.epam.esm.entity.BaseEntity;
 
 import java.util.List;
 import java.util.Map;

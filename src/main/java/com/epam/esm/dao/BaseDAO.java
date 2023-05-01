@@ -1,6 +1,6 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.repository.entity.BaseEntity;
+import com.epam.esm.entity.BaseEntity;
 
 import java.util.List;
 import java.util.Map;

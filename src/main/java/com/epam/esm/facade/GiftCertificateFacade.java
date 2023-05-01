@@ -1,6 +1,6 @@
 package com.epam.esm.facade;
 
-import com.epam.esm.controller.dto.GiftCertificateDTO;
+import com.epam.esm.veiw.dto.GiftCertificateDTO;
 
 public interface GiftCertificateFacade extends BaseFacade<GiftCertificateDTO> {
 }

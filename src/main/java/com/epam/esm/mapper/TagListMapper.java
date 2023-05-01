@@ -1,7 +1,7 @@
 package com.epam.esm.mapper;
 
-import com.epam.esm.controller.dto.TagDTO;
-import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.veiw.dto.TagDTO;
+import com.epam.esm.entity.Tag;
 import org.mapstruct.Mapper;
 
 import java.util.List;

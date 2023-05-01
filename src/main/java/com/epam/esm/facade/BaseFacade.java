@@ -1,6 +1,6 @@
 package com.epam.esm.facade;
 
-import com.epam.esm.controller.dto.BaseDTO;
+import com.epam.esm.veiw.dto.BaseDTO;
 
 import java.util.List;
 import java.util.Map;
