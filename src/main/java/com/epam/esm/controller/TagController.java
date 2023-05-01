@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/tags")
@@ -48,24 +49,23 @@ public class TagController {
     @RequestMapping(value = "",
             method = RequestMethod.GET)
     public List<TagDTO> findAll() {
-        System.out.println("all");
         return tagFacade.findAll();
     }
 
     @RequestMapping(value = "/{id}",
             method = RequestMethod.DELETE)
-    public ResponseEntity<TagDTO> deleteById(long id) {
+    public ResponseEntity<TagDTO> deleteById( @PathVariable long id) {
         tagFacade.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "/{id}",
-            method = RequestMethod.PUT)
-    public void updateTag(TagDTO tagDTO) {
-        tagFacade.update(tagDTO);
+            method = RequestMethod.PATCH)
+    public void updateTag(@RequestBody Map<String,Object> updates,
+                          @PathVariable long id) {
+        tagFacade.update(updates);
     }
-
-    @ExceptionHandler(TagNotFoundException.class)
+  @ExceptionHandler(TagNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Error tagNotFound(TagNotFoundException e) {
         long tagId = e.getTagId();

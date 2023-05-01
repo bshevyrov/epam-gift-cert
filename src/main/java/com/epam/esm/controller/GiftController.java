@@ -12,9 +12,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/gift")
+@RequestMapping("/gifts")
 public class GiftController {
     private final GiftCertificateFacade giftCertificateFacade;
 
@@ -29,7 +30,7 @@ public class GiftController {
         long id = giftCertificateFacade.create(giftCertificateDTO);
 
         HttpHeaders headers = new HttpHeaders();
-        URI locationUri = ucb.path("/tags/")
+        URI locationUri = ucb.path("/gifts/")
                 .path(String.valueOf(id))
                 .build().toUri();
 
@@ -49,7 +50,7 @@ public class GiftController {
         return giftCertificateFacade.findAll();
     }
 
-    @RequestMapping(value = "{/id}",
+    @RequestMapping(value = "/{id}",
             method = RequestMethod.DELETE)
     public ResponseEntity<GiftCertificateDTO> deleteById(@PathVariable long id) {
         giftCertificateFacade.delete(id);
@@ -57,9 +58,11 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/{id}",
-            method = RequestMethod.PUT)
-    public void updateGift(GiftCertificateDTO giftCertificateDTO) {
-        giftCertificateFacade.update(giftCertificateDTO);
+            method = RequestMethod.PATCH)
+    public void updateGift(@RequestBody Map<String, Object> updates,
+                           @PathVariable long id) {
+        updates.put("id", id);
+        giftCertificateFacade.update(updates);
     }
 
     @ExceptionHandler(GiftCertificateNotFound.class)
@@ -68,5 +71,4 @@ public class GiftController {
         long certId = giftCertificateNotFound.getGiftId();
         return new Error(4, "Gift Certificate [" + certId + "] not found");
     }
-
 }
