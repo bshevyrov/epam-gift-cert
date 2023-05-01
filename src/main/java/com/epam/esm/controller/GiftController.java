@@ -1,7 +1,8 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.dto.GiftCertificateDTO;
-import com.epam.esm.exception.GiftCertificateNotFound;
+import com.epam.esm.veiw.Error;
+import com.epam.esm.veiw.dto.GiftCertificateDTO;
+import com.epam.esm.veiw.exception.GiftCertificateNotFound;
 import com.epam.esm.facade.GiftCertificateFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

@@ -8,7 +8,7 @@ import com.epam.esm.dao.Impl.TagDAOImpl;
 import com.epam.esm.dao.TagDAO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -26,30 +26,28 @@ public class SpringJDBCConfiguration {
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        jdbcTemplate.setDataSource(dataSource());
-        return jdbcTemplate;
+    public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
+        return new NamedParameterJdbcTemplate(dataSource());
     }
 
     @Bean
     public TagDAO tagDAO() {
         TagDAOImpl tagDAO = new TagDAOImpl();
-        tagDAO.setJDBCTemplate(jdbcTemplate());
+        tagDAO.setNamedParameterJDBCTemplate(namedParameterJdbcTemplate());
         return tagDAO;
     }
 
     @Bean
     public GiftCertificateDAO giftCertificateDAO() {
         GiftCertificateDAOImpl giftCertificateDAO = new GiftCertificateDAOImpl();
-        giftCertificateDAO.setJDBCTemplate(jdbcTemplate());
+        giftCertificateDAO.setNamedParameterJDBCTemplate(namedParameterJdbcTemplate());
         return giftCertificateDAO;
     }
 
     @Bean
     public GiftCertificateTagDAO giftCertificateTagDAO() {
         GiftCertificateTagDAOImpl giftCertificateTagDAO = new GiftCertificateTagDAOImpl();
-        giftCertificateTagDAO.setJDBCTemplate(jdbcTemplate());
+        giftCertificateTagDAO.setNamedParameterJDBCTemplate(namedParameterJdbcTemplate());
         return giftCertificateTagDAO;
     }
 }

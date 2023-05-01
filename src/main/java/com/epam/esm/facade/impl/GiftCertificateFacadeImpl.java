@@ -1,12 +1,12 @@
 package com.epam.esm.facade.impl;
 
-import com.epam.esm.controller.dto.GiftCertificateDTO;
+import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.mapper.GiftCertificateListMapper;
 import com.epam.esm.mapper.GiftCertificateMapper;
 import com.epam.esm.mapper.TagListMapper;
-import com.epam.esm.repository.entity.GiftCertificateTag;
-import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.entity.GiftCertificateTag;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.impl.GiftCertificateTagServiceImpl;

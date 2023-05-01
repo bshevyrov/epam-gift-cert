@@ -1,6 +1,6 @@
 package com.epam.esm.facade.impl;
 
-import com.epam.esm.controller.dto.TagDTO;
+import com.epam.esm.veiw.dto.TagDTO;
 import com.epam.esm.facade.TagFacade;
 import com.epam.esm.mapper.TagListMapper;
 import com.epam.esm.mapper.TagMapper;
