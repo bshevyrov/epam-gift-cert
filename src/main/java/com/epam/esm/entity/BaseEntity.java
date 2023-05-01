@@ -1,14 +1,16 @@
-package com.epam.esm.controller.dto;
+package com.epam.esm.entity;
+
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-public class BaseDTO {
+@Component
 
-    private String name;
+public abstract class BaseEntity {
+
     private long id;
+    private String name;
 
-    public BaseDTO() {
-    }
 
     public String getName() {
         return name;
@@ -29,8 +31,8 @@ public class BaseDTO {
     @Override
     public String toString() {
         return "BaseEntity{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -38,7 +40,7 @@ public class BaseDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BaseDTO that = (BaseDTO) o;
+        BaseEntity that = (BaseEntity) o;
         return Objects.equals(name, that.name) && Objects.equals(id, that.id);
     }
 

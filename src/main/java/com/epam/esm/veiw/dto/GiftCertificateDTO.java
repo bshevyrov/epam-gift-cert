@@ -1,4 +1,4 @@
-package com.epam.esm.controller.dto;
+package com.epam.esm.veiw.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

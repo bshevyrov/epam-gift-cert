@@ -1,4 +1,4 @@
-package com.epam.esm.repository.entity;
+package com.epam.esm.entity;
 
 import java.time.LocalDateTime;
 

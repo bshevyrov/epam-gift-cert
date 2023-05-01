@@ -1,4 +1,4 @@
-package com.epam.esm.controller.dto;
+package com.epam.esm.veiw.dto;
 
 public class TagDTO extends BaseDTO {
     public TagDTO() {
