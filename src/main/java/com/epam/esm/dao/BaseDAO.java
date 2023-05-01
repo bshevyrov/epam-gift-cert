@@ -3,6 +3,7 @@ package com.epam.esm.dao;
 import com.epam.esm.repository.entity.BaseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BaseDAO<E extends BaseEntity> {
     E findById(long id);
@@ -13,5 +14,5 @@ public interface BaseDAO<E extends BaseEntity> {
 
     int create(E entity);
 
-    void update(E entity);
+    void update(Map<String, Object> updates);
 }
