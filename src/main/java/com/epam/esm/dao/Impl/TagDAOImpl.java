@@ -71,4 +71,10 @@ public class TagDAOImpl implements TagDAO {
         String query = "SELECT COUNT(*) FROM tag WHERE name = :name";
         return 0 < npjt.queryForObject(query, new MapSqlParameterSource().addValue("name", name), Integer.class);
     }
+
+    @Override
+    public List<Tag> findByGiftCertificateId(long id) {
+        String query ="SELECT t.id, t.name FROM tag as t INNER JOIN gift_certificate_has_tag gcht on t.id = gcht.tag_id INNER JOIN gift_certificate gc on gcht.gift_certificate_id = gc.id WHERE gc.id=:id";
+        return npjt.query(query,new MapSqlParameterSource().addValue("id",id),new BeanPropertyRowMapper<>(Tag.class));
+    }
 }

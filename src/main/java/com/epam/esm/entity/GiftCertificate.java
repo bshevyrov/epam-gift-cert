@@ -1,6 +1,7 @@
 package com.epam.esm.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class GiftCertificate extends BaseEntity {
     private String description;
@@ -8,6 +9,15 @@ public class GiftCertificate extends BaseEntity {
     private int duration;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
+    private List<Tag> tags;
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
 
     public String getDescription() {
         return description;

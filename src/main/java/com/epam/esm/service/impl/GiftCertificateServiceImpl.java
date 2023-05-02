@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDAO;
+import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,13 @@ import java.util.Map;
 @Component
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    private GiftCertificateDAO giftCertificateDAO;
+    private final GiftCertificateDAO giftCertificateDAO;
+    private final TagDAO tagDAO;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDAO giftCertificateDAO) {
+    public GiftCertificateServiceImpl(GiftCertificateDAO giftCertificateDAO, TagDAO tagDAO) {
         this.giftCertificateDAO = giftCertificateDAO;
+        this.tagDAO = tagDAO;
     }
 
     @Override
@@ -26,12 +29,18 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate findById(long id) {
-        return giftCertificateDAO.findById(id);
+        GiftCertificate giftCertificate = giftCertificateDAO.findById(id);
+        giftCertificate.setTags(tagDAO.findByGiftCertificateId(giftCertificate.getId()));
+        return giftCertificate;
     }
 
     @Override
     public List<GiftCertificate> findAll() {
-        return giftCertificateDAO.findAll();
+        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAll();
+        giftCertificateList.forEach(giftCertificate -> {
+            giftCertificate.setTags(tagDAO.findByGiftCertificateId(giftCertificate.getId()));
+        });
+        return giftCertificateList;
     }
 
     @Override
@@ -46,6 +55,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificate> findByTagName(String name) {
-        return giftCertificateDAO.findByTagName(name);
+        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findByTagName(name);
+        giftCertificateList.forEach(giftCertificate -> {
+            giftCertificate.setTags(tagDAO.findByGiftCertificateId(giftCertificate.getId()));
+        });
+        return giftCertificateList;
     }
 }

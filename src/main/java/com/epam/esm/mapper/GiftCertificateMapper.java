@@ -7,7 +7,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = TagMapper.class)
 public interface GiftCertificateMapper {
-    @Mapping(target = "tags",ignore = true)
     GiftCertificateDTO toDTO(GiftCertificate giftCertificate);
 
     GiftCertificate toModel(GiftCertificateDTO giftCertificateDTO);
