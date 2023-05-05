@@ -1,22 +1,19 @@
 package com.epam.esm.facade.impl;
 
-import com.epam.esm.veiw.dto.GiftCertificateDTO;
+import com.epam.esm.entity.GiftCertificateTag;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.mapper.GiftCertificateListMapper;
 import com.epam.esm.mapper.GiftCertificateMapper;
 import com.epam.esm.mapper.TagListMapper;
-import com.epam.esm.entity.GiftCertificateTag;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.impl.GiftCertificateTagServiceImpl;
+import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
@@ -52,7 +49,12 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
 
     @Override
     public List<GiftCertificateDTO> findAll() {
-        return giftCertificateListMapper.toDTOList(giftCertificateService.findAll());
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<GiftCertificateDTO> findAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
+        return giftCertificateListMapper.toDTOList(giftCertificateService.findAll(certName, description, sortField,sortType));
     }
 
     @Override
@@ -76,7 +78,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     }
 
     @Override
-    public List<GiftCertificateDTO> findByTagName(String name) {
+    public List<GiftCertificateDTO> findAllByTagName(String name) {
         return giftCertificateListMapper.toDTOList(giftCertificateService.findByTagName(name));
     }
 }

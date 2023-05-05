@@ -1,9 +1,9 @@
 package com.epam.esm.veiw.controller;
 
-import com.epam.esm.veiw.Error;
-import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import com.epam.esm.exception.GiftCertificateNotFound;
 import com.epam.esm.facade.GiftCertificateFacade;
+import com.epam.esm.veiw.Error;
+import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/gifts")
@@ -47,8 +48,12 @@ public class GiftController {
 
     @RequestMapping(method = RequestMethod.GET,
             value = "")
-    public List<GiftCertificateDTO> findAll() {
-        return giftCertificateFacade.findAll();
+    public List<GiftCertificateDTO> findAll(@RequestParam(required = false, value = "name") Optional<String> certName,
+                                            @RequestParam(required = false) Optional<String> description,
+                                            @RequestParam(required = false,defaultValue = "name") String sortField,
+                                            @RequestParam(required = false,defaultValue = "asc") String sortType) {
+        //todo check sort field and sort type
+        return giftCertificateFacade.findAll(certName,description,sortField,sortType);
     }
 
     @RequestMapping(value = "/{id}",
@@ -67,9 +72,9 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/tag/{name}",
-    method = RequestMethod.GET)
-    public List<GiftCertificateDTO> findByTagName(@PathVariable String name){
-       return giftCertificateFacade.findByTagName(name);
+            method = RequestMethod.GET)
+    public List<GiftCertificateDTO> findByTagName(@PathVariable String name) {
+        return giftCertificateFacade.findAllByTagName(name);
     }
 
 

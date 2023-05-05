@@ -1,10 +1,10 @@
 package com.epam.esm.facade.impl;
 
-import com.epam.esm.veiw.dto.TagDTO;
 import com.epam.esm.facade.TagFacade;
 import com.epam.esm.mapper.TagListMapper;
 import com.epam.esm.mapper.TagMapper;
 import com.epam.esm.service.TagService;
+import com.epam.esm.veiw.dto.TagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

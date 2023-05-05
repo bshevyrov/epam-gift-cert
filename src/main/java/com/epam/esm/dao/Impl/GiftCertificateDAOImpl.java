@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Component
@@ -38,6 +39,32 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     public List<GiftCertificate> findAll() {
         String query = "SELECT * FROM gift_certificate";
         return npjt.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
+    }
+
+    @Override
+    public List<GiftCertificate> findAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
+        String query = createQueryFindAll(certName,description,sortField,sortType);
+        return npjt.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
+    }
+
+    private String createQueryFindAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM gift_certificate gs ");
+        //todo escape symbols
+        if (certName.isPresent()){
+            query.append("WHERE gs.name = :certName ");
+        }
+        if(certName.isPresent() && description.isPresent()){
+            query.append("AND ");
+            query.append("gs.description = :description ");
+        }
+        if ( description.isPresent() && !certName.isPresent()){
+            query.append("WHERE gs.description = :description " );
+        }
+        query.append("ORDER BY ");
+        query.append(sortField).append(" ");
+        query.append(sortType.toUpperCase());
+        return query.toString();
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -36,7 +37,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificate> findAll() {
-        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAll();
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<GiftCertificate> findAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
+        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAll(certName, description, sortField, sortType);
         giftCertificateList.forEach(giftCertificate -> {
             giftCertificate.setTags(tagDAO.findByGiftCertificateId(giftCertificate.getId()));
         });
