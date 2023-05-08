@@ -6,23 +6,29 @@ import com.epam.esm.dao.Impl.GiftCertificateDAOImpl;
 import com.epam.esm.dao.Impl.GiftCertificateTagDAOImpl;
 import com.epam.esm.dao.Impl.TagDAOImpl;
 import com.epam.esm.dao.TagDAO;
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.sql.DataSource;
 
 @Configuration
+@EnableTransactionManagement
 public class SpringJDBCConfiguration {
+
     @Bean
     public DataSource dataSource() {
-        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
-        driverManagerDataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        driverManagerDataSource.setUrl("jdbc:mysql://localhost:3306/gift_card");
-        driverManagerDataSource.setUsername("root");
-        driverManagerDataSource.setPassword("root");
-        return driverManagerDataSource;
+        DataSource ds = new DataSource();
+        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        ds.setUrl("jdbc:mysql://localhost:3306/gift_card");
+        ds.setUsername("root");
+        ds.setPassword("root");
+        ds.setInitialSize(5);
+        ds.setMaxActive(10);
+        ds.setMaxIdle(5);
+        ds.setMinIdle(2);
+        return ds;
     }
 
     @Bean

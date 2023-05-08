@@ -11,7 +11,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,26 +49,6 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         return npjt.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
     }
 
-    private String createQueryFindAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
-        StringBuilder query = new StringBuilder();
-        query.append("SELECT * FROM gift_certificate gs ");
-        //todo escape symbols
-        if (certName.isPresent()){
-            query.append("WHERE gs.name = :certName ");
-        }
-        if(certName.isPresent() && description.isPresent()){
-            query.append("AND ");
-            query.append("gs.description = :description ");
-        }
-        if ( description.isPresent() && !certName.isPresent()){
-            query.append("WHERE gs.description = :description " );
-        }
-        query.append("ORDER BY ");
-        query.append(sortField).append(" ");
-        query.append(sortType.toUpperCase());
-        return query.toString();
-    }
-
     @Override
     public void deleteById(long id) {
         String query = "DELETE FROM gift_certificate WHERE id=?";
@@ -74,6 +56,13 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
+    public List<GiftCertificate> findByTagName(String name) {
+        String query = "SELECT gs.id,gs.name, gs.description,gs.price,gs.duration,gs.price,gs.create_date,gs.last_update_date FROM gift_certificate as gs INNER JOIN gift_certificate_has_tag gcht on gs.id = gcht.gift_certificate_id INNER JOIN tag t on gcht.tag_id = t.id WHERE t.name = :name";
+        return npjt.query(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(GiftCertificate.class));
+    }
+
+    @Override
+    @Transactional(rollbackFor = { SQLException.class })
     public int create(GiftCertificate giftCertificate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String query = "insert into gift_certificate (name,description,duration) values (:name,:description,:duration)";
@@ -112,9 +101,23 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         return sb.toString();
     }
 
-    @Override
-    public List<GiftCertificate> findByTagName(String name) {
-        String query = "SELECT gs.id,gs.name, gs.description,gs.price,gs.duration,gs.price,gs.create_date,gs.last_update_date FROM gift_certificate as gs INNER JOIN gift_certificate_has_tag gcht on gs.id = gcht.gift_certificate_id INNER JOIN tag t on gcht.tag_id = t.id WHERE t.name = :name";
-        return npjt.query(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(GiftCertificate.class));
+    private String createQueryFindAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM gift_certificate gs ");
+        //todo escape symbols
+        if (certName.isPresent()){
+            query.append("WHERE gs.name = :certName ");
+        }
+        if(certName.isPresent() && description.isPresent()){
+            query.append("AND ");
+            query.append("gs.description = :description ");
+        }
+        if ( description.isPresent() && !certName.isPresent()){
+            query.append("WHERE gs.description = :description " );
+        }
+        query.append("ORDER BY ");
+        query.append(sortField).append(" ");
+        query.append(sortType.toUpperCase());
+        return query.toString();
     }
 }
