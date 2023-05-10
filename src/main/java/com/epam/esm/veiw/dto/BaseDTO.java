@@ -2,10 +2,10 @@ package com.epam.esm.veiw.dto;
 
 import java.util.Objects;
 
-public class BaseDTO {
+public abstract class BaseDTO {
 
-    private String name;
     private long id;
+    private String name;
 
     public BaseDTO() {
     }
@@ -28,9 +28,9 @@ public class BaseDTO {
 
     @Override
     public String toString() {
-        return "BaseEntity{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
+        return "BaseDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 

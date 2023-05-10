@@ -6,6 +6,7 @@ public class GiftCertificateTag extends BaseEntity {
     private long giftCertificateId;
     private long tagId;
 
+
     public GiftCertificateTag(long giftCertificateId, long tagId) {
         this.giftCertificateId = giftCertificateId;
         this.tagId = tagId;
@@ -27,26 +28,6 @@ public class GiftCertificateTag extends BaseEntity {
         this.tagId = tagId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GiftCertificateTag that = (GiftCertificateTag) o;
-        return giftCertificateId == that.giftCertificateId && tagId == that.tagId;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(giftCertificateId, tagId);
-    }
-
-    @Override
-    public String toString() {
-        return "GiftCertificateTag{" +
-                "giftCertificateId=" + giftCertificateId +
-                ", tagId=" + tagId +
-                '}';
-    }
 
     @Override
     @Deprecated
@@ -70,5 +51,27 @@ public class GiftCertificateTag extends BaseEntity {
     @Deprecated
     public void setId(long id) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        GiftCertificateTag that = (GiftCertificateTag) o;
+        return giftCertificateId == that.giftCertificateId && tagId == that.tagId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), giftCertificateId, tagId);
+    }
+
+    @Override
+    public String toString() {
+        return "GiftCertificateTag{" +
+                "giftCertificateId=" + giftCertificateId +
+                ", tagId=" + tagId +
+                "} " + super.toString();
     }
 }

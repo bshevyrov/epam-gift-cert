@@ -1,12 +1,13 @@
 package com.epam.esm.veiw.controller;
 
-import com.epam.esm.exception.GiftCertificateNotFound;
+import com.epam.esm.exception.GiftCertificateNotFoundException;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.veiw.Error;
 import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -27,7 +28,8 @@ public class GiftController {
     }
 
     @RequestMapping(method = RequestMethod.POST,
-            consumes = "application/json")
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GiftCertificateDTO> saveTagTDO(@RequestBody GiftCertificateDTO giftCertificateDTO, UriComponentsBuilder ucb) {
         long id = giftCertificateFacade.create(giftCertificateDTO);
 
@@ -41,7 +43,9 @@ public class GiftController {
     }
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/{id}")
+            value = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public GiftCertificateDTO findById(@PathVariable long id) {
         return giftCertificateFacade.findById(id);
     }
@@ -50,21 +54,25 @@ public class GiftController {
             value = "")
     public List<GiftCertificateDTO> findAll(@RequestParam(required = false, value = "name") Optional<String> certName,
                                             @RequestParam(required = false) Optional<String> description,
-                                            @RequestParam(required = false,defaultValue = "name") String sortField,
-                                            @RequestParam(required = false,defaultValue = "asc") String sortType) {
+                                            @RequestParam(required = false, defaultValue = "name") String sortField,
+                                            @RequestParam(required = false, defaultValue = "asc") String sortType) {
         //todo check sort field and sort type
-        return giftCertificateFacade.findAll(certName,description,sortField,sortType);
+        return giftCertificateFacade.findAll(certName, description, sortField, sortType);
     }
 
     @RequestMapping(value = "/{id}",
-            method = RequestMethod.DELETE)
+            method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GiftCertificateDTO> deleteById(@PathVariable long id) {
         giftCertificateFacade.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "/{id}",
-            method = RequestMethod.PATCH)
+            method = RequestMethod.PATCH,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateGift(@RequestBody Map<String, Object> updates,
                            @PathVariable long id) {
         updates.put("id", id);
@@ -72,16 +80,18 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/tag/{name}",
-            method = RequestMethod.GET)
+            method = RequestMethod.GET,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public List<GiftCertificateDTO> findByTagName(@PathVariable String name) {
         return giftCertificateFacade.findAllByTagName(name);
     }
 
 
-    @ExceptionHandler(GiftCertificateNotFound.class)
+    @ExceptionHandler(GiftCertificateNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Error giftCertificateNotFound(GiftCertificateNotFound giftCertificateNotFound) {
-        long certId = giftCertificateNotFound.getGiftId();
+    public Error giftCertificateNotFound(GiftCertificateNotFoundException giftCertificateNotFoundException) {
+        long certId = giftCertificateNotFoundException.getGiftId();
         return new Error(4, "Gift Certificate [" + certId + "] not found");
     }
 }

@@ -54,7 +54,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
 
     @Override
     public List<GiftCertificateDTO> findAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
-        return giftCertificateListMapper.toDTOList(giftCertificateService.findAll(certName, description, sortField,sortType));
+        return giftCertificateListMapper.toDTOList(giftCertificateService.findAll(certName, description, sortField, sortType));
     }
 
     @Override

@@ -29,7 +29,6 @@ public class TagServiceImpl implements TagService {
         return tagDAO.findById(id);
     }
 
-
     @Override
     public List<Tag> findAll() {
         return tagDAO.findAll();

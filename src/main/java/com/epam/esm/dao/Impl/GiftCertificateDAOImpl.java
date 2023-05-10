@@ -2,7 +2,7 @@ package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.exception.GiftCertificateNotFound;
+import com.epam.esm.exception.GiftCertificateNotFoundException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -33,7 +33,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         try {
             return (GiftCertificate) npjt.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper(GiftCertificate.class));
         } catch (EmptyResultDataAccessException e) {
-            throw new GiftCertificateNotFound(id);
+            throw new GiftCertificateNotFoundException(id);
         }
     }
 
