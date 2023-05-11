@@ -11,4 +11,6 @@ public interface TagDAO extends BaseDAO<Tag> {
     boolean existByName(String name);
 
     List<Tag> findByGiftCertificateId(long id);
+
+    Tag findByName(String name);
 }

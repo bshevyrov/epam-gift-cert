@@ -45,13 +45,13 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
 
     @Override
     public List<GiftCertificate> findAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
-        String query = createQueryFindAll(certName,description,sortField,sortType);
+        String query = createQueryFindAll(certName, description, sortField, sortType);
         return npjt.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
     }
 
     @Override
     public void deleteById(long id) {
-        String query = "DELETE FROM gift_certificate WHERE id=?";
+        String query = "DELETE FROM gift_certificate WHERE id=:id";
         npjt.update(query, new MapSqlParameterSource().addValue("id", id));
     }
 
@@ -62,15 +62,16 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
-    @Transactional(rollbackFor = { SQLException.class })
-    public int create(GiftCertificate giftCertificate) {
+    public long create(GiftCertificate giftCertificate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String query = "insert into gift_certificate (name,description,duration) values (:name,:description,:duration)";
+        String query = "insert into gift_certificate (name,description,duration,price) values (:name,:description,:duration,:price)";
         SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue("name", giftCertificate.getName())
                 .addValue("description", giftCertificate.getDescription())
+                .addValue("price", giftCertificate.getPrice())
                 .addValue("duration", giftCertificate.getDuration());
-        return npjt.update(query, paramSource, keyHolder);
+        npjt.update(query, paramSource, keyHolder);
+        return keyHolder.getKey().longValue();
     }
 
     @Override
@@ -105,15 +106,15 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM gift_certificate gs ");
         //todo escape symbols
-        if (certName.isPresent()){
+        if (certName.isPresent()) {
             query.append("WHERE gs.name = :certName ");
         }
-        if(certName.isPresent() && description.isPresent()){
+        if (certName.isPresent() && description.isPresent()) {
             query.append("AND ");
             query.append("gs.description = :description ");
         }
-        if ( description.isPresent() && !certName.isPresent()){
-            query.append("WHERE gs.description = :description " );
+        if (description.isPresent() && !certName.isPresent()) {
+            query.append("WHERE gs.description = :description ");
         }
         query.append("ORDER BY ");
         query.append(sortField).append(" ");

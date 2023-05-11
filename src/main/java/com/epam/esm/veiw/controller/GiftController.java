@@ -19,7 +19,9 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/gifts")
+@RequestMapping(value = "/gifts",
+        consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class GiftController {
     private final GiftCertificateFacade giftCertificateFacade;
 
@@ -28,9 +30,7 @@ public class GiftController {
         this.giftCertificateFacade = giftCertificateFacade;
     }
 
-    @RequestMapping(method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<GiftCertificateDTO> saveTagTDO(@RequestBody GiftCertificateDTO giftCertificateDTO, UriComponentsBuilder ucb) {
         long id = giftCertificateFacade.create(giftCertificateDTO);
 
@@ -44,9 +44,7 @@ public class GiftController {
     }
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            value = "/{id}")
     public GiftCertificateDTO findById(@PathVariable long id) {
         return giftCertificateFacade.findById(id);
     }
@@ -62,18 +60,14 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/{id}",
-            method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.DELETE)
     public ResponseEntity<GiftCertificateDTO> deleteById(@PathVariable long id) {
         giftCertificateFacade.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "/{id}",
-            method = RequestMethod.PATCH,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.PATCH)
     public void updateGift(@RequestBody Map<String, Object> updates,
                            @PathVariable long id) {
         updates.put("id", id);
@@ -81,9 +75,7 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/tag/{name}",
-            method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.GET)
     public List<GiftCertificateDTO> findByTagName(@PathVariable String name) {
         return giftCertificateFacade.findAllByTagName(name);
     }

@@ -49,10 +49,11 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
-    public int create(Tag tag) {
+    public long create(Tag tag) {
         String query = "insert into tag (name) values(:name)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        return npjt.update(query, new MapSqlParameterSource().addValue("name", tag.getName()), keyHolder);
+        npjt.update(query, new MapSqlParameterSource().addValue("name", tag.getName()), keyHolder);
+        return keyHolder.getKey().longValue();
     }
 
     @Override
@@ -74,7 +75,13 @@ public class TagDAOImpl implements TagDAO {
 
     @Override
     public List<Tag> findByGiftCertificateId(long id) {
-        String query ="SELECT t.id, t.name FROM tag as t INNER JOIN gift_certificate_has_tag gcht on t.id = gcht.tag_id INNER JOIN gift_certificate gc on gcht.gift_certificate_id = gc.id WHERE gc.id=:id";
-        return npjt.query(query,new MapSqlParameterSource().addValue("id",id),new BeanPropertyRowMapper<>(Tag.class));
+        String query = "SELECT t.id, t.name FROM tag as t INNER JOIN gift_certificate_has_tag gcht on t.id = gcht.tag_id INNER JOIN gift_certificate gc on gcht.gift_certificate_id = gc.id WHERE gc.id=:id";
+        return npjt.query(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(Tag.class));
+    }
+
+    @Override
+    public Tag findByName(String name) {
+            String query = "SELECT * FROM tag where name=:name";
+            return (Tag) npjt.queryForObject(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper(Tag.class));
     }
 }

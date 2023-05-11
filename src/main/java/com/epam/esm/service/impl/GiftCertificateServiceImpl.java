@@ -1,12 +1,17 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDAO;
+import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateTag;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,17 +20,29 @@ import java.util.Optional;
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateDAO giftCertificateDAO;
+    private final GiftCertificateTagDAO giftCertificateTagDAO;
     private final TagDAO tagDAO;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDAO giftCertificateDAO, TagDAO tagDAO) {
+    public GiftCertificateServiceImpl(GiftCertificateDAO giftCertificateDAO, GiftCertificateTagDAO giftCertificateTagDAO, TagDAO tagDAO) {
         this.giftCertificateDAO = giftCertificateDAO;
+        this.giftCertificateTagDAO = giftCertificateTagDAO;
         this.tagDAO = tagDAO;
     }
 
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public long create(GiftCertificate giftCertificate) {
-        return giftCertificateDAO.create(giftCertificate);
+        long giftCertificateId = giftCertificateDAO.create(giftCertificate);
+        giftCertificate.getTags().forEach(tag -> {
+            if (tagDAO.existByName(tag.getName())) {
+                giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificateId, tagDAO.findByName(tag.getName()).getId()));
+            } else {
+                long tagId = tagDAO.create(new Tag(tag.getName()));
+                giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificateId, tagId));
+            }
+        });
+        return giftCertificateId;
     }
 
     @Override

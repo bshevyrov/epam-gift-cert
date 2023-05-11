@@ -10,7 +10,10 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 
 @Configuration
@@ -30,6 +33,22 @@ public class SpringJDBCConfiguration {
         ds.setMinIdle(2);
         return ds;
     }
+
+
+    @Bean
+    public DataSourceTransactionManager transactionManager() {
+        final DataSourceTransactionManager txManager = new DataSourceTransactionManager();
+        txManager.setDataSource(dataSource());
+
+        return txManager;
+    }
+//    @Bean
+//    public DefaultTransactionDefinition defaultTransactionDefinition() {
+//        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+//        definition.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
+//        definition.setTimeout(3);
+//        return definition;
+//    }
 
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {

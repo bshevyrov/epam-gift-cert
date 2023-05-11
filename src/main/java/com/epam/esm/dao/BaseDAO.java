@@ -12,7 +12,7 @@ public interface BaseDAO<E extends BaseEntity> {
 
     void deleteById(long id);
 
-    int create(E entity);
+    long create(E entity);
 
     void update(Map<String, Object> updates);
 }

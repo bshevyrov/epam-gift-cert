@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,9 +20,10 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping(value = "/tags")
+@RequestMapping(value = "/tags",
+        consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class TagController {
-    private String requestLocale;
     private final TagFacade tagFacade;
 
     @Autowired
@@ -30,9 +32,7 @@ public class TagController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<TagDTO> saveTagTDO(@RequestBody TagDTO tagDTO, UriComponentsBuilder ucb) {
         long tagId = tagFacade.create(tagDTO);
 
@@ -47,37 +47,30 @@ public class TagController {
     }
 
     @RequestMapping(value = "/{id}",
-            method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.GET)
     public TagDTO tagById(@PathVariable long id) {
         return tagFacade.findById(id);
     }
 
 
     @RequestMapping(value = "",
-            method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.GET)
     public List<TagDTO> findAll() {
         return tagFacade.findAll();
     }
 
     @RequestMapping(value = "/{id}",
-            method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.DELETE)
     public ResponseEntity<TagDTO> deleteById(@PathVariable long id) {
         tagFacade.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "/{id}",
-            method = RequestMethod.PATCH,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.PATCH)
     public void updateTag(@RequestBody Map<String, Object> updates,
                           @PathVariable long id) {
+        updates.put("id",id);
         tagFacade.update(updates);
     }
 
@@ -90,4 +83,13 @@ public class TagController {
         }
         return new Error(Integer.parseInt(HttpStatus.NOT_FOUND + "04"), "Tag [" + tagId + "] not found.");
     }
+    @ExceptionHandler({HttpMessageNotReadableException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error emptyEntity(HttpMessageNotReadableException e) {
+        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
+            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "04"), "Не вірне тіло Tag.");
+        }
+        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "04"), "Wrong body of Tag.");
+    }
 }
+

@@ -35,7 +35,7 @@ public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
     }
 
     @Override
-    public int create(GiftCertificateTag gct) {
+    public long create(GiftCertificateTag gct) {
         String query = "INSERT INTO gift_certificate_has_tag (gift_certificate_id, tag_id) VALUES (:giftId,:tagId)";
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("giftId", gct.getGiftCertificateId())

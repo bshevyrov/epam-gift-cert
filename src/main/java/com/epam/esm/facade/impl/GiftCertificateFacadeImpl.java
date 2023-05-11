@@ -58,6 +58,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     }
 
     @Override
+    //todo remove to service layer
     public void update(Map<String, Object> updates) {
         ArrayList<LinkedHashMap<Object, Object>> tagsList = (ArrayList<LinkedHashMap<Object, Object>>) updates.get("tags");
         if (tagsList.size() != 0) {
