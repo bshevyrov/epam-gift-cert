@@ -5,6 +5,7 @@ import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.veiw.Error;
 import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -92,6 +93,9 @@ public class GiftController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Error giftCertificateNotFound(GiftCertificateNotFoundException giftCertificateNotFoundException) {
         long certId = giftCertificateNotFoundException.getGiftId();
-        return new Error(4, "Gift Certificate [" + certId + "] not found");
+        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
+            return new Error(Integer.parseInt(HttpStatus.NOT_FOUND + "04"), "Gift Certificate [" + certId + "] не знайдено.");
+        }
+        return new Error(Integer.parseInt(HttpStatus.NOT_FOUND + "04"), "Gift Certificate [" + certId + "] not found");
     }
 }

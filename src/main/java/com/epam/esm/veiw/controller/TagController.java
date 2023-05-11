@@ -5,6 +5,7 @@ import com.epam.esm.facade.TagFacade;
 import com.epam.esm.veiw.Error;
 import com.epam.esm.veiw.dto.TagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,12 +17,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-;
 
 @RestController
 @RequestMapping(value = "/tags")
 public class TagController {
-
+    private String requestLocale;
     private final TagFacade tagFacade;
 
     @Autowired
@@ -54,6 +54,7 @@ public class TagController {
         return tagFacade.findById(id);
     }
 
+
     @RequestMapping(value = "",
             method = RequestMethod.GET,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -84,6 +85,9 @@ public class TagController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Error tagNotFound(TagNotFoundException e) {
         long tagId = e.getTagId();
-        return new Error(4, "Tag [" + tagId + "] not found");
+        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
+            return new Error(Integer.parseInt(HttpStatus.NOT_FOUND + "04"), "Tag [" + tagId + "] не знайдено.");
+        }
+        return new Error(Integer.parseInt(HttpStatus.NOT_FOUND + "04"), "Tag [" + tagId + "] not found.");
     }
 }
