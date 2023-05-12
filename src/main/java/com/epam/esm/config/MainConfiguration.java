@@ -7,6 +7,6 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @ComponentScan("com.epam.esm")
 @Import({SpringJDBCConfiguration.class,
-SpringWebConfiguration.class})
+        SpringWebConfiguration.class})
 public class MainConfiguration {
 }

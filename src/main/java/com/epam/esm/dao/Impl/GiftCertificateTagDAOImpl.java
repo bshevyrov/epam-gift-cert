@@ -2,7 +2,6 @@ package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.entity.GiftCertificateTag;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -13,6 +12,7 @@ import java.util.Map;
 public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
 
     private NamedParameterJdbcTemplate npjt;
+
     public void setNamedParameterJDBCTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.npjt = namedParameterJdbcTemplate;
     }
@@ -24,8 +24,9 @@ public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
     }
 
     @Override
+    @Deprecated
     public List<GiftCertificateTag> findAll() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override

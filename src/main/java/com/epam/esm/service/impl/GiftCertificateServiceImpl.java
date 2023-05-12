@@ -6,15 +6,14 @@ import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateTag;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.GiftCertificateNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -22,6 +21,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateDAO giftCertificateDAO;
     private final GiftCertificateTagDAO giftCertificateTagDAO;
     private final TagDAO tagDAO;
+
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDAO giftCertificateDAO, GiftCertificateTagDAO giftCertificateTagDAO, TagDAO tagDAO) {
@@ -68,6 +68,22 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public void update(Map<String, Object> updates) {
+        long giftCertificateId = (long) updates.get("id");
+        if (!giftCertificateDAO.existById(giftCertificateId)) {
+            throw new GiftCertificateNotFoundException(giftCertificateId);
+        }
+        ArrayList<LinkedHashMap<Object, Object>> tagsList = (ArrayList<LinkedHashMap<Object, Object>>) updates.get("tags");
+        if (tagsList.size() != 0) {
+            updates.remove("tags");
+            tagsList.forEach(map -> {
+                map.forEach((k, v) -> {
+                    if (k.equals("name")
+                            && !tagDAO.existByName((String) v)) {
+                        giftCertificateTagDAO.create(new GiftCertificateTag((Long) updates.get("id"), tagDAO.create(new Tag(v.toString()))));
+                    }
+                });
+            });
+        }
         giftCertificateDAO.update(updates);
     }
 

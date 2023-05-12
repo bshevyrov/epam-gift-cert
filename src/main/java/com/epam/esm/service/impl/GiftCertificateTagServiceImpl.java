@@ -11,34 +11,34 @@ import java.util.Map;
 @Component
 public class GiftCertificateTagServiceImpl implements GiftCertificateTagService {
 
-    private final GiftCertificateTagDAO gstDAO;
+    private final GiftCertificateTagDAO giftCertificateTagDAO;
 
-    public GiftCertificateTagServiceImpl(GiftCertificateTagDAO gstDAO) {
-        this.gstDAO = gstDAO;
+    public GiftCertificateTagServiceImpl(GiftCertificateTagDAO giftCertificateTagDAO) {
+        this.giftCertificateTagDAO = giftCertificateTagDAO;
     }
 
     @Override
-    public long create(GiftCertificateTag gct) {
-        return gstDAO.create(gct);
+    public long create(GiftCertificateTag giftCertificateTag) {
+        return giftCertificateTagDAO.create(giftCertificateTag);
     }
 
     @Override
     public GiftCertificateTag findById(long id) {
-        return null;
+        return giftCertificateTagDAO.findById(id);
     }
 
     @Override
     public List<GiftCertificateTag> findAll() {
-        return null;
+        return giftCertificateTagDAO.findAll();
     }
 
     @Override
     public void delete(long id) {
-
+        giftCertificateTagDAO.deleteById(id);
     }
 
     @Override
-    public void update(Map updates) {
-
+    public void update(Map<String, Object> updates) {
+        giftCertificateTagDAO.update(updates);
     }
 }

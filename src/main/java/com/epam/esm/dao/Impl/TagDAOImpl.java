@@ -17,17 +17,17 @@ import java.util.Map;
 @Repository
 public class TagDAOImpl implements TagDAO {
 
-    private NamedParameterJdbcTemplate npjt;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public void setNamedParameterJDBCTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.npjt = namedParameterJdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
     public Tag findById(long id) {
         try {
             String query = "SELECT * FROM tag where id=:id";
-            return (Tag) npjt.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper(Tag.class));
+            return (Tag) namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper(Tag.class));
         } catch (EmptyResultDataAccessException e) {
             throw new TagNotFoundException(id);
         }
@@ -36,13 +36,13 @@ public class TagDAOImpl implements TagDAO {
     @Override
     public List<Tag> findAll() {
         String query = "SELECT * FROM tag";
-        return (List<Tag>) npjt.query(query, new BeanPropertyRowMapper(Tag.class));
+        return (List<Tag>) namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper(Tag.class));
     }
 
     @Override
     public void deleteById(long id) {
         String query = "delete from tag where id = :id";
-        int code = npjt.update(query, new MapSqlParameterSource().addValue("id", id));
+        int code = namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("id", id));
         if (code == 0) {
             throw new TagNotFoundException(id);
         }
@@ -52,7 +52,7 @@ public class TagDAOImpl implements TagDAO {
     public long create(Tag tag) {
         String query = "insert into tag (name) values(:name)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        npjt.update(query, new MapSqlParameterSource().addValue("name", tag.getName()), keyHolder);
+        namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("name", tag.getName()), keyHolder);
         return keyHolder.getKey().longValue();
     }
 
@@ -64,24 +64,24 @@ public class TagDAOImpl implements TagDAO {
     @Override
     public List<Tag> findAllByGiftCertificateId(long id) {
         String query = "SELECT * FROM tag as t INNER JOIN gift_certificate_has_tag gcht on t.id = gcht.tag_id WHERE gcht.gift_certificate_id=:id";
-        return npjt.query(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(Tag.class));
+        return namedParameterJdbcTemplate.query(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(Tag.class));
     }
 
     @Override
     public boolean existByName(String name) {
         String query = "SELECT COUNT(*) FROM tag WHERE name = :name";
-        return 0 < npjt.queryForObject(query, new MapSqlParameterSource().addValue("name", name), Integer.class);
+        return 0 < namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), Integer.class);
     }
 
     @Override
     public List<Tag> findByGiftCertificateId(long id) {
         String query = "SELECT t.id, t.name FROM tag as t INNER JOIN gift_certificate_has_tag gcht on t.id = gcht.tag_id INNER JOIN gift_certificate gc on gcht.gift_certificate_id = gc.id WHERE gc.id=:id";
-        return npjt.query(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(Tag.class));
+        return namedParameterJdbcTemplate.query(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(Tag.class));
     }
 
     @Override
     public Tag findByName(String name) {
             String query = "SELECT * FROM tag where name=:name";
-            return (Tag) npjt.queryForObject(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper(Tag.class));
+            return (Tag) namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper(Tag.class));
     }
 }

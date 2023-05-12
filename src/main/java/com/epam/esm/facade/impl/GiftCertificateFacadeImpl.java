@@ -23,16 +23,14 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     private final GiftCertificateService giftCertificateService;
     private final TagListMapper tagListMapper;
     private final TagService tagService;
-    private final GiftCertificateTagServiceImpl gctService;
 
     @Autowired
-    public GiftCertificateFacadeImpl(GiftCertificateMapper giftCertificateMapper, GiftCertificateListMapper giftCertificateListMapper, GiftCertificateService giftCertificateService, TagListMapper tagListMapper, TagService tagService, GiftCertificateTagServiceImpl gctService) {
+    public GiftCertificateFacadeImpl(GiftCertificateMapper giftCertificateMapper, GiftCertificateListMapper giftCertificateListMapper, GiftCertificateService giftCertificateService, TagListMapper tagListMapper, TagService tagService) {
         this.giftCertificateMapper = giftCertificateMapper;
         this.giftCertificateListMapper = giftCertificateListMapper;
         this.giftCertificateService = giftCertificateService;
         this.tagListMapper = tagListMapper;
         this.tagService = tagService;
-        this.gctService = gctService;
     }
 
     @Override
@@ -58,19 +56,8 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     }
 
     @Override
-    //todo remove to service layer
     public void update(Map<String, Object> updates) {
-        ArrayList<LinkedHashMap<Object, Object>> tagsList = (ArrayList<LinkedHashMap<Object, Object>>) updates.get("tags");
-        if (tagsList.size() != 0) {
-            tagsList.forEach(map -> {
-                map.forEach((k, v) -> {
-                    if (k.equals("name")
-                            && !tagService.existByName((String) v)) {
-                        gctService.create(new GiftCertificateTag((Long) updates.get("id"), tagService.create(new Tag(v.toString()))));
-                    }
-                });
-            });
-        }
+       giftCertificateService.update(updates);
     }
 
     @Override
