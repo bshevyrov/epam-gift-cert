@@ -7,7 +7,9 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateTag;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.GiftCertificateNotFoundException;
+import com.epam.esm.exception.TagNameException;
 import com.epam.esm.service.GiftCertificateService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public long create(GiftCertificate giftCertificate) {
         long giftCertificateId = giftCertificateDAO.create(giftCertificate);
         giftCertificate.getTags().forEach(tag -> {
+            if(!StringUtils.isAlpha(tag.getName())){
+                throw  new TagNameException(tag.getName());
+            }
             if (tagDAO.existByName(tag.getName())) {
                 giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificateId, tagDAO.findByName(tag.getName()).getId()));
             } else {
@@ -67,6 +72,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public void update(Map<String, Object> updates) {
         long giftCertificateId = (long) updates.get("id");
         if (!giftCertificateDAO.existById(giftCertificateId)) {

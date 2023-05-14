@@ -1,5 +1,6 @@
 package com.epam.esm.veiw.controller;
 
+import com.epam.esm.exception.TagNameException;
 import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.facade.TagFacade;
 import com.epam.esm.veiw.Error;
@@ -91,5 +92,6 @@ public class TagController {
         }
         return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "04"), "Wrong body of Tag.");
     }
+
 }
 

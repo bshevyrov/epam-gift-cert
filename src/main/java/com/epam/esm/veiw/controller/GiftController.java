@@ -1,6 +1,7 @@
 package com.epam.esm.veiw.controller;
 
 import com.epam.esm.exception.GiftCertificateNotFoundException;
+import com.epam.esm.exception.TagNameException;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.veiw.Error;
 import com.epam.esm.veiw.dto.GiftCertificateDTO;
@@ -89,5 +90,14 @@ public class GiftController {
             return new Error(Integer.parseInt(HttpStatus.NOT_FOUND + "04"), "Gift Certificate [" + certId + "] не знайдено.");
         }
         return new Error(Integer.parseInt(HttpStatus.NOT_FOUND + "04"), "Gift Certificate [" + certId + "] not found");
+    }
+    @ExceptionHandler(TagNameException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error tagNameError(TagNameException e) {
+        String tagName = e.getTagName();
+        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
+            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "05"), "Помилка в імені Tag [" + tagName + "].");
+        }
+        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "05"), "Error in name Tag [" + tagName + "].");
     }
 }
