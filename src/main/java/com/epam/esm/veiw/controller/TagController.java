@@ -1,5 +1,6 @@
 package com.epam.esm.veiw.controller;
 
+import com.epam.esm.exception.TagIdException;
 import com.epam.esm.exception.TagNameException;
 import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.facade.TagFacade;
@@ -91,6 +92,15 @@ public class TagController {
             return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "04"), "Не вірне тіло Tag.");
         }
         return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "04"), "Wrong body of Tag.");
+    }
+    @ExceptionHandler(TagIdException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error tagIdError(TagIdException e) {
+        long tagId = e.getTagId();
+        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
+            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "06"), "Помилка в айді Tag [" + tagId + "].");
+        }
+        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "06"), "Error in id Tag [" + tagId + "].");
     }
 
 }

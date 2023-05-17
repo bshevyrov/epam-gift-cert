@@ -8,4 +8,6 @@ public interface TagService extends BaseService<Tag> {
     List<Tag> findAllByGiftCertificateId(long id);
 
     boolean existByName(String v);
+
+    Tag findByName(String name);
 }

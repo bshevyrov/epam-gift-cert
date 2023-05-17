@@ -2,9 +2,15 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.TagNameException;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -42,6 +48,13 @@ class TagServiceImplTest {
     void create() {
         tagService.create(tag);
         Mockito.verify(tagDAO, Mockito.times(1)).create(tag);
+    }
+
+    @ParameterizedTest(name = "tagName is  - {0}")
+    @ValueSource(strings = {"1"," ",""})
+    void throwExceptionWhenNotAlphanumericName(String tagName) {
+        Assertions.assertThrowsExactly(TagNameException.class, () -> tagService.create(new Tag(tagName)));
+
     }
 
     @Test

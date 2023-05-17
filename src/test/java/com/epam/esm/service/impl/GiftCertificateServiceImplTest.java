@@ -5,39 +5,68 @@ import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.service.GiftCertificateService;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.TestInstance;
+import org.mockito.*;
+import org.mockito.internal.verification.Times;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GiftCertificateServiceImplTest {
 
-
-    @InjectMocks
-    private GiftCertificateDAO giftCertificateDAO;
     @Mock
-    private GiftCertificateService giftCertificateService;
+    private GiftCertificateDAO giftCertificateDAO;
+    @InjectMocks
+    private GiftCertificateServiceImpl giftCertificateService;
     @Mock
     private TagDAO tagDAO;
+    @InjectMocks
+    private TagServiceImpl tagService;
     @Mock
     private GiftCertificateTagDAO giftCertificateTagDAO;
-    @Mock
+
+
     private GiftCertificate giftCertificate;
-    @InjectMocks
+
+    private List<Tag> tagList;
+
     private Tag tag;
+    @BeforeAll
+    public void initTagTest() {
+        MockitoAnnotations.openMocks(this);
+
+        giftCertificate = new GiftCertificate();
+        tagList = new ArrayList<Tag>() {{
+            add(new Tag("Name1"));
+            add(new Tag("Name2"));
+        }};
+       giftCertificate.setTags(tagList);
+    }
 
     @Test
-    void create() {
+    void createWhenNoNewTag() {
+        Mockito.when(tagService.existByName(Mockito.anyString())).thenReturn(false);
         giftCertificateService.create(giftCertificate);
-//        tagDAO.existByName(tag.getName());
-//        tagDAO.create(tag);
-//        List<String> mockedList = mock(MyList.class);
-//        mockedList.size();
-        Mockito.verify(giftCertificateDAO).create(giftCertificate);
-        Mockito.verify(tagDAO).existByName(tag.getName());
-        Mockito.verify(tagDAO).create(tag);
+        Mockito.verify(giftCertificateDAO, Mockito.times(1)).create(giftCertificate);
+        Mockito.verify(tagDAO, Mockito.times(tagList.size())).create(Mockito.any(Tag.class));
     }
+    @Test
+    void createWhenNewTag() {
+        giftCertificateService.create(giftCertificate);
+        Mockito.when(tagDAO.existByName(Mockito.anyString())).thenReturn(true);
+//        Mockito.when(tagDAO.findByName(Mockito.any())).thenReturn(new Tag(){{setId(curentId[0]++);setName("Name"+ Arrays.toString(curentId) + Arrays.toString(curentId));}});
+        Mockito.verify(giftCertificateDAO, Mockito.times(1)).create(giftCertificate);
+        Mockito.verify(tagDAO, Mockito.times(2)).create(Mockito.any(Tag.class));
+    }
+
+
+
 
     @Test
     void findById() {

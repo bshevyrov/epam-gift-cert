@@ -37,7 +37,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public long create(GiftCertificate giftCertificate) {
         long giftCertificateId = giftCertificateDAO.create(giftCertificate);
         giftCertificate.getTags().forEach(tag -> {
-            if(!StringUtils.isAlpha(tag.getName())){
+            if(!StringUtils.isAlphanumeric(tag.getName())){
                 throw  new TagNameException(tag.getName());
             }
             if (tagDAO.existByName(tag.getName())) {
