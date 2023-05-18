@@ -2,13 +2,13 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.GiftCertificateIdException;
+import com.epam.esm.exception.TagIdException;
 import com.epam.esm.exception.TagNameException;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
@@ -27,40 +27,27 @@ class TagServiceImplTest {
     @InjectMocks
     private TagServiceImpl tagService;
 
-    private Tag tag;
-    private int tagId;
-    private int giftCertificateId;
-    private String tagName;
-    private Map<String,Object> updateMap;
+    private Map<String, Object> updateMap;
 
     @BeforeAll
     public void initTagTest() {
         MockitoAnnotations.openMocks(this);
+        new HashMap<String, Object>() {{
+            put("name", "newName");
+        }};
 
-        tag= new Tag("test1");
-        tagId=1;
-        updateMap = new HashMap<String,Object>(){{put("name","newName");}};
-        tagName = "name";
-        giftCertificateId = 2;
-    }
-
-    @Test
-    void create() {
-        tagService.create(tag);
-        Mockito.verify(tagDAO, Mockito.times(1)).create(tag);
     }
 
     @ParameterizedTest(name = "tagName is  - {0}")
-    @ValueSource(strings = {"1"," ",""})
-    void throwExceptionWhenNotAlphanumericName(String tagName) {
+    @ValueSource(strings = {"1", " ", "", "a ", "a1"})
+    void throwsExceptionWhenCreateNameNotAlphanumericName(String tagName) {
         Assertions.assertThrowsExactly(TagNameException.class, () -> tagService.create(new Tag(tagName)));
-
     }
 
-    @Test
-    void findById() {
-        tagService.findById(tagId);
-        Mockito.verify(tagDAO, Mockito.times(1)).findById(tagId);
+    @ParameterizedTest(name = "tagId id - {0}")
+    @ValueSource(longs = {0, -1, Long.MIN_VALUE, Long.MAX_VALUE + 1})
+    void throwsExceptionWhenTagFindByIdIdLessOne(long tagId) {
+        Assertions.assertThrowsExactly(TagIdException.class, () -> tagService.findById(tagId));
     }
 
     @Test
@@ -75,21 +62,21 @@ class TagServiceImplTest {
         Mockito.verify(tagDAO, Mockito.times(1)).update(updateMap);
     }
 
-    @Test
-    void delete() {
-        tagService.delete(tagId);
-        Mockito.verify(tagDAO, Mockito.times(1)).deleteById(tagId);
+    @ParameterizedTest(name = "tagId id - {0}")
+    @ValueSource(longs = {0, -1, Long.MIN_VALUE, Long.MAX_VALUE + 1})
+    void throwsExceptionWhenDeleteTagIdLessOne(long tagId) {
+        Assertions.assertThrowsExactly(TagIdException.class, () -> tagService.delete(tagId));
     }
 
-    @Test
-    void findAllByGiftCertificateId() {
-        tagService.findAllByGiftCertificateId(giftCertificateId);
-        Mockito.verify(tagDAO, Mockito.times(1)).findAllByGiftCertificateId(giftCertificateId);
+    @ParameterizedTest(name = "giftCertificate id - {0}")
+    @ValueSource(longs = {0, -1, Long.MIN_VALUE, Long.MAX_VALUE + 1})
+    void throwsExceptionWhenFindAllByGSIdLessOne(long giftCertificateId) {
+        Assertions.assertThrowsExactly(GiftCertificateIdException.class, () -> tagService.findAllByGiftCertificateId(giftCertificateId));
     }
 
-    @Test
-    void existByName() {
-        tagService.existByName(tagName);
-        Mockito.verify(tagDAO, Mockito.times(1)).existByName(tagName);
+    @ParameterizedTest(name = "tagName is  - {0}")
+    @ValueSource(strings = {"1", " ", "", "a ", "a1"})
+    void throwsExceptionWhenExistByNameNameNotAlphanumericName(String tagName) {
+        Assertions.assertThrowsExactly(TagNameException.class, () -> tagService.existByName(tagName));
     }
 }

@@ -1,7 +1,9 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.GiftCertificateIdException;
 import com.epam.esm.exception.TagIdException;
 import com.epam.esm.exception.TagNameException;
 import com.epam.esm.service.TagService;
@@ -24,14 +26,13 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public long create(Tag tag) {
-        if(!StringUtils.isAlpha(tag.getName())){
-            throw  new TagNameException(tag.getName());
-        }
+        verifyName(tag.getName());
         return tagDAO.create(tag);
     }
 
     @Override
     public Tag findById(long id) {
+        verifyId(id);
         return tagDAO.findById(id);
     }
 
@@ -42,30 +43,48 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void update(Map<String, Object> updates) {
-        if
         tagDAO.update(updates);
     }
 
     @Override
     public void delete(long id) {
-        if(id<=0||id>Long.MAX_VALUE){
-            throw new TagIdException(id);
-        }
+        verifyId(id);
         tagDAO.deleteById(id);
     }
 
     @Override
     public List<Tag> findAllByGiftCertificateId(long id) {
+        //TODO WHERE HANDLER
+        verifyGiftCertificateId(id);
         return tagDAO.findAllByGiftCertificateId(id);
     }
 
+
     @Override
     public boolean existByName(String name) {
+        verifyName(name);
         return tagDAO.existByName(name);
     }
 
     @Override
     public Tag findByName(String name) {
+        verifyName(name);
         return tagDAO.findByName(name);
+    }
+    private void verifyId(long id) {
+        if(id <=0){
+            throw new TagIdException(id);
+        }
+    }
+    private void verifyGiftCertificateId(long id) {
+        if(id <=0){
+            throw new GiftCertificateIdException(id);
+        }
+    }
+
+    private void verifyName(String tagName) {
+        if(!StringUtils.isAlpha(tagName)){
+            throw  new TagNameException(tagName);
+        }
     }
 }
