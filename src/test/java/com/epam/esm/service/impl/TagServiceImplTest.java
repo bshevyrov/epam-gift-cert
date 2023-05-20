@@ -32,20 +32,16 @@ class TagServiceImplTest {
     @BeforeAll
     public void initTagTest() {
         MockitoAnnotations.openMocks(this);
-        new HashMap<String, Object>() {{
-            put("name", "newName");
-        }};
-
-    }
+           }
 
     @ParameterizedTest(name = "tagName is  - {0}")
     @ValueSource(strings = {"1", " ", "", "a ", "a1"})
-    void throwsExceptionWhenCreateNameNotAlphanumericName(String tagName) {
+    void throwsExceptionWhenCreateNameNotAlphaName(String tagName) {
         Assertions.assertThrowsExactly(TagNameException.class, () -> tagService.create(new Tag(tagName)));
     }
 
     @ParameterizedTest(name = "tagId id - {0}")
-    @ValueSource(longs = {0, -1, Long.MIN_VALUE, Long.MAX_VALUE + 1})
+    @ValueSource(longs = {0, -1, Long.MIN_VALUE})
     void throwsExceptionWhenTagFindByIdIdLessOne(long tagId) {
         Assertions.assertThrowsExactly(TagIdException.class, () -> tagService.findById(tagId));
     }
@@ -76,7 +72,7 @@ class TagServiceImplTest {
 
     @ParameterizedTest(name = "tagName is  - {0}")
     @ValueSource(strings = {"1", " ", "", "a ", "a1"})
-    void throwsExceptionWhenExistByNameNameNotAlphanumericName(String tagName) {
+    void throwsExceptionWhenExistByNameNameNotAlpha(String tagName) {
         Assertions.assertThrowsExactly(TagNameException.class, () -> tagService.existByName(tagName));
     }
 }

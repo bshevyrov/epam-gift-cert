@@ -6,9 +6,11 @@ import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateTag;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.GiftCertificateIdException;
 import com.epam.esm.exception.GiftCertificateNotFoundException;
 import com.epam.esm.exception.TagNameException;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.util.InputVerification;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,6 +54,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate findById(long id) {
+        if(!InputVerification.verifyId(id)){
+            throw new GiftCertificateIdException(id);
+        }
         GiftCertificate giftCertificate = giftCertificateDAO.findById(id);
         giftCertificate.setTags(tagDAO.findByGiftCertificateId(giftCertificate.getId()));
         return giftCertificate;
@@ -75,6 +80,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional(rollbackFor = {SQLException.class})
     public void update(Map<String, Object> updates) {
         long giftCertificateId = (long) updates.get("id");
+        if(!InputVerification.verifyId(giftCertificateId)){
+            throw new GiftCertificateIdException(giftCertificateId);
+        }
         if (!giftCertificateDAO.existById(giftCertificateId)) {
             throw new GiftCertificateNotFoundException(giftCertificateId);
         }
@@ -95,11 +103,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public void delete(long id) {
+        if(!InputVerification.verifyId(id)){
+            throw new GiftCertificateIdException(id);
+        }
         giftCertificateDAO.deleteById(id);
     }
 
     @Override
     public List<GiftCertificate> findByTagName(String name) {
+        if(!InputVerification.verifyName(name)){
+            throw new TagNameException(name);
+        }
         List<GiftCertificate> giftCertificateList = giftCertificateDAO.findByTagName(name);
         giftCertificateList.forEach(giftCertificate -> {
             giftCertificate.setTags(tagDAO.findByGiftCertificateId(giftCertificate.getId()));

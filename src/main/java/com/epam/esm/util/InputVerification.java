@@ -7,7 +7,7 @@ public final class InputVerification {
     }
 
     public static boolean verifyId(long id) {
-        return id <= 0;
+        return id > 0;
     }
 
     public static boolean verifyName(String tagName) {

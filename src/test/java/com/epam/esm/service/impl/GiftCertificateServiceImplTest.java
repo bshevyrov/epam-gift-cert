@@ -6,12 +6,14 @@ import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateTag;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.GiftCertificateIdException;
+import com.epam.esm.exception.GiftCertificateNotFoundException;
+import com.epam.esm.exception.TagNameException;
 import com.epam.esm.util.InputVerification;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,9 +21,11 @@ import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -37,25 +41,31 @@ class GiftCertificateServiceImplTest {
     private TagDAO tagDAO;
     @Mock
     private Tag tag;
-    @InjectMocks
-    private TagServiceImpl tagService = new TagServiceImpl(tagDAO);
+
 
     @Mock
     private GiftCertificate giftCertificate;
-    private GiftCertificate giftCertificateTrueTag;
     private List<Tag> tags;
 
+    private Map<String, Object> withIdLessZero;
+    private Map<String, Object> withIdBiggerZero;
+    private Map<String, Object> withOutId;
 
     @BeforeAll
     public void init() {
         MockitoAnnotations.openMocks(this);
-        giftCertificateTrueTag = new GiftCertificate();
-        giftCertificateTrueTag.setName("giftCertName1");
-        giftCertificateTrueTag.setTags(new ArrayList<Tag>() {{
-            add(new Tag("true"));
-        }});
+
         tags = new ArrayList<Tag>() {{
             add(new Tag("11"));
+        }};
+        withIdLessZero = new HashMap<String, Object>() {{
+            put("id", -1L);
+        }};
+        withOutId = new HashMap<String, Object>() {{
+            put("ids", 1L);
+        }};
+        withIdBiggerZero = new HashMap<String, Object>() {{
+            put("id", 1L);
         }};
     }
 
@@ -89,54 +99,49 @@ class GiftCertificateServiceImplTest {
             when(tagDAO.findByName(anyString())).thenReturn(new Tag());
             when(tag.getId()).thenReturn(10L);
             when(giftCertificate.getTags()).thenReturn(tags);
-
             giftCertificateService.create(giftCertificate);
             verify(tagDAO, times(1)).create(any(Tag.class));
         }
     }
 
+    @ParameterizedTest(name = "gift certificate id - {0}")
+    @ValueSource(longs = {0, -1, Long.MIN_VALUE})
+    void throwsExceptionWhenGiftCertificateFindByIdIdLessOne(long giftCertificateId) {
+        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateService.findById(giftCertificateId));
+    }
+
+
     @Test
-    void findById() {
+    void throwsExceptionWhenGiftCertificateUpdateIdLessOne() {
+        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateService.update(withIdLessZero));
+    }
+
+    @Test
+    void throwsGiftCertificateNotFoundExceptionWhenGiftCertificateUpdateIdBiggerZero() {
+        when(giftCertificateDAO.existById(anyLong())).thenReturn(false);
+        assertThrowsExactly(GiftCertificateNotFoundException.class, () -> giftCertificateService.update(withIdBiggerZero));
+    }
+
+    @ParameterizedTest(name = "gift certificate id - {0}")
+    @ValueSource(longs = {0, -1, Long.MIN_VALUE})
+    void throwsExceptionWhenGiftCertificateDeleteByIdIdLessOne(long giftCertificateId) {
+        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateService.delete(giftCertificateId));
+    }
+
+    @ParameterizedTest(name = "gift certificate name is  - {0}")
+    @ValueSource(strings = {"1", " ", "", "a ", "a1"})
+    void throwsExceptionWhenGiftCertFindByTagNameNameNotAlphaName(String tagName) {
+        assertThrowsExactly(TagNameException.class, () -> giftCertificateService.findByTagName(tagName));
+    }
+
+    @Test
+    void whenFindAllWithParametersThenUnsupportedOperationException() {
+        assertThrowsExactly(UnsupportedOperationException.class, () -> giftCertificateService.findAll());
     }
 
     @Test
     void findAll() {
-    }
-
-    @Test
-    void testFindAll() {
-    }
-
-    @Test
-    void update() {
-    }
-
-    @Test
-    void delete() {
-    }
-
-    @Test
-    void findByTagName() {
-    }
-
-
-    private static Stream<Arguments> generator() {
-        GiftCertificate giftCertificateTrueTag = new GiftCertificate();
-        giftCertificateTrueTag.setName("giftCertName1");
-        Tag tagTrue = new Tag("true");
-        Tag tagFalse = new Tag("false");
-        giftCertificateTrueTag.setTags(new ArrayList<Tag>() {{
-            add(tagTrue);
-        }});
-        GiftCertificate giftCertificateFalseTag = new GiftCertificate();
-        giftCertificateFalseTag.setName("giftCertName2");
-        giftCertificateFalseTag.setTags(new ArrayList<Tag>() {{
-            add(tagFalse);
-        }});
-
-        return Stream.of(
-                Arguments.of(giftCertificateTrueTag, true),
-                Arguments.of(giftCertificateFalseTag, false));
-
+        giftCertificateService.findAll(any(), any(), anyString(), anyString());
+        verify(giftCertificateDAO, times(1)).findAll(any(), any(), anyString(), anyString());
     }
 }

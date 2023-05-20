@@ -5,10 +5,11 @@ import com.epam.esm.entity.GiftCertificateTag;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-
+@Component
 public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
 
     private NamedParameterJdbcTemplate npjt;
