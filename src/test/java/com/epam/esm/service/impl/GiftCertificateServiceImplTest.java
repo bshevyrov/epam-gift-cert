@@ -4,69 +4,96 @@ import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateTag;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.util.InputVerification;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.mockito.*;
-import org.mockito.internal.verification.Times;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
+import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GiftCertificateServiceImplTest {
 
-    @Mock
-    private GiftCertificateDAO giftCertificateDAO;
     @InjectMocks
     private GiftCertificateServiceImpl giftCertificateService;
     @Mock
-    private TagDAO tagDAO;
-    @InjectMocks
-    private TagServiceImpl tagService;
+    private GiftCertificateDAO giftCertificateDAO;
     @Mock
     private GiftCertificateTagDAO giftCertificateTagDAO;
-
-
-    private GiftCertificate giftCertificate;
-
-    private List<Tag> tagList;
-
+    @Mock
+    private TagDAO tagDAO;
+    @Mock
     private Tag tag;
+    @InjectMocks
+    private TagServiceImpl tagService = new TagServiceImpl(tagDAO);
+
+    @Mock
+    private GiftCertificate giftCertificate;
+    private GiftCertificate giftCertificateTrueTag;
+    private List<Tag> tags;
+
+
     @BeforeAll
-    public void initTagTest() {
+    public void init() {
         MockitoAnnotations.openMocks(this);
-
-        giftCertificate = new GiftCertificate();
-        tagList = new ArrayList<Tag>() {{
-            add(new Tag("Name1"));
-            add(new Tag("Name2"));
+        giftCertificateTrueTag = new GiftCertificate();
+        giftCertificateTrueTag.setName("giftCertName1");
+        giftCertificateTrueTag.setTags(new ArrayList<Tag>() {{
+            add(new Tag("true"));
+        }});
+        tags = new ArrayList<Tag>() {{
+            add(new Tag("11"));
         }};
-       giftCertificate.setTags(tagList);
     }
 
-    @Test
-    void createWhenNoNewTag() {
-        Mockito.when(tagService.existByName(Mockito.anyString())).thenReturn(false);
-        giftCertificateService.create(giftCertificate);
-        Mockito.verify(giftCertificateDAO, Mockito.times(1)).create(giftCertificate);
-        Mockito.verify(tagDAO, Mockito.times(tagList.size())).create(Mockito.any(Tag.class));
+    @ParameterizedTest(name = "Tag is exist - {0} ")
+    @ValueSource(booleans = {true, false})
+    void whenCreateGiftCertificateWithOldTagThanNoTagCreate(boolean tagExist) {
+        try (MockedStatic<InputVerification> utilities = mockStatic(InputVerification.class)) {
+            utilities.when(() ->
+                    InputVerification.verifyName(anyString())).thenReturn(true);
+
+            when(tagDAO.existByName(anyString())).thenReturn(tagExist);
+            when(giftCertificateTagDAO.create(any(GiftCertificateTag.class))).thenReturn(1L);
+            when(tagDAO.findByName(anyString())).thenReturn(tag);
+            when(tag.getId()).thenReturn(2L);
+            when(giftCertificate.getTags()).thenReturn(tags);
+
+            giftCertificateService.create(giftCertificate);
+            verify(tagDAO, never()).create(any(Tag.class));
+        }
     }
-    @Test
-    void createWhenNewTag() {
-        giftCertificateService.create(giftCertificate);
-        Mockito.when(tagDAO.existByName(Mockito.anyString())).thenReturn(true);
-//        Mockito.when(tagDAO.findByName(Mockito.any())).thenReturn(new Tag(){{setId(curentId[0]++);setName("Name"+ Arrays.toString(curentId) + Arrays.toString(curentId));}});
-        Mockito.verify(giftCertificateDAO, Mockito.times(1)).create(giftCertificate);
-        Mockito.verify(tagDAO, Mockito.times(2)).create(Mockito.any(Tag.class));
+
+    @ParameterizedTest(name = "Tag exist - {0} ")
+    @ValueSource(booleans = {true, false})
+    void whenCreateGiftCertificateWithNewTagThanTagCreate(boolean tagExist) {
+        try (MockedStatic<InputVerification> utilities = mockStatic(InputVerification.class)) {
+            utilities.when(() ->
+                    InputVerification.verifyName(anyString())).thenReturn(true);
+
+            when(tagDAO.existByName(anyString())).thenReturn(tagExist);
+            when(giftCertificateTagDAO.create(any(GiftCertificateTag.class))).thenReturn(1L);
+            when(tagDAO.findByName(anyString())).thenReturn(new Tag());
+            when(tag.getId()).thenReturn(10L);
+            when(giftCertificate.getTags()).thenReturn(tags);
+
+            giftCertificateService.create(giftCertificate);
+            verify(tagDAO, times(1)).create(any(Tag.class));
+        }
     }
-
-
-
 
     @Test
     void findById() {
@@ -90,5 +117,26 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void findByTagName() {
+    }
+
+
+    private static Stream<Arguments> generator() {
+        GiftCertificate giftCertificateTrueTag = new GiftCertificate();
+        giftCertificateTrueTag.setName("giftCertName1");
+        Tag tagTrue = new Tag("true");
+        Tag tagFalse = new Tag("false");
+        giftCertificateTrueTag.setTags(new ArrayList<Tag>() {{
+            add(tagTrue);
+        }});
+        GiftCertificate giftCertificateFalseTag = new GiftCertificate();
+        giftCertificateFalseTag.setName("giftCertName2");
+        giftCertificateFalseTag.setTags(new ArrayList<Tag>() {{
+            add(tagFalse);
+        }});
+
+        return Stream.of(
+                Arguments.of(giftCertificateTrueTag, true),
+                Arguments.of(giftCertificateFalseTag, false));
+
     }
 }

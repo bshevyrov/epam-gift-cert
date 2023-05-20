@@ -1,18 +1,19 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.GiftCertificateIdException;
 import com.epam.esm.exception.TagIdException;
 import com.epam.esm.exception.TagNameException;
 import com.epam.esm.service.TagService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.epam.esm.util.InputVerification.verifyId;
+import static com.epam.esm.util.InputVerification.verifyName;
 
 
 @Component
@@ -26,13 +27,17 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public long create(Tag tag) {
-        verifyName(tag.getName());
+        if (!verifyName(tag.getName())) {
+            throw new TagNameException(tag.getName());
+        }
         return tagDAO.create(tag);
     }
 
     @Override
     public Tag findById(long id) {
-        verifyId(id);
+        if (!verifyId(id)) {
+            throw new TagIdException(id);
+        }
         return tagDAO.findById(id);
     }
 
@@ -48,43 +53,35 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void delete(long id) {
-        verifyId(id);
+        if (!verifyId(id)) {
+            throw new TagIdException(id);
+        }
         tagDAO.deleteById(id);
     }
 
     @Override
     public List<Tag> findAllByGiftCertificateId(long id) {
         //TODO WHERE HANDLER
-        verifyGiftCertificateId(id);
+        if (!verifyId(id)) {
+            throw new GiftCertificateIdException(id);
+        }
         return tagDAO.findAllByGiftCertificateId(id);
     }
 
 
     @Override
     public boolean existByName(String name) {
-        verifyName(name);
+        if (!verifyName(name)) {
+            throw new TagNameException(name);
+        }
         return tagDAO.existByName(name);
     }
 
     @Override
     public Tag findByName(String name) {
-        verifyName(name);
+        if (!verifyName(name)) {
+            throw new TagNameException(name);
+        }
         return tagDAO.findByName(name);
-    }
-    private void verifyId(long id) {
-        if(id <=0){
-            throw new TagIdException(id);
-        }
-    }
-    private void verifyGiftCertificateId(long id) {
-        if(id <=0){
-            throw new GiftCertificateIdException(id);
-        }
-    }
-
-    private void verifyName(String tagName) {
-        if(!StringUtils.isAlpha(tagName)){
-            throw  new TagNameException(tagName);
-        }
     }
 }
