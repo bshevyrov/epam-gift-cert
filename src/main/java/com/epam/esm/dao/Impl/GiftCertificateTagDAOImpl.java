@@ -12,10 +12,11 @@ import java.util.Map;
 @Component
 public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
 
-    private NamedParameterJdbcTemplate npjt;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate
+            ;
 
     public void setNamedParameterJDBCTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.npjt = namedParameterJdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("giftId", gct.getGiftCertificateId())
                 .addValue("tagId", gct.getTagId());
-        return npjt.update(query, parameterSource);
+        return namedParameterJdbcTemplate.update(query, parameterSource);
     }
 
     @Override

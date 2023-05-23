@@ -8,45 +8,44 @@ import com.epam.esm.dao.Impl.TagDAOImpl;
 import com.epam.esm.dao.TagDAO;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.context.annotation.Bean;
+import org.apache.ibatis.jdbc.ScriptRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
+import java.sql.SQLException;
 
 @Configuration(value = "DBConfig")
-@EnableTransactionManagement
-@Profile("!dev")
-public class SpringJDBCConfiguration {
+@Profile("dev")
+public class SpringH2Configuration {
+
+
     @Bean
     public DataSource dataSource() {
         DataSource ds = new DataSource();
-        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        ds.setUrl("jdbc:mysql://localhost:3306/gift_card");
-        ds.setUsername("root");
-        ds.setPassword("root");
-        ds.setInitialSize(5);
-        ds.setMaxActive(10);
-        ds.setMaxIdle(5);
-        ds.setMinIdle(2);
+        ds.setDriverClassName("org.h2.Driver");
+        ds.setUrl("jdbc:h2:mem:testdb;MODE=MySQL");
+        ds.setUsername("sa");
+        ds.setPassword("password");
+//        ds.setInitialSize(5);
+//        ds.setMaxActive(10);
+//        ds.setMaxIdle(5);
+//        ds.setMinIdle(2);
+
         return ds;
     }
-
     @Bean
-    public DataSourceTransactionManager transactionManager() {
-        final DataSourceTransactionManager txManager = new DataSourceTransactionManager();
-        txManager.setDataSource(dataSource());
-        return txManager;
+    public void createH2DB(DataSource dataSource) throws FileNotFoundException, SQLException {
+        ScriptRunner sr = new ScriptRunner(dataSource.getConnection());
+        //Creating a reader object
+        Reader reader = new BufferedReader(new FileReader("resources/data.sql"));
+        //Running the script
+        sr.runScript(reader);
     }
-//    @Bean
-//    public DefaultTransactionDefinition defaultTransactionDefinition() {
-//        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-//        definition.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
-//        definition.setTimeout(3);
-//        return definition;
-//    }
-
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());

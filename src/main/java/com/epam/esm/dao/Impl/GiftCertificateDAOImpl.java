@@ -3,6 +3,7 @@ package com.epam.esm.dao.Impl;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.GiftCertificateNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -20,10 +21,11 @@ import java.util.Optional;
 @Component
 public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
     public void setNamedParameterJDBCTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
+
+    KeyHolder keyHolder;
 
     @Override
     public GiftCertificate findById(long id) {
@@ -67,7 +69,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
 
     @Override
     public long create(GiftCertificate giftCertificate) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+        keyHolder = new GeneratedKeyHolder();
         String query = "insert into gift_certificate (name,description,duration,price) values (:name,:description,:duration,:price)";
         SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue("name", giftCertificate.getName())

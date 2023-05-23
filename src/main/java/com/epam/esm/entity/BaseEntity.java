@@ -2,12 +2,14 @@ package com.epam.esm.entity;
 
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Component
 
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private long id;
     private String name;
 

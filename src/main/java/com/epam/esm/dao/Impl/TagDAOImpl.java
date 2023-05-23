@@ -18,7 +18,7 @@ import java.util.Map;
 public class TagDAOImpl implements TagDAO {
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
+  private   KeyHolder keyHolder;
     public void setNamedParameterJDBCTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
@@ -51,7 +51,7 @@ public class TagDAOImpl implements TagDAO {
     @Override
     public long create(Tag tag) {
         String query = "insert into tag (name) values(:name)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+         keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("name", tag.getName()), keyHolder);
         return keyHolder.getKey().longValue();
     }
