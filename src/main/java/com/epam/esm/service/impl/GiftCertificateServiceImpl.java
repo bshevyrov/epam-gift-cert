@@ -58,7 +58,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new GiftCertificateIdException(id);
         }
         GiftCertificate giftCertificate = giftCertificateDAO.findById(id);
-        giftCertificate.setTags(tagDAO.findByGiftCertificateId(giftCertificate.getId()));
+        giftCertificate.setTags(tagDAO.findAllByGiftCertificateId(giftCertificate.getId()));
         return giftCertificate;
     }
 
@@ -71,7 +71,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificate> findAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
         List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAll(certName, description, sortField, sortType);
         giftCertificateList.forEach(giftCertificate -> {
-            giftCertificate.setTags(tagDAO.findByGiftCertificateId(giftCertificate.getId()));
+            giftCertificate.setTags(tagDAO.findAllByGiftCertificateId(giftCertificate.getId()));
         });
         return giftCertificateList;
     }
@@ -116,7 +116,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         List<GiftCertificate> giftCertificateList = giftCertificateDAO.findByTagName(name);
         giftCertificateList.forEach(giftCertificate -> {
-            giftCertificate.setTags(tagDAO.findByGiftCertificateId(giftCertificate.getId()));
+            giftCertificate.setTags(tagDAO.findAllByGiftCertificateId(giftCertificate.getId()));
         });
         return giftCertificateList;
     }
