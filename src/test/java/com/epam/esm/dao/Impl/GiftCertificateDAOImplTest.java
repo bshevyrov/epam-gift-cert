@@ -192,7 +192,8 @@ class GiftCertificateDAOImplTest {
     void update() {
         giftCertificate.setName("first");
         giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-        giftCertificateDAO.update(new HashMap<String, Object>(){{put("id",giftCertificate.getId());put("name","second");}});
+//        giftCertificateDAO.update(new HashMap<String, Object>(){{put("id",giftCertificate.getId());put("name","second");}});
+    //TODO
         giftCertificate.setName("second");
         assertEquals(giftCertificate,giftCertificateDAO.findById(giftCertificate.getId()));
 

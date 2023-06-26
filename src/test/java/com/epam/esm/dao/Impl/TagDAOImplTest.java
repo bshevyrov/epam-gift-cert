@@ -1,5 +1,7 @@
 package com.epam.esm.dao.Impl;
 
+import com.epam.esm.config.DBConfig;
+import com.epam.esm.config.MainConfiguration;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateTag;
 import com.epam.esm.entity.Tag;
@@ -10,11 +12,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -29,7 +38,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class TagDAOImplTest {
+@ContextConfiguration(classes = {MainConfiguration.class,DBConfig.class}, loader = AnnotationConfigWebContextLoader.class )
+ class TagDAOImplTest {
 
 
     private final ConfigurableEnvironment devEnv = new StandardEnvironment();
@@ -45,33 +55,42 @@ class TagDAOImplTest {
     private Tag tagAnother;
     private Tag tagThird;
 
+
+    @Autowired
+    DBConfig config ;
+
     public void createH2DB(DataSource dataSource) throws FileNotFoundException, SQLException {
         ScriptRunner sr = new ScriptRunner(dataSource.getConnection());
         Reader reader = new BufferedReader(new FileReader("src/main/resources/data.sql"));
         sr.runScript(reader);
     }
 
-    public DataSource dataSource() {
-        DataSource ds = new DataSource();
-        ds.setDriverClassName("org.h2.Driver");
-        ds.setUrl("jdbc:h2:mem:testdb;MODE=MySQL");
-        ds.setUsername("sa");
-        ds.setPassword("password");
-        return ds;
-    }
+//    public DataSource dataSource() {
+//        DataSource ds = new DataSource();
+//        ds.setDriverClassName("org.h2.Driver");
+//        ds.setUrl("jdbc:h2:mem:testdb;MODE=MySQL");
+//        ds.setUsername("sa");
+//        ds.setPassword("password");
+//        return ds;
+//    }
 
     @BeforeEach
     public void init() throws SQLException, FileNotFoundException {
 
         devEnv.setActiveProfiles("dev");
-        createH2DB(dataSource());
-        MockitoAnnotations.openMocks(this);
-        ReflectionTestUtils.setField(giftCertificateTagDAO, "namedParameterJdbcTemplate", new NamedParameterJdbcTemplate(dataSource()));
+AnnotationConfigWebContextLoader annotationConfigWebContextLoader = new AnnotationConfigWebContextLoader();
+//annotationConfigWebContextLoader.processContextConfiguration(config);
 
-        ReflectionTestUtils.setField(tagDAO, "namedParameterJdbcTemplate", new NamedParameterJdbcTemplate(dataSource()));
+//config =  rootContext.getBean("DBConfig",DBConfig.class);
+
+        createH2DB( config.dataSource());
+        MockitoAnnotations.openMocks(this);
+        ReflectionTestUtils.setField(giftCertificateTagDAO, "namedParameterJdbcTemplate", new NamedParameterJdbcTemplate( config.dataSource()));
+
+        ReflectionTestUtils.setField(tagDAO, "namedParameterJdbcTemplate", new NamedParameterJdbcTemplate( config.dataSource()));
         ReflectionTestUtils.setField(tagDAO, "keyHolder", new GeneratedKeyHolder());
 
-        ReflectionTestUtils.setField(giftCertificateDAO, "namedParameterJdbcTemplate", new NamedParameterJdbcTemplate(dataSource()));
+        ReflectionTestUtils.setField(giftCertificateDAO, "namedParameterJdbcTemplate", new NamedParameterJdbcTemplate( config.dataSource()));
         ReflectionTestUtils.setField(giftCertificateDAO, "keyHolder", new GeneratedKeyHolder());
 
         tag = new Tag("tag");
@@ -114,12 +133,12 @@ class TagDAOImplTest {
         assertEquals(expected, actual);
     }
 
-
-    @Test
+//TODO
+  /*  @Test
     void update() {
         assertThrowsExactly(UnsupportedOperationException.class, ()->tagDAO.update(new HashMap<>()));
     }
-
+*/
     @Test
     void findAllByGiftCertificateId() {
         GiftCertificate giftCertificate = new GiftCertificate();

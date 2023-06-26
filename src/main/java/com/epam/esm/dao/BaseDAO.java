@@ -14,5 +14,5 @@ public interface BaseDAO<E extends BaseEntity> {
 
     long create(E entity);
 
-    void update(Map<String, Object> updates);
+    void update(E entity);
 }

@@ -3,25 +3,22 @@ package com.epam.esm.dao.Impl;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
-@Repository
+@Component
 public class TagDAOImpl implements TagDAO {
-
+    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-  private   KeyHolder keyHolder;
-    public void setNamedParameterJDBCTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-    }
+    private KeyHolder keyHolder;
 
     @Override
     public Tag findById(long id) {
@@ -51,13 +48,13 @@ public class TagDAOImpl implements TagDAO {
     @Override
     public long create(Tag tag) {
         String query = "insert into tag (name) values(:name)";
-         keyHolder = new GeneratedKeyHolder();
+        keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("name", tag.getName()), keyHolder);
         return keyHolder.getKey().longValue();
     }
 
     @Override
-    public void update(Map<String, Object> updates) {
+    public void update(Tag tag) {
         throw new UnsupportedOperationException();
     }
 
@@ -76,7 +73,7 @@ public class TagDAOImpl implements TagDAO {
 
     @Override
     public Tag findByName(String name) {
-            String query = "SELECT * FROM tag where name=:name";
-            return (Tag) namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper(Tag.class));
+        String query = "SELECT * FROM tag where name=:name";
+        return (Tag) namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper(Tag.class));
     }
 }

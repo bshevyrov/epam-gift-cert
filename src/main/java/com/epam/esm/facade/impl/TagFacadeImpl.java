@@ -40,8 +40,8 @@ public class TagFacadeImpl implements TagFacade {
     }
 
     @Override
-    public void update(Map<String, Object> updates) {
-        tagService.update(updates);
+    public void update(TagDTO tagDTO) {
+        tagService.update(tagMapper.toModel(tagDTO));
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.epam.esm.veiw.controller;
 
 import com.epam.esm.exception.TagIdException;
-import com.epam.esm.exception.TagNameException;
 import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.facade.TagFacade;
 import com.epam.esm.veiw.Error;
@@ -35,7 +34,7 @@ public class TagController {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<TagDTO> saveTagTDO(@RequestBody TagDTO tagDTO, UriComponentsBuilder ucb) {
+    public ResponseEntity<TagDTO> create(@RequestBody TagDTO tagDTO, UriComponentsBuilder ucb) {
         long tagId = tagFacade.create(tagDTO);
 
         HttpHeaders headers = new HttpHeaders();
@@ -68,13 +67,13 @@ public class TagController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = "/{id}",
+  /*  @RequestMapping(value = "/{id}",
             method = RequestMethod.PATCH)
     public void updateTag(@RequestBody Map<String, Object> updates,
                           @PathVariable long id) {
         updates.put("id",id);
         tagFacade.update(updates);
-    }
+    }*/
 
     @ExceptionHandler(TagNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

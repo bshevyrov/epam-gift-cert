@@ -9,11 +9,9 @@ import com.epam.esm.util.InputVerification;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class GiftCertificateTagServiceImpl implements GiftCertificateTagService {
-
     private final GiftCertificateTagDAO giftCertificateTagDAO;
 
     public GiftCertificateTagServiceImpl(GiftCertificateTagDAO giftCertificateTagDAO) {
@@ -47,7 +45,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     }
 
     @Override
-    public void update(Map<String, Object> updates) {
-        giftCertificateTagDAO.update(updates);
+    public void update(GiftCertificateTag giftCertificateTag) {
+        giftCertificateTagDAO.update(giftCertificateTag);
     }
 }

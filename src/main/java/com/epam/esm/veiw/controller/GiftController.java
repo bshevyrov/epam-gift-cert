@@ -32,7 +32,7 @@ public class GiftController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<GiftCertificateDTO> saveTagTDO(@RequestBody GiftCertificateDTO giftCertificateDTO, UriComponentsBuilder ucb) {
+    public ResponseEntity<GiftCertificateDTO> create(@RequestBody GiftCertificateDTO giftCertificateDTO, UriComponentsBuilder ucb) {
         long id = giftCertificateFacade.create(giftCertificateDTO);
 
         HttpHeaders headers = new HttpHeaders();
@@ -69,10 +69,10 @@ public class GiftController {
 
     @RequestMapping(value = "/{id}",
             method = RequestMethod.PATCH)
-    public void updateGift(@RequestBody Map<String, Object> updates,
-                           @PathVariable long id) {
-        updates.put("id", id);
-        giftCertificateFacade.update(updates);
+    public void update(@RequestBody GiftCertificateDTO giftCertificateDTO,
+                       @PathVariable long id) {
+        giftCertificateDTO.setId(id);
+        giftCertificateFacade.update(giftCertificateDTO);
     }
 
     @RequestMapping(value = "/tag/{name}",

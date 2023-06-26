@@ -7,7 +7,6 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateTag;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.GiftCertificateIdException;
-import com.epam.esm.exception.GiftCertificateNotFoundException;
 import com.epam.esm.exception.TagNameException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.InputVerification;
@@ -17,7 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -39,8 +39,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public long create(GiftCertificate giftCertificate) {
         long giftCertificateId = giftCertificateDAO.create(giftCertificate);
         giftCertificate.getTags().forEach(tag -> {
-            if(!StringUtils.isAlphanumeric(tag.getName())){
-                throw  new TagNameException(tag.getName());
+            if (!StringUtils.isAlphanumeric(tag.getName())) {
+                throw new TagNameException(tag.getName());
             }
             if (tagDAO.existByName(tag.getName())) {
                 giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificateId, tagDAO.findByName(tag.getName()).getId()));
@@ -54,7 +54,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate findById(long id) {
-        if(!InputVerification.verifyId(id)){
+        if (!InputVerification.verifyId(id)) {
             throw new GiftCertificateIdException(id);
         }
         GiftCertificate giftCertificate = giftCertificateDAO.findById(id);
@@ -78,32 +78,28 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional(rollbackFor = {SQLException.class})
-    public void update(Map<String, Object> updates) {
-        long giftCertificateId = (long) updates.get("id");
-        if(!InputVerification.verifyId(giftCertificateId)){
-            throw new GiftCertificateIdException(giftCertificateId);
-        }
-        if (!giftCertificateDAO.existById(giftCertificateId)) {
-            throw new GiftCertificateNotFoundException(giftCertificateId);
-        }
-        ArrayList<LinkedHashMap<Object, Object>> tagsList = (ArrayList<LinkedHashMap<Object, Object>>) updates.get("tags");
-        if (tagsList.size() != 0) {
-            updates.remove("tags");
-            tagsList.forEach(map -> {
-                map.forEach((k, v) -> {
-                    if (k.equals("name")
-                            && !tagDAO.existByName((String) v)) {
-                        giftCertificateTagDAO.create(new GiftCertificateTag((Long) updates.get("id"), tagDAO.create(new Tag(v.toString()))));
-                    }
-                });
+    public void update(GiftCertificate giftCertificate) {
+        if (giftCertificate.getTags().size() > 0) {
+            giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificate.getId());
+            giftCertificate.getTags().forEach(tag -> {
+                if (!StringUtils.isAlphanumeric(tag.getName())) {
+                    throw new TagNameException(tag.getName());
+                }
+                if (tagDAO.existByName(tag.getName())) {
+                    giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagDAO.findByName(tag.getName()).getId()));
+                } else {
+                    long tagId = tagDAO.create(new Tag(tag.getName()));
+                    giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagId));
+                }
             });
         }
-        giftCertificateDAO.update(updates);
+        giftCertificate.setTags(null);
+        giftCertificateDAO.update(giftCertificate);
     }
 
     @Override
     public void delete(long id) {
-        if(!InputVerification.verifyId(id)){
+        if (!InputVerification.verifyId(id)) {
             throw new GiftCertificateIdException(id);
         }
         giftCertificateDAO.deleteById(id);
@@ -111,7 +107,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificate> findByTagName(String name) {
-        if(!InputVerification.verifyName(name)){
+        if (!InputVerification.verifyName(name)) {
             throw new TagNameException(name);
         }
         List<GiftCertificate> giftCertificateList = giftCertificateDAO.findByTagName(name);

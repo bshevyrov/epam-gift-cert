@@ -47,8 +47,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void update(Map<String, Object> updates) {
-        tagDAO.update(updates);
+    public void update(Tag tag) {
+        tagDAO.update(tag);
     }
 
     @Override

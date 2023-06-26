@@ -12,7 +12,7 @@ public interface BaseService<E extends BaseEntity> {
 
     List<E> findAll();
 
-    void update(Map<String, Object> updates);
+    void update(E entity);
 
     void delete(long id);
 
