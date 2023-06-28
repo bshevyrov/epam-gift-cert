@@ -72,11 +72,9 @@ class TagDAOImplTest {
             add(tagOne);
             add(tagThree);
         }}, tagDAO.findAll());
-
     }
 
     @Test
-    @ExceptionHandler(UnsupportedOperationException.class)
     void update() {
         tagOne.setId(tagDAO.create(tagOne));
         tagTwo.setId(tagDAO.create(tagTwo));
@@ -91,8 +89,6 @@ class TagDAOImplTest {
         });
         assertNotEquals(newTag, tagDAO.findById(newTag.getId()));
         assertEquals(4, tagDAO.findAll().size());
-
-
     }
 
     @Test
