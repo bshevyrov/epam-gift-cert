@@ -1,7 +1,11 @@
 package com.epam.esm.dao.Impl;
 
 import com.epam.esm.config.AppConfig;
+import com.epam.esm.dao.GiftCertificateDAO;
+import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
+import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateTag;
 import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,6 +32,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class TagDAOImplTest {
     @Autowired
     TagDAO tagDAO;
+    @Autowired
+    GiftCertificateDAO giftCertificateDAO;
+    @Autowired
+    GiftCertificateTagDAO giftCertificateTagDAO;
     Tag tagOne;
     Tag tagTwo;
     Tag tagThree;
@@ -74,19 +82,45 @@ class TagDAOImplTest {
         tagTwo.setId(tagDAO.create(tagTwo));
         tagThree.setId(tagDAO.create(tagThree));
 
-        tagThree.setName("new Name");
+        Tag newTag = new Tag("new Tag");
+        newTag.setId(tagDAO.create(newTag));
+        newTag.setName("update name");
 
         assertThrows(UnsupportedOperationException.class, () -> {
-            tagDAO.update(tagThree);
+            tagDAO.update(newTag);
         });
-        assertNotEquals(tagThree, tagDAO.findById(tagThree.getId()));
-        assertEquals(3, tagDAO.findAll().size());
+        assertNotEquals(newTag, tagDAO.findById(newTag.getId()));
+        assertEquals(4, tagDAO.findAll().size());
 
 
     }
 
     @Test
     void findAllByGiftCertificateId() {
+        tagOne.setId(tagDAO.create(tagOne));
+        tagTwo.setId(tagDAO.create(tagTwo));
+        tagThree.setId(tagDAO.create(tagThree));
+
+        GiftCertificate giftCertificate = new GiftCertificate();
+        giftCertificate.setName("First gift");
+        giftCertificate.setPrice(66);
+        giftCertificate.setDuration(1);
+        giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
+
+        GiftCertificate giftCertificateTwo = new GiftCertificate();
+        giftCertificateTwo.setName("Second gift");
+        giftCertificateTwo.setPrice(77);
+        giftCertificateTwo.setDuration(2);
+        giftCertificateTwo.setId(giftCertificateDAO.create(giftCertificateTwo));
+
+        giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagOne.getId()));
+        giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagTwo.getId()));
+        giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificateTwo.getId(), tagTwo.getId()));
+        giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificateTwo.getId(), tagThree.getId()));
+        assertEquals(new ArrayList<Tag>() {{
+            add(tagOne);
+            add(tagTwo);
+        }}, tagDAO.findAllByGiftCertificateId(giftCertificate.getId()));
     }
 
     @Test
