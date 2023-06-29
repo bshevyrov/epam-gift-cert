@@ -16,14 +16,12 @@ public class SpringWebConfiguration implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext container) {
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-        rootContext.register(MainConfiguration.class);
-
+        rootContext.register(AppConfig.class);
+        container.setInitParameter("spring.profiles.active", "PROD");
         container.addListener(new ContextLoaderListener(rootContext));
 
-        AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
-
         ServletRegistration.Dynamic dispatcher = container
-                .addServlet("dispatcher", new DispatcherServlet(dispatcherContext));
+                .addServlet("dispatcher", new DispatcherServlet(rootContext));
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
     }
