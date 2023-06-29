@@ -2,19 +2,23 @@ package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.entity.GiftCertificateTag;
-import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
-@Component
+
+@Repository
 public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
-    @Autowired
+
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Autowired
+    public void setNamedParameterJDBCTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
 
     @Override
     @Deprecated

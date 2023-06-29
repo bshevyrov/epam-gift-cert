@@ -17,7 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -36,7 +35,7 @@ public class TagController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<TagDTO> create(@RequestBody TagDTO tagDTO, UriComponentsBuilder ucb) {
         long tagId = tagFacade.create(tagDTO);
-
+        System.out.println("22");
         HttpHeaders headers = new HttpHeaders();
         URI locationUri = ucb.path("/tags/")
                 .path(String.valueOf(tagId))
@@ -67,14 +66,6 @@ public class TagController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-  /*  @RequestMapping(value = "/{id}",
-            method = RequestMethod.PATCH)
-    public void updateTag(@RequestBody Map<String, Object> updates,
-                          @PathVariable long id) {
-        updates.put("id",id);
-        tagFacade.update(updates);
-    }*/
-
     @ExceptionHandler(TagNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Error tagNotFound(TagNotFoundException e) {
@@ -84,6 +75,7 @@ public class TagController {
         }
         return new Error(Integer.parseInt(HttpStatus.NOT_FOUND + "04"), "Tag [" + tagId + "] not found.");
     }
+
     @ExceptionHandler({HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Error emptyEntity(HttpMessageNotReadableException e) {
@@ -92,6 +84,7 @@ public class TagController {
         }
         return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "04"), "Wrong body of Tag.");
     }
+
     @ExceptionHandler(TagIdException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Error tagIdError(TagIdException e) {

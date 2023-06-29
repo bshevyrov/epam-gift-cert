@@ -1,19 +1,17 @@
 package com.epam.esm.facade.impl;
 
-import com.epam.esm.entity.GiftCertificateTag;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.mapper.GiftCertificateListMapper;
 import com.epam.esm.mapper.GiftCertificateMapper;
 import com.epam.esm.mapper.TagListMapper;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.impl.GiftCertificateTagServiceImpl;
 import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
@@ -56,8 +54,8 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     }
 
     @Override
-    public void update(Map<String, Object> updates) {
-       giftCertificateService.update(updates);
+    public void update(GiftCertificateDTO giftCertificateDTO) {
+        giftCertificateService.update(giftCertificateMapper.toModel(giftCertificateDTO));
     }
 
     @Override
