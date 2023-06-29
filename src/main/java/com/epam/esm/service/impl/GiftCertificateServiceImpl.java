@@ -110,7 +110,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!InputVerification.verifyName(name)) {
             throw new TagNameException(name);
         }
-        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findByTagName(name);
+        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAllByTagName(name);
         giftCertificateList.forEach(giftCertificate -> {
             giftCertificate.setTags(tagDAO.findAllByGiftCertificateId(giftCertificate.getId()));
         });

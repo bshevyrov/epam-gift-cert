@@ -18,8 +18,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.io.FileNotFoundException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,8 +138,8 @@ class GiftCertificateDAOImplTest {
         giftCertificateDAO.create(giftCertificate);
         giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagId));
 
-        assertEquals(2, giftCertificateDAO.findByTagName("tagName").size());
-        assertEquals(expected, giftCertificateDAO.findByTagName("tagName"));
+        assertEquals(2, giftCertificateDAO.findAllByTagName("tagName").size());
+        assertEquals(expected, giftCertificateDAO.findAllByTagName("tagName"));
     }
 
     @Test
