@@ -37,7 +37,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     public GiftCertificate findById(long id) {
         String query = "SELECT * FROM gift_certificate WHERE id=:id";
         try {
-            return (GiftCertificate) namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper(GiftCertificate.class));
+            return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(GiftCertificate.class));
         } catch (EmptyResultDataAccessException e) {
             throw new GiftCertificateNotFoundException(id);
         }
@@ -65,12 +65,6 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     public List<GiftCertificate> findAllByTagName(String name) {
         String query = "SELECT gs.id,gs.name, gs.description,gs.price,gs.duration,gs.price,gs.create_date,gs.last_update_date FROM gift_certificate as gs INNER JOIN gift_certificate_has_tag gcht on gs.id = gcht.gift_certificate_id INNER JOIN tag t on gcht.tag_id = t.id WHERE t.name = :name";
         return namedParameterJdbcTemplate.query(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(GiftCertificate.class));
-    }
-
-    @Override
-    public boolean existById(long id) {
-        String query = "SELECT COUNT(*) FROM gift_certificate WHERE id = :id";
-        return 0 < namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), Integer.class);
     }
 
     @Override

@@ -21,7 +21,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = {AppConfig.class})
 @WebAppConfiguration
@@ -141,16 +141,6 @@ class GiftCertificateDAOImplTest {
         assertEquals(2, giftCertificateDAO.findAllByTagName("tagName").size());
         assertEquals(expected, giftCertificateDAO.findAllByTagName("tagName"));
     }
-
-    @Test
-    void existById() {
-        giftCertificate.setName("first");
-        giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-
-        assertTrue(giftCertificateDAO.existById(giftCertificate.getId()));
-        assertFalse(giftCertificateDAO.existById(giftCertificate.getId() + 1));
-    }
-
 
     @Test
     void update() {

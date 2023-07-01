@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface GiftCertificateDAO extends BaseDAO<GiftCertificate> {
     List<GiftCertificate> findAllByTagName(String name);
-    boolean existById(long id);
 
     List<GiftCertificate> findAll(Optional<String> certName, Optional<String> description, String sort, String sortField);
 }
