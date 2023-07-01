@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Component
 
-public abstract class BaseEntity implements Serializable,Cloneable {
+public abstract class BaseEntity implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
     private long id;

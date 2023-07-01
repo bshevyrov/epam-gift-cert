@@ -6,7 +6,6 @@ public class GiftCertificateTag extends BaseEntity {
     private long giftCertificateId;
     private long tagId;
 
-
     public GiftCertificateTag(long giftCertificateId, long tagId) {
         this.giftCertificateId = giftCertificateId;
         this.tagId = tagId;
