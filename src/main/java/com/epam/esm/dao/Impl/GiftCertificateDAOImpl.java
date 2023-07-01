@@ -3,6 +3,7 @@ package com.epam.esm.dao.Impl;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.GiftCertificateNotFoundException;
+import com.epam.esm.exception.GiftCertificateUpdateException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +78,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
                 .addValue("price", giftCertificate.getPrice())
                 .addValue("duration", giftCertificate.getDuration());
         namedParameterJdbcTemplate.update(query, paramSource, keyHolder);
-        return keyHolder.getKey().longValue();
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     @Override
@@ -103,11 +104,11 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     private Map<String, Object> createNameValueMap(List<String> fieldNameList, List<Method> methods, GiftCertificate giftCertificate) {
         Map<String, Object> result = new HashMap<>();
 
-        Map<String, Method> fieldMethodMap = fieldNameList.stream().collect(Collectors.toMap(
-                field -> field, // or Function.identity()
-                field -> methods.stream()
-                        .filter(method -> method.getName().toLowerCase().contains(field))
-                        .findFirst().get()));
+        Map<String, Method> fieldMethodMap = fieldNameList.stream()
+                .collect(
+                        Collectors.toMap(field -> field, field -> methods.stream()
+                                .filter(method -> method.getName().toLowerCase().contains(field))
+                                .findFirst().get()));
 
         fieldMethodMap.forEach((key, value) -> {
             try {
@@ -123,10 +124,9 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         Method[] childMethods = giftCertificate.getClass().getDeclaredMethods();
         Method[] parentsMethods = giftCertificate.getClass().getSuperclass().getDeclaredMethods();
 
-        List<Method> methods = Arrays.stream(ArrayUtils.addAll(childMethods, parentsMethods))
+        return Arrays.stream(ArrayUtils.addAll(childMethods, parentsMethods))
                 .filter(method -> method.getName().contains("get"))
                 .collect(Collectors.toList());
-        return methods;
     }
 
     private List<String> getAllFilledFieldsNames(GiftCertificate giftCertificate) {
@@ -137,27 +137,26 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         Field[] fields = ArrayUtils.addAll(childFields, parentFields);
 
         for (Field field : fields) {
+            if (field.getName().equals("serialVersionUID")) {
+                continue;
+            }
             field.setAccessible(true);
-            if (ClassUtils.isAssignable(field.getType(), Number.class)) {
-                if (field.getName().equals("serialVersionUID")) {
-                    continue;
-                }
-                try {
+            try {
+                if (ClassUtils.isAssignable(field.getType(), Number.class)) {
                     if (((Number) field.get(giftCertificate)).doubleValue() > 0) {
                         notNullFields.add(field.getName());
                     }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
+                } else {
                     if (field.get(giftCertificate) != null) {
                         notNullFields.add(field.getName());
                     }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
                 }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
+        }
+        if (notNullFields.size() <= 1) {
+            throw new GiftCertificateUpdateException(giftCertificate.getId());
         }
         return notNullFields;
     }
@@ -182,7 +181,6 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     private String createQueryFindAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM gift_certificate gs ");
-        //todo escape symbols
         if (certName.isPresent()) {
             query.append("WHERE gs.name = :certName ");
         }

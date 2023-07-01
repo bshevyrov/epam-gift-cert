@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class TagDAOImpl implements TagDAO {
@@ -24,13 +25,11 @@ public class TagDAOImpl implements TagDAO {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    private KeyHolder keyHolder;
-
     @Override
     public Tag findById(long id) {
         try {
             String query = "SELECT * FROM tag where id=:id";
-            return (Tag) namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper(Tag.class));
+            return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(Tag.class));
         } catch (EmptyResultDataAccessException e) {
             throw new TagNotFoundException(id);
         }
@@ -39,7 +38,7 @@ public class TagDAOImpl implements TagDAO {
     @Override
     public List<Tag> findAll() {
         String query = "SELECT * FROM tag";
-        return (List<Tag>) namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper(Tag.class));
+        return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(Tag.class));
     }
 
     @Override
@@ -54,9 +53,9 @@ public class TagDAOImpl implements TagDAO {
     @Override
     public long create(Tag tag) {
         String query = "insert into tag (name) values(:name)";
-        keyHolder = new GeneratedKeyHolder();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("name", tag.getName()), keyHolder);
-        return keyHolder.getKey().longValue();
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     @Override
@@ -73,13 +72,13 @@ public class TagDAOImpl implements TagDAO {
     @Override
     public boolean existByName(String name) {
         String query = "SELECT COUNT(*) FROM tag WHERE name = :name";
-        return 0 < namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), Integer.class);
+        return Objects.equals(namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), Integer.class), 0);
     }
 
 
     @Override
     public Tag findByName(String name) {
         String query = "SELECT * FROM tag where name=:name";
-        return (Tag) namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper(Tag.class));
+        return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(Tag.class));
     }
 }

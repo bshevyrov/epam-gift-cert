@@ -1,13 +1,13 @@
 package com.epam.esm.exception;
 
 public class GiftCertificateNotFoundException extends RuntimeException {
-    private long giftId;
+    private final long getGiftCertificateId;
 
     public GiftCertificateNotFoundException(long id) {
-        this.giftId = id;
+        this.getGiftCertificateId = id;
     }
 
-    public long getGiftId() {
-        return giftId;
+    public long getGiftCertificateId() {
+        return getGiftCertificateId;
     }
 }
