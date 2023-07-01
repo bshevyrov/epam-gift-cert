@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.epam.esm.util.InputVerification.verifyId;
 import static com.epam.esm.util.InputVerification.verifyName;
@@ -61,27 +60,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> findAllByGiftCertificateId(long id) {
-        //TODO WHERE HANDLER
         if (!verifyId(id)) {
             throw new GiftCertificateIdException(id);
         }
         return tagDAO.findAllByGiftCertificateId(id);
-    }
-
-
-    @Override
-    public boolean existByName(String name) {
-        if (!verifyName(name)) {
-            throw new TagNameException(name);
-        }
-        return tagDAO.existByName(name);
-    }
-
-    @Override
-    public Tag findByName(String name) {
-        if (!verifyName(name)) {
-            throw new TagNameException(name);
-        }
-        return tagDAO.findByName(name);
     }
 }

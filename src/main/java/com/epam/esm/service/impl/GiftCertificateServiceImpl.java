@@ -10,6 +10,7 @@ import com.epam.esm.exception.GiftCertificateIdException;
 import com.epam.esm.exception.TagNameException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.InputVerification;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -79,7 +80,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional(rollbackFor = {SQLException.class})
     public void update(GiftCertificate giftCertificate) {
-        if (giftCertificate.getTags().size() > 0) {
+        if (ListUtils.emptyIfNull(giftCertificate.getTags()).size() > 0) {
             giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificate.getId());
             giftCertificate.getTags().forEach(tag -> {
                 if (!StringUtils.isAlphanumeric(tag.getName())) {
