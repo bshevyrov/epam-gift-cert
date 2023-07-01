@@ -10,5 +10,4 @@ import java.util.List;
 public interface GiftCertificateListMapper {
     List<GiftCertificateDTO> toDTOList(List<GiftCertificate> list);
 
-    List<GiftCertificate> toModelList(List<GiftCertificateDTO> list);
 }

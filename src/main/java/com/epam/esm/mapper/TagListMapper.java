@@ -10,5 +10,4 @@ import java.util.List;
 public interface TagListMapper {
     List<TagDTO> toDTOList(List<Tag> list);
 
-    List<Tag> toModelList(List<TagDTO> list);
 }
