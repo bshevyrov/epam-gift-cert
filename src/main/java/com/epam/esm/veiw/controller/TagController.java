@@ -21,8 +21,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/tags",
-        consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
 public class TagController {
     private final TagFacade tagFacade;
 
@@ -35,7 +35,6 @@ public class TagController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<TagDTO> create(@RequestBody TagDTO tagDTO, UriComponentsBuilder ucb) {
         long tagId = tagFacade.create(tagDTO);
-        System.out.println("22");
         HttpHeaders headers = new HttpHeaders();
         URI locationUri = ucb.path("/tags/")
                 .path(String.valueOf(tagId))
@@ -80,9 +79,9 @@ public class TagController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Error emptyEntity(HttpMessageNotReadableException e) {
         if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "04"), "Не вірне тіло Tag.");
+            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "04"), "Не вірне тіло Tag.");
         }
-        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "04"), "Wrong body of Tag.");
+        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "04"), "Wrong body of Tag.");
     }
 
     @ExceptionHandler(TagIdException.class)
@@ -90,9 +89,9 @@ public class TagController {
     public Error tagIdError(TagIdException e) {
         long tagId = e.getTagId();
         if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "06"), "Помилка в айді Tag [" + tagId + "].");
+            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Помилка в айді Tag [" + tagId + "].");
         }
-        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST + "06"), "Error in id Tag [" + tagId + "].");
+        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Error in id Tag [" + tagId + "].");
     }
 
 }
