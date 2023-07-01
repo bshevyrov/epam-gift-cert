@@ -1,7 +1,7 @@
 package com.epam.esm.exception;
 
 public class TagNotFoundException extends RuntimeException {
-    private long tagId;
+    private final long tagId;
 
     public TagNotFoundException(long tagId) {
         this.tagId = tagId;
