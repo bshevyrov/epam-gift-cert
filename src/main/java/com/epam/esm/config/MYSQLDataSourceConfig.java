@@ -4,11 +4,16 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
+/**
+ * Configuration for MYSQL DB.
+ */
 @Profile("PROD")
 @Configuration
 public class MYSQLDataSourceConfig {
-
+    /**
+     *
+     * @return Configured DataSource for MYSQL.
+     */
     @Bean
     public DataSource getDataSource() {
         DataSource ds = new DataSource();

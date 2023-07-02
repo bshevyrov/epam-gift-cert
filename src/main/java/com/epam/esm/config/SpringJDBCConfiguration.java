@@ -8,17 +8,18 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
+/**
+ * This configuration class use profiling.
+ * DataSource implementing H2 or MYSQL configuration depending on the profile(DEV/PROD)
+ */
 @Configuration
 @EnableTransactionManagement
 public class SpringJDBCConfiguration {
-
     private DataSource dataSource;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
-
     }
 
     @Bean
@@ -32,5 +33,4 @@ public class SpringJDBCConfiguration {
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource);
     }
-
 }

@@ -41,7 +41,6 @@ public class TagController {
                 .build().toUri();
 
         headers.setLocation(locationUri);
-
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 

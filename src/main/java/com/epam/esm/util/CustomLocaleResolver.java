@@ -1,4 +1,4 @@
-package com.epam.esm.veiw;
+package com.epam.esm.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -20,8 +20,7 @@ public class CustomLocaleResolver extends AcceptHeaderLocaleResolver {
             return Locale.getDefault();
         }
         List<Locale.LanguageRange> list = Locale.LanguageRange.parse(request.getHeader("Accept-Language"));
-        Locale locale = Locale.lookup(list, LOCALES);
-        return locale;
+        return Locale.lookup(list, LOCALES);
     }
 }
 

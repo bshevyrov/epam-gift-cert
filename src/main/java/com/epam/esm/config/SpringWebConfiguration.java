@@ -10,6 +10,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
+/**
+ * Configuration for web application.
+ */
 @Configuration
 @EnableWebMvc
 public class SpringWebConfiguration implements WebApplicationInitializer {

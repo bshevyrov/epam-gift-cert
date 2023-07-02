@@ -3,9 +3,7 @@ package com.epam.esm.dao.Impl;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.GiftCertificateNotFoundException;
-import com.epam.esm.exception.GiftCertificateUpdateException;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ClassUtils;
+import com.epam.esm.util.DAOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -16,11 +14,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Repository
@@ -83,100 +80,12 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
 
     @Override
     public void update(GiftCertificate giftCertificate) {
-        Map<String, Object> map = objectToMap(giftCertificate);
-        String query = createQuery(map);
+        Map<String, Object> map = DAOUtils.objectToMap(giftCertificate);
+        String query = DAOUtils.createUpdateQuery(map);
         SqlParameterSource parameterSource = new MapSqlParameterSource().addValues(map);
         namedParameterJdbcTemplate.update(query, parameterSource);
     }
 
-    private String createQuery(Map<String, Object> map) {
-        StringBuilder sb = new StringBuilder("UPDATE gift_certificate SET ");
-        return mapToQueryString(map, sb);
-    }
-
-
-    private Map<String, Object> objectToMap(GiftCertificate giftCertificate) {
-        List<String> filledFieldsNames = getAllFilledFieldsNames(giftCertificate);
-        List<Method> methods = getAllGetMethods(giftCertificate);
-        return createNameValueMap(filledFieldsNames, methods, giftCertificate);
-    }
-
-    private Map<String, Object> createNameValueMap(List<String> fieldNameList, List<Method> methods, GiftCertificate giftCertificate) {
-        Map<String, Object> result = new HashMap<>();
-
-        Map<String, Method> fieldMethodMap = fieldNameList.stream()
-                .collect(
-                        Collectors.toMap(field -> field, field -> methods.stream()
-                                .filter(method -> method.getName().toLowerCase().contains(field))
-                                .findFirst().get()));
-
-        fieldMethodMap.forEach((key, value) -> {
-            try {
-                result.put(key, (value).invoke(giftCertificate));
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
-        return result;
-    }
-
-    private List<Method> getAllGetMethods(GiftCertificate giftCertificate) {
-        Method[] childMethods = giftCertificate.getClass().getDeclaredMethods();
-        Method[] parentsMethods = giftCertificate.getClass().getSuperclass().getDeclaredMethods();
-
-        return Arrays.stream(ArrayUtils.addAll(childMethods, parentsMethods))
-                .filter(method -> method.getName().contains("get"))
-                .collect(Collectors.toList());
-    }
-
-    private List<String> getAllFilledFieldsNames(GiftCertificate giftCertificate) {
-        List<String> notNullFields = new ArrayList<>();
-
-        Field[] childFields = giftCertificate.getClass().getDeclaredFields();
-        Field[] parentFields = giftCertificate.getClass().getSuperclass().getDeclaredFields();
-        Field[] fields = ArrayUtils.addAll(childFields, parentFields);
-
-        for (Field field : fields) {
-            if (field.getName().equals("serialVersionUID")) {
-                continue;
-            }
-            field.setAccessible(true);
-            try {
-                if (ClassUtils.isAssignable(field.getType(), Number.class)) {
-                    if (((Number) field.get(giftCertificate)).doubleValue() > 0) {
-                        notNullFields.add(field.getName());
-                    }
-                } else {
-                    if (field.get(giftCertificate) != null) {
-                        notNullFields.add(field.getName());
-                    }
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        if (notNullFields.size() <= 1) {
-            throw new GiftCertificateUpdateException(giftCertificate.getId());
-        }
-        return notNullFields;
-    }
-
-    private String mapToQueryString(Map<String, Object> map, StringBuilder sb) {
-
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            String s = entry.getKey();
-            if (!s.equals("id")) {
-                sb.append(s)
-                        .append(" = ")
-                        .append(":")
-                        .append(s)
-                        .append(",");
-            }
-        }
-        sb.deleteCharAt(sb.length() - 1);
-        sb.append(" WHERE id = :id");
-        return sb.toString();
-    }
 
     private String createQueryFindAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
         StringBuilder query = new StringBuilder();

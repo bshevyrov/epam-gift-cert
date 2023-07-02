@@ -5,10 +5,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+/**
+ * Configuration for H2  in memory DB.
+ * Used when test.
+ */
 @Profile("DEV")
 @Configuration
-public class H2DataSourceConfig{
-
+public class H2DataSourceConfig {
+    /**
+     *
+     * @return Configured DataSource for H2
+     */
     @Bean
     public DataSource getDataSource() {
         DataSource ds = new DataSource();
