@@ -10,14 +10,14 @@ import com.epam.esm.exception.tag.TagIdException;
 import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.service.GiftCertificateTagService;
 import com.epam.esm.util.InputVerification;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * * Used  to manipulate GiftCertificateTag objects and collecting data.
  */
-@Component
+@Service
 public class GiftCertificateTagServiceImpl implements GiftCertificateTagService {
     private final GiftCertificateTagDAO giftCertificateTagDAO;
     private final GiftCertificateDAO giftCertificateDAO;

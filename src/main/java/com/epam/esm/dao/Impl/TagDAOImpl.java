@@ -2,9 +2,7 @@ package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.tag.TagNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -36,12 +34,8 @@ public class TagDAOImpl implements TagDAO {
      */
     @Override
     public Tag findById(long id) {
-        try {
-            String query = "SELECT * FROM tag where id=:id";
-            return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(Tag.class));
-        } catch (EmptyResultDataAccessException e) {
-            throw new TagNotFoundException(id);
-        }
+        String query = "SELECT * FROM tag where id=:id";
+        return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(Tag.class));
     }
 
     /**
@@ -63,10 +57,7 @@ public class TagDAOImpl implements TagDAO {
     @Override
     public void deleteById(long id) {
         String query = "delete from tag where id = :id";
-        int code = namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("id", id));
-        if (code == 0) {
-            throw new TagNotFoundException(id);
-        }
+        namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("id", id));
     }
 
     /**

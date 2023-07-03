@@ -12,7 +12,6 @@ import com.epam.esm.exception.tag.TagNameException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.InputVerification;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +54,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public long create(GiftCertificate giftCertificate) {
         long giftCertificateId = giftCertificateDAO.create(giftCertificate);
         giftCertificate.getTags().forEach(tag -> {
-            if (!StringUtils.isAlphanumeric(tag.getName())) {
+            if (!InputVerification.verifyName(tag.getName())) {
                 throw new TagNameException(tag.getName());
             }
             if (tagDAO.existByName(tag.getName())) {
@@ -116,9 +115,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificate> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType) {
         List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAll(tagName, giftCertificateName, description, sortField, sortType);
-        giftCertificateList.forEach(giftCertificate -> {
-            giftCertificate.setTags(tagDAO.findAllByGiftCertificateId(giftCertificate.getId()));
-        });
+        giftCertificateList.forEach(giftCertificate -> giftCertificate.setTags(tagDAO.findAllByGiftCertificateId(giftCertificate.getId())));
         return giftCertificateList;
     }
 
@@ -146,7 +143,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (ListUtils.emptyIfNull(giftCertificate.getTags()).size() > 0) {
             giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificate.getId());
             giftCertificate.getTags().forEach(tag -> {
-                if (!StringUtils.isAlphanumeric(tag.getName())) {
+                if (!InputVerification.verifyName(tag.getName())) {
                     throw new TagNameException(tag.getName());
                 }
                 if (tagDAO.existByName(tag.getName())) {

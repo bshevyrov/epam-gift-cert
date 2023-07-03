@@ -9,18 +9,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Class checks and sets locale in header.
+ */
 @Component
 public class CustomLocaleResolver extends AcceptHeaderLocaleResolver {
-    List<Locale> LOCALES = Arrays.asList(new Locale("en"), new Locale("uk"));
+    private final List<Locale> locales = Arrays.asList(new Locale("en"), new Locale("uk"));
 
-
+    /**
+     * Method gets locale from request header.
+     * Checks if header parameter is empty
+     * - if true return en locale
+     * - if false return en or uk locale
+     *
+     * @param request the request to resolve the locale for
+     * @return locale object
+     */
     @Override
     public Locale resolveLocale(HttpServletRequest request) {
         if (StringUtils.isEmpty(request.getHeader("Accept-Language"))) {
-            return Locale.getDefault();
+            return new Locale("en", "GB");
+        } else {
+            List<Locale.LanguageRange> list = Locale.LanguageRange.parse(request.getHeader("Accept-Language"));
+            return Locale.lookup(list, locales);
         }
-        List<Locale.LanguageRange> list = Locale.LanguageRange.parse(request.getHeader("Accept-Language"));
-        return Locale.lookup(list, LOCALES);
     }
 }
 

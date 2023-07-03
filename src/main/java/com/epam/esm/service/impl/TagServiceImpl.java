@@ -10,19 +10,18 @@ import com.epam.esm.exception.tag.TagIdException;
 import com.epam.esm.exception.tag.TagNameException;
 import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.service.TagService;
+import com.epam.esm.util.InputVerification;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.epam.esm.util.InputVerification.verifyId;
-import static com.epam.esm.util.InputVerification.verifyName;
 
 /**
  * Used  to manipulate GiftCertificate objects and collecting data.
  */
 
-@Component
+@Service
 public class TagServiceImpl implements TagService {
     private final TagDAO tagDAO;
     private final GiftCertificateDAO giftCertificateDAO;
@@ -45,7 +44,7 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public long create(Tag tag) {
-        if (!verifyName(tag.getName())) {
+        if (!InputVerification.verifyName(tag.getName())) {
             throw new TagNameException(tag.getName());
         }
         if (tagDAO.existByName(tag.getName())) {
@@ -66,7 +65,7 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public Tag findById(long id) {
-        if (!verifyId(id)) {
+        if (!InputVerification.verifyId(id)) {
             throw new TagIdException(id);
         }
         if (!tagDAO.existById(id)) {
@@ -108,7 +107,7 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public void delete(long id) {
-        if (!verifyId(id)) {
+        if (!InputVerification.verifyId(id)) {
             throw new TagIdException(id);
         }
         if (!tagDAO.existById(id)) {
@@ -130,7 +129,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> findAllByGiftCertificateId(long id) {
-        if (!verifyId(id)) {
+        if (!InputVerification.verifyId(id)) {
             throw new GiftCertificateIdException(id);
         }
         if (!giftCertificateDAO.existById(id)) {
