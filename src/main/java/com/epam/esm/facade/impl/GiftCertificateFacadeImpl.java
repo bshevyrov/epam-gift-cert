@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Class used for conversion between tag and tagDTO.
+ * Class used for conversion giftCertificate  and giftCertificateFacadeImplDTO.
  */
 @Component
 public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
@@ -89,7 +89,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     /**
      * Consumes dto update gift certificate.
      *
-     * @param giftCertificateDTO requested object
+     * @param giftCertificateDTO dto object
      */
     @Override
     public void update(GiftCertificateDTO giftCertificateDTO) {
