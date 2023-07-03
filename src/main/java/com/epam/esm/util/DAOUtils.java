@@ -1,7 +1,7 @@
 package com.epam.esm.util;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.exception.GiftCertificateUpdateException;
+import com.epam.esm.exception.giftcertificate.GiftCertificateUpdateException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

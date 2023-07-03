@@ -1,7 +1,7 @@
 package com.epam.esm.veiw.controller;
 
-import com.epam.esm.exception.TagIdException;
-import com.epam.esm.exception.TagNotFoundException;
+import com.epam.esm.exception.tag.TagIdException;
+import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.facade.TagFacade;
 import com.epam.esm.veiw.Error;
 import com.epam.esm.veiw.dto.TagDTO;

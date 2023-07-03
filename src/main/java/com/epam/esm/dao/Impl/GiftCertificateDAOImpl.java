@@ -2,7 +2,7 @@ package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.exception.GiftCertificateNotFoundException;
+import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.util.DAOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;

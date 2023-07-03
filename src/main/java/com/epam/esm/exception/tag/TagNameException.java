@@ -1,5 +1,9 @@
-package com.epam.esm.exception;
+package com.epam.esm.exception.tag;
 
+/**
+ * Exception class.
+ * Objects of this class can be thrown during name validation, if id is illegal.
+ */
 public class TagNameException extends RuntimeException {
     private final String tagName;
 

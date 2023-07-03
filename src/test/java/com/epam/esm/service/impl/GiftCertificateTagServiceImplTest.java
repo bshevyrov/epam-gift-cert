@@ -2,8 +2,8 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.entity.GiftCertificateTag;
-import com.epam.esm.exception.GiftCertificateIdException;
-import com.epam.esm.exception.TagIdException;
+import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
+import com.epam.esm.exception.tag.TagIdException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

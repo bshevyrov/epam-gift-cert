@@ -1,8 +1,8 @@
 package com.epam.esm.veiw.controller;
 
-import com.epam.esm.exception.GiftCertificateNotFoundException;
-import com.epam.esm.exception.GiftCertificateUpdateException;
-import com.epam.esm.exception.TagNameException;
+import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
+import com.epam.esm.exception.giftcertificate.GiftCertificateUpdateException;
+import com.epam.esm.exception.tag.TagNameException;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.veiw.Error;
 import com.epam.esm.veiw.dto.GiftCertificateDTO;
