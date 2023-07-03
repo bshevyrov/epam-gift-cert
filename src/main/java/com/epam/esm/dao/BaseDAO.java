@@ -14,4 +14,6 @@ public interface BaseDAO<E extends BaseEntity> {
     long create(E entity);
 
     void update(E entity);
+
+    boolean existById(long entityId);
 }

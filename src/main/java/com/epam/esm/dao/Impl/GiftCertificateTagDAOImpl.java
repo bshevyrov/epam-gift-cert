@@ -66,7 +66,7 @@ public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
      * @return nothing.
      */
     @Override
-    public long create(GiftCertificateTag giftCertificateTag) {
+    public  create(GiftCertificateTag giftCertificateTag) {
         String query = "INSERT INTO gift_certificate_has_tag (gift_certificate_id, tag_id) VALUES (:giftId,:tagId)";
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("giftId", giftCertificateTag.getGiftCertificateId())
@@ -84,6 +84,18 @@ public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
     @Deprecated
     public void update(GiftCertificateTag giftCertificateTag) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Override
+    @Deprecated
+    public boolean existById(long entityId) {
+        return false;
     }
 
     /**

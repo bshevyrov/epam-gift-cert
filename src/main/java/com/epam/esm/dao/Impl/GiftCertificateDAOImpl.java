@@ -122,6 +122,6 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     @Override
     public boolean existById(long id) {
         String query = "SELECT COUNT(*) FROM gift_certificate WHERE id = :id";
-        return Objects.equals(namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), Integer.class), 0);
+        return !Objects.equals(namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), Integer.class), 0);
     }
 }

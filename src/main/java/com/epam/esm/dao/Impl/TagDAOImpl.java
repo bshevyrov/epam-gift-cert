@@ -129,4 +129,16 @@ public class TagDAOImpl implements TagDAO {
         String query = "SELECT * FROM tag where name=:name";
         return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(Tag.class));
     }
+
+    /**
+     * Checks if record with id exists
+     *
+     * @param id tag id value
+     * @return {@code true} if record exists
+     */
+    @Override
+    public boolean existById(long id) {
+        String query = "SELECT COUNT(*) FROM tag WHERE id = :id";
+        return !Objects.equals(namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), Integer.class), 0);
+    }
 }

@@ -82,7 +82,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!InputVerification.verifyId(id)) {
             throw new GiftCertificateIdException(id);
         }
-        if (!giftCertificateDAO.existById(id)) {
+        if (giftCertificateDAO.existById(id)) {
             throw new GiftCertificateNotFoundException(id);
 
         }
@@ -140,7 +140,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional(rollbackFor = {SQLException.class})
     public void update(GiftCertificate giftCertificate) {
-        if (!giftCertificateDAO.existById(giftCertificate.getId())) {
+        if (giftCertificateDAO.existById(giftCertificate.getId())) {
             throw new GiftCertificateNotFoundException(giftCertificate.getId());
         }
         if (ListUtils.emptyIfNull(giftCertificate.getTags()).size() > 0) {
@@ -164,7 +164,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * Method deletes gift certificate
      * Checks if gift certificate id is valid:
-     * - if false thows {@code GiftCertificateIdException}
+     * - if false throws {@code GiftCertificateIdException}
      * Checks if gift certificate exists by id:
      * - if true - deletes from database
      * - if false - throws GiftCertificateNotFoundException exception
@@ -176,7 +176,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!InputVerification.verifyId(id)) {
             throw new GiftCertificateIdException(id);
         }
-        if (!giftCertificateDAO.existById(id)) {
+        if (giftCertificateDAO.existById(id)) {
             throw new GiftCertificateNotFoundException(id);
         }
         giftCertificateDAO.deleteById(id);
