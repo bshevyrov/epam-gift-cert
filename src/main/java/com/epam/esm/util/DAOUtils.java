@@ -4,6 +4,8 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.GiftCertificateUpdateException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -103,5 +105,33 @@ public final class DAOUtils {
         sb.deleteCharAt(sb.length() - 1);
         sb.append(" WHERE id = :id");
         return sb.toString();
+    }
+//todo
+    public static String createQueryFindAll(Optional<String> tagName, Optional<String> certName, Optional<String> description, String sortField, String sortType) {
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM gift_certificate gs ");
+       if (tagName.isPresent()){
+
+           @Override
+           public List<GiftCertificate> findAllByTagName(String name) {
+               String query = "SELECT gs.id,gs.name, gs.description,gs.price,gs.duration,gs.price,gs.create_date,gs.last_update_date FROM gift_certificate as gs INNER JOIN gift_certificate_has_tag gcht on gs.id = gcht.gift_certificate_id INNER JOIN tag t on gcht.tag_id = t.id WHERE t.name = :name";
+               return namedParameterJdbcTemplate.query(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(GiftCertificate.class));
+           }       }
+        if (certName.isPresent()) {
+            query.append("WHERE gs.name = :certName ");
+            if (description.isPresent()) {
+                query.append("AND ");
+                query.append("gs.description = :description ");
+            }
+        } else {
+            if (description.isPresent()) {
+                query.append("WHERE gs.description = :description ");
+            }
+        }
+
+        query.append("ORDER BY ");
+        query.append(sortField).append(" ");
+        query.append(sortType.toUpperCase());
+        return query.toString();
     }
 }

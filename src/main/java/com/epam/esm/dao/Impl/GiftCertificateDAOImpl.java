@@ -19,7 +19,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-
+/**
+ * This class make request to DB to table gift_certificate
+ */
 @Repository
 public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -29,45 +31,15 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    KeyHolder keyHolder;
-
-    @Override
-    public GiftCertificate findById(long id) {
-        String query = "SELECT * FROM gift_certificate WHERE id=:id";
-        try {
-            return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(GiftCertificate.class));
-        } catch (EmptyResultDataAccessException e) {
-            throw new GiftCertificateNotFoundException(id);
-        }
-    }
-
-    @Override
-    public List<GiftCertificate> findAll() {
-        String query = "SELECT * FROM gift_certificate";
-        return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
-    }
-
-    @Override
-    public List<GiftCertificate> findAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
-        String query = createQueryFindAll(certName, description, sortField, sortType);
-        return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
-    }
-
-    @Override
-    public void deleteById(long id) {
-        String query = "DELETE FROM gift_certificate WHERE id=:id";
-        namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("id", id));
-    }
-
-    @Override
-    public List<GiftCertificate> findAllByTagName(String name) {
-        String query = "SELECT gs.id,gs.name, gs.description,gs.price,gs.duration,gs.price,gs.create_date,gs.last_update_date FROM gift_certificate as gs INNER JOIN gift_certificate_has_tag gcht on gs.id = gcht.gift_certificate_id INNER JOIN tag t on gcht.tag_id = t.id WHERE t.name = :name";
-        return namedParameterJdbcTemplate.query(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(GiftCertificate.class));
-    }
-
+    /**
+     * Method save to DB gift certificate.
+     *
+     * @param giftCertificate entity to save in DB.
+     * @return id of created gift certificate in DB.
+     */
     @Override
     public long create(GiftCertificate giftCertificate) {
-        keyHolder = new GeneratedKeyHolder();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         String query = "insert into gift_certificate (name,description,duration,price) values (:name,:description,:duration,:price)";
         SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue("name", giftCertificate.getName())
@@ -78,31 +50,70 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
+    /**
+     * Method search gift certificate in DB by id.
+     *
+     * @param id Id of gift certificate that we want to find.
+     * @return GiftCertificate that was found or throw GiftCertificateNotFoundException.
+     */
+    @Override
+    public GiftCertificate findById(long id) {
+        String query = "SELECT * FROM gift_certificate WHERE id=:id";
+        try {
+            return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(GiftCertificate.class));
+        } catch (EmptyResultDataAccessException e) {
+            throw new GiftCertificateNotFoundException(id);
+        }
+    }
+
+    /**
+     * Method gets all records from table gift_certificate.
+     *
+     * @return List of all GiftCertificate that was in DB.
+     */
+    @Override
+    public List<GiftCertificate> findAll() {
+        String query = "SELECT * FROM gift_certificate";
+        return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
+    }
+
+    /**
+     * Method gets all records from table gift_certificate sorted and searched by parameters.
+     *
+     * @param tagName             tag name to search all gift certificate with this tag.
+     * @param giftCertificateName part of gift certificate name to search.
+     * @param description         part of gift certificate description to search.
+     * @param sortField           sort by date or description.
+     * @param sortType            sort type asc or desc.
+     * @return List of all GiftCertificate that was found by parameter and sorted in DB.
+     */
+    @Override
+    public List<GiftCertificate> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType) {
+        String query = DAOUtils.createQueryFindAll(tagName, giftCertificateName, description, sortField, sortType);
+        return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
+    }
+
+    /**
+     * Method delete record from DB by id.
+     *
+     * @param id of the record to be deleted.
+     */
+    @Override
+    public void deleteById(long id) {
+        String query = "DELETE FROM gift_certificate WHERE id=:id";
+        namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("id", id));
+    }
+
+    /**
+     * Method update record in DB.
+     *
+     * @param giftCertificate parameters that wil be updated. Only not NULL or 0 values will be saved other values from entity will be ignored.
+     */
     @Override
     public void update(GiftCertificate giftCertificate) {
         Map<String, Object> map = DAOUtils.objectToMap(giftCertificate);
         String query = DAOUtils.createUpdateQuery(map);
         SqlParameterSource parameterSource = new MapSqlParameterSource().addValues(map);
         namedParameterJdbcTemplate.update(query, parameterSource);
-    }
-
-
-    private String createQueryFindAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
-        StringBuilder query = new StringBuilder();
-        query.append("SELECT * FROM gift_certificate gs ");
-        if (certName.isPresent()) {
-            query.append("WHERE gs.name = :certName ");
-        }
-        if (certName.isPresent() && description.isPresent()) {
-            query.append("AND ");
-            query.append("gs.description = :description ");
-        }
-        if (description.isPresent() && !certName.isPresent()) {
-            query.append("WHERE gs.description = :description ");
-        }
-        query.append("ORDER BY ");
-        query.append(sortField).append(" ");
-        query.append(sortType.toUpperCase());
-        return query.toString();
     }
 }
