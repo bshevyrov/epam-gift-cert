@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GiftCertificateFacade extends BaseFacade<GiftCertificateDTO> {
-    List<GiftCertificateDTO> findAllByTagName(String name);
 
-    List<GiftCertificateDTO> findAll(Optional<String> certName, Optional<String> description, String sortField, String sortType);
+    List<GiftCertificateDTO> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType);
 }

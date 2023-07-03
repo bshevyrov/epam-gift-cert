@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GiftCertificateService extends BaseService<GiftCertificate> {
-    List<GiftCertificate> findByTagName(String name);
 
-    List<GiftCertificate> findAll(Optional<String> certName, Optional<String> description, String sortField, String sortType);
+    List<GiftCertificate> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType);
 }

@@ -68,7 +68,7 @@ class GiftCertificateTagServiceImplTest {
 
     @Test
     void findAll() {
-        giftCertificateTagService.findAll();
+        giftCertificateTagService.findAll(tagName, giftCertificateName, description, sortField, sortType);
         verify(giftCertificateTagDAO, Mockito.times(1)).findAll();
     }
 

@@ -9,6 +9,7 @@ import com.epam.esm.util.InputVerification;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class GiftCertificateTagServiceImpl implements GiftCertificateTagService {
@@ -35,7 +36,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     }
 
     @Override
-    public List<GiftCertificateTag> findAll() {
+    public List<GiftCertificateTag> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType) {
         return giftCertificateTagDAO.findAll();
     }
 

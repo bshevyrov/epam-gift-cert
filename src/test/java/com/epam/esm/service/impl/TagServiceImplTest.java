@@ -47,7 +47,7 @@ class TagServiceImplTest {
 
     @Test
     void findAll() {
-        tagService.findAll();
+        tagService.findAll(tagName, giftCertificateName, description, sortField, sortType);
         Mockito.verify(tagDAO, Mockito.times(1)).findAll();
     }
 //TODO

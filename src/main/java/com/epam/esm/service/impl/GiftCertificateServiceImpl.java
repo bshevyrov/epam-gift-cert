@@ -69,8 +69,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findAll(Optional<String> certName, Optional<String> description, String sortField, String sortType) {
-        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAll(certName, description, sortField, sortType);
+    public List<GiftCertificate> findAll(Optional<String> tagName,Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType) {
+        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAll(tagName,giftCertificateName, description, sortField, sortType);
         giftCertificateList.forEach(giftCertificate -> {
             giftCertificate.setTags(tagDAO.findAllByGiftCertificateId(giftCertificate.getId()));
         });
@@ -106,15 +106,4 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         giftCertificateDAO.deleteById(id);
     }
 
-    @Override
-    public List<GiftCertificate> findByTagName(String name) {
-        if (!InputVerification.verifyName(name)) {
-            throw new TagNameException(name);
-        }
-        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAllByTagName(name);
-        giftCertificateList.forEach(giftCertificate -> {
-            giftCertificate.setTags(tagDAO.findAllByGiftCertificateId(giftCertificate.getId()));
-        });
-        return giftCertificateList;
-    }
 }

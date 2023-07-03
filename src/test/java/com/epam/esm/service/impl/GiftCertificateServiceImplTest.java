@@ -136,7 +136,7 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void whenFindAllWithParametersThenUnsupportedOperationException() {
-        assertThrowsExactly(UnsupportedOperationException.class, () -> giftCertificateService.findAll());
+        assertThrowsExactly(UnsupportedOperationException.class, () -> giftCertificateService.findAll(tagName, giftCertificateName, description, sortField, sortType));
     }
 
     @Test

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.epam.esm.util.InputVerification.verifyId;
 import static com.epam.esm.util.InputVerification.verifyName;
@@ -41,7 +42,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findAll() {
+    public List<Tag> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType) {
         return tagDAO.findAll();
     }
 
