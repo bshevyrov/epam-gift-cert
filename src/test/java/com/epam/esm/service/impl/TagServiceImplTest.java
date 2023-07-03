@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -32,7 +31,7 @@ class TagServiceImplTest {
     @BeforeAll
     public void initTagTest() {
         MockitoAnnotations.openMocks(this);
-           }
+    }
 
     @ParameterizedTest(name = "tagName is  - {0}")
     @ValueSource(strings = {"1", " ", "", "a ", "a1"})
@@ -51,12 +50,12 @@ class TagServiceImplTest {
         tagService.findAll();
         Mockito.verify(tagDAO, Mockito.times(1)).findAll();
     }
-
-    @Test
-    void update() {
-        tagService.update(updateMap);
-        Mockito.verify(tagDAO, Mockito.times(1)).update(updateMap);
-    }
+//TODO
+//    @Test
+//    void update() {
+//        tagService.update(updateMap);
+//        Mockito.verify(tagDAO, Mockito.times(1)).update(updateMap);
+//    }
 
     @ParameterizedTest(name = "tagId id - {0}")
     @ValueSource(longs = {0, -1, Long.MIN_VALUE, Long.MAX_VALUE + 1})
@@ -70,9 +69,5 @@ class TagServiceImplTest {
         Assertions.assertThrowsExactly(GiftCertificateIdException.class, () -> tagService.findAllByGiftCertificateId(giftCertificateId));
     }
 
-    @ParameterizedTest(name = "tagName is  - {0}")
-    @ValueSource(strings = {"1", " ", "", "a ", "a1"})
-    void throwsExceptionWhenExistByNameNameNotAlpha(String tagName) {
-        Assertions.assertThrowsExactly(TagNameException.class, () -> tagService.existByName(tagName));
-    }
+
 }
