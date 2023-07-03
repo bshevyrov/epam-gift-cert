@@ -1,7 +1,6 @@
 package com.epam.esm.veiw.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +15,6 @@ public class GiftCertificateDTO extends BaseDTO {
     private LocalDateTime lastUpdateDate;
     private List<TagDTO> tags;
 
-    @JsonIgnoreProperties(value = "id")
     public List<TagDTO> getTags() {
         return tags;
     }

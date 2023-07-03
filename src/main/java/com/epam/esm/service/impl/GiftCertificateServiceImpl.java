@@ -11,6 +11,7 @@ import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.exception.tag.TagNameException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.InputVerification;
+import com.epam.esm.veiw.SearchRequest;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Used  to manipulate GiftCertificate objects and collecting data.
@@ -105,16 +105,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * Method finds all gift certificates based on search param, add tags for each one, and sort items.
      *
-     * @param tagName             optional tag name
-     * @param giftCertificateName optional giftCertificate name
-     * @param description         optional description
-     * @param sortField           name or date
-     * @param sortType            asc or desc
+     * @param searchRequest entity
      * @return List of objects
      */
     @Override
-    public List<GiftCertificate> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType) {
-        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAll(tagName, giftCertificateName, description, sortField, sortType);
+    public List<GiftCertificate> findAll(SearchRequest searchRequest) {
+        List<GiftCertificate> giftCertificateList = giftCertificateDAO.findAll(searchRequest);
         giftCertificateList.forEach(giftCertificate -> giftCertificate.setTags(tagDAO.findAllByGiftCertificateId(giftCertificate.getId())));
         return giftCertificateList;
     }

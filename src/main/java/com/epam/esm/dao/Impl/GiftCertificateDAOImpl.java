@@ -3,6 +3,7 @@ package com.epam.esm.dao.Impl;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.util.DAOUtils;
+import com.epam.esm.veiw.SearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * This class make request to DB to table gift_certificate
@@ -76,16 +76,12 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     /**
      * Method gets all records from table gift_certificate sorted and searched by parameters.
      *
-     * @param tagName             tag name to search all gift certificate with this tag.
-     * @param giftCertificateName part of gift certificate name to search.
-     * @param description         part of gift certificate description to search.
-     * @param sortField           sort by date or description.
-     * @param sortType            sort type asc or desc.
+     * @param searchRequest entity with parameters for search and sort type             tag name to search all gift certificate with this tag.
      * @return List of all GiftCertificate that was found by parameter and sorted in DB.
      */
     @Override
-    public List<GiftCertificate> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType) {
-        String query = DAOUtils.createQueryFindAll(tagName, giftCertificateName, description, sortField, sortType);
+    public List<GiftCertificate> findAll(SearchRequest searchRequest) {
+        String query = DAOUtils.createQueryFindAll(searchRequest);
         return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
     }
 

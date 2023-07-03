@@ -5,6 +5,7 @@ import com.epam.esm.exception.giftcertificate.GiftCertificateUpdateException;
 import com.epam.esm.exception.tag.TagNameException;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.veiw.Error;
+import com.epam.esm.veiw.SearchRequest;
 import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -17,7 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/gifts",
@@ -52,13 +52,8 @@ public class GiftController {
 
     @RequestMapping(method = RequestMethod.GET,
             value = "")
-    public List<GiftCertificateDTO> findAll(@RequestParam(required = false, value = "tagName") Optional<String> tagName,
-                                            @RequestParam(required = false, value = "name") Optional<String> giftCertificateName,
-                                            @RequestParam(required = false) Optional<String> description,
-                                            @RequestParam(required = false, defaultValue = "name") String sortField,
-                                            @RequestParam(required = false, defaultValue = "asc") String sortType) {
-        //todo check sort field and sort type
-        return giftCertificateFacade.findAll(tagName,giftCertificateName, description, sortField, sortType);
+    public List<GiftCertificateDTO> findAll(SearchRequest searchRequest) {
+        return giftCertificateFacade.findAll(searchRequest);
     }
 
     @RequestMapping(value = "/{id}",
@@ -75,13 +70,6 @@ public class GiftController {
         giftCertificateDTO.setId(id);
         giftCertificateFacade.update(giftCertificateDTO);
     }
-
-/*    @RequestMapping(value = "/tag/{name}",
-            method = RequestMethod.GET)
-    public List<GiftCertificateDTO> findByTagName(@PathVariable String name) {
-        return giftCertificateFacade.findAllByTagName(name);
-    }*/
-
 
     @ExceptionHandler(GiftCertificateNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

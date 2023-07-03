@@ -2,10 +2,9 @@ package com.epam.esm.util;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.giftcertificate.GiftCertificateUpdateException;
+import com.epam.esm.veiw.SearchRequest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,23 +12,62 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Util class. Helps giftCertificate create update entity.
+ */
 public final class DAOUtils {
 
     private DAOUtils() {
     }
 
+    /**
+     * Method creates update query from map parameters.
+     *
+     * @param map of parameters
+     * @return query sting
+     */
     public static String createUpdateQuery(Map<String, Object> map) {
         StringBuilder sb = new StringBuilder("UPDATE gift_certificate SET ");
-        return mapToQueryString(map, sb);
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String s = entry.getKey();
+            if (!s.equals("id")) {
+                sb.append(s)
+                        .append(" = ")
+                        .append(":")
+                        .append(s)
+                        .append(",");
+            }
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append(" WHERE id = :id");
+        return sb.toString();
     }
 
-
+    /**
+     * Method scans entity and creates map.
+     * First by reflection gets fields and methods.
+     * Then creates field value map
+     *
+     * @param giftCertificate entity to scan.
+     * @return map field,value
+     */
     public static Map<String, Object> objectToMap(GiftCertificate giftCertificate) {
         List<String> filledFieldsNames = getAllFilledFieldsNames(giftCertificate);
         List<Method> methods = getAllGetMethods(giftCertificate);
         return createNameValueMap(filledFieldsNames, methods, giftCertificate);
     }
 
+    /**
+     * The method creates a map of fields and values.
+     * Filter the list of methods by fields that are not null or 0.
+     * Then calls these methods to get the returned values.
+     * After creates map field, value.
+     *
+     * @param fieldNameList   list of not null or 0 fields.
+     * @param methods         list of all methods in entity.
+     * @param giftCertificate entity.
+     * @return map
+     */
     private static Map<String, Object> createNameValueMap(List<String> fieldNameList, List<Method> methods, GiftCertificate giftCertificate) {
         Map<String, Object> result = new HashMap<>();
 
@@ -49,6 +87,12 @@ public final class DAOUtils {
         return result;
     }
 
+    /**
+     * Method gets all  methods and after filtering keeps only GET methods.
+     *
+     * @param giftCertificate entity.
+     * @return list of methods
+     */
     private static List<Method> getAllGetMethods(GiftCertificate giftCertificate) {
         Method[] childMethods = giftCertificate.getClass().getDeclaredMethods();
         Method[] parentsMethods = giftCertificate.getClass().getSuperclass().getDeclaredMethods();
@@ -58,6 +102,13 @@ public final class DAOUtils {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method gets all fields then filtering them.
+     * If count of not null or 0 fields less than 1 throws GiftCertificateUpdateException
+     *
+     * @param giftCertificate entity
+     * @return list of field names
+     */
     private static List<String> getAllFilledFieldsNames(GiftCertificate giftCertificate) {
         List<String> notNullFields = new ArrayList<>();
 
@@ -90,48 +141,49 @@ public final class DAOUtils {
         return notNullFields;
     }
 
-    private static String mapToQueryString(Map<String, Object> map, StringBuilder sb) {
 
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            String s = entry.getKey();
-            if (!s.equals("id")) {
-                sb.append(s)
-                        .append(" = ")
-                        .append(":")
-                        .append(s)
-                        .append(",");
-            }
-        }
-        sb.deleteCharAt(sb.length() - 1);
-        sb.append(" WHERE id = :id");
-        return sb.toString();
-    }
-//todo
-    public static String createQueryFindAll(Optional<String> tagName, Optional<String> certName, Optional<String> description, String sortField, String sortType) {
+    /**
+     * Method creates query from searchRequest.
+     * Checks if search parameter is present and build query
+     *
+     * @param searchRequest request parameter
+     * @return String query
+     */
+    public static String createQueryFindAll(SearchRequest searchRequest) {
         StringBuilder query = new StringBuilder();
-        query.append("SELECT * FROM gift_certificate gs ");
-       if (tagName.isPresent()){
-
-         /*  @Override
-           public List<GiftCertificate> findAllByTagName(String name) {
-               String query = "SELECT gs.id,gs.name, gs.description,gs.price,gs.duration,gs.price,gs.create_date,gs.last_update_date FROM gift_certificate as gs INNER JOIN gift_certificate_has_tag gcht on gs.id = gcht.gift_certificate_id INNER JOIN tag t on gcht.tag_id = t.id WHERE t.name = :name";
-               return namedParameterJdbcTemplate.query(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(GiftCertificate.class));
-           }  */     }
-        if (certName.isPresent()) {
-            query.append("WHERE gs.name = :certName ");
-            if (description.isPresent()) {
-                query.append("AND ");
-                query.append("gs.description = :description ");
-            }
-        } else {
-            if (description.isPresent()) {
-                query.append("WHERE gs.description = :description ");
-            }
+        query.append("SELECT  gc.* FROM gift_certificate  as gc  INNER JOIN gift_certificate_has_tag gcht on gc.id = gcht.gift_certificate_id INNER JOIN tag t on gcht.tag_id = t.id ");
+        if (searchRequest.getTagName().isPresent()
+                || searchRequest.getGiftCertificateName().isPresent()
+                || searchRequest.getDescription().isPresent()) {
+            query.append("WHERE ");
         }
-
+        if (searchRequest.getTagName().isPresent()) {
+            query.append("t.name LIKE '%")
+                    .append(searchRequest.getTagName().get())
+                    .append("%' ");
+        }
+        if (searchRequest.getGiftCertificateName().isPresent()) {
+            query.append(searchRequest.getTagName().isPresent()
+                    ? "AND "
+                    : "WHERE ");
+            query.append("gc.name LIKE '%")
+                    .append(searchRequest.getGiftCertificateName().get())
+                    .append("%' ");
+        }
+        if (searchRequest.getDescription().isPresent()) {
+            query.append(searchRequest.getTagName().isPresent()
+                    || searchRequest.getGiftCertificateName().isPresent()
+                    ? "AND "
+                    : "WHERE ");
+            query.append("gs.description = '%")
+                    .append(searchRequest.getDescription().get())
+                    .append("%' ");
+        }
         query.append("ORDER BY ");
-        query.append(sortField).append(" ");
-        query.append(sortType.toUpperCase());
+        query.append("gc.")
+                .append(searchRequest.getSortField())
+                .append(" ");
+        query.append(searchRequest.getSortType().toUpperCase());
         return query.toString();
     }
 }

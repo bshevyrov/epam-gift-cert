@@ -6,12 +6,12 @@ import com.epam.esm.mapper.GiftCertificateMapper;
 import com.epam.esm.mapper.TagListMapper;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
+import com.epam.esm.veiw.SearchRequest;
 import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Class used for conversion giftCertificate  and giftCertificateFacadeImplDTO.
@@ -71,19 +71,15 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     }
 
     /**
-     * Method consume sort param and Optional tagName,giftCertificateName and giftCertificateName.
+     * Method consume sort searchRequest.
      * Produce list of dto object.
      *
-     * @param tagName             name of connected tag
-     * @param giftCertificateName name of giftCertificateName
-     * @param description         description of giftCertificateName
-     * @param sortField           date or name
-     * @param sortType            asc or desc
+     * @param searchRequest sort and search parameters
      * @return list of dtos
      */
     @Override
-    public List<GiftCertificateDTO> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType) {
-        return giftCertificateListMapper.toDTOList(giftCertificateService.findAll(tagName, giftCertificateName, description, sortField, sortType));
+    public List<GiftCertificateDTO> findAll(SearchRequest searchRequest) {
+        return giftCertificateListMapper.toDTOList(giftCertificateService.findAll(searchRequest));
     }
 
     /**
