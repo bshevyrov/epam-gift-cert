@@ -1,5 +1,6 @@
 package com.epam.esm.veiw.controller;
 
+import com.epam.esm.exception.tag.TagExistException;
 import com.epam.esm.exception.tag.TagIdException;
 import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.facade.TagFacade;
@@ -91,6 +92,15 @@ public class TagController {
             return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Помилка в айді Tag [" + tagId + "].");
         }
         return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Error in id Tag [" + tagId + "].");
+    }
+   @ExceptionHandler(TagExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error tagIdError(TagExistException e) {
+        String tagName = e.getTagName();
+        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
+            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "07"), "Tag з ім'ям  [" + tagName + "] вже існує.");
+        }
+        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "07"), "Tag with name [" + tagName + "] already exist.");
     }
 
 }

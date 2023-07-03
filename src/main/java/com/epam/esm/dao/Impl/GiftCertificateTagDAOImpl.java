@@ -63,10 +63,10 @@ public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
      * Method save to DB gift certificate tag entity.
      *
      * @param giftCertificateTag entity to save in DB.
-     * @return nothing.
+     * @return null.
      */
     @Override
-    public  create(GiftCertificateTag giftCertificateTag) {
+    public long create(GiftCertificateTag giftCertificateTag) {
         String query = "INSERT INTO gift_certificate_has_tag (gift_certificate_id, tag_id) VALUES (:giftId,:tagId)";
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("giftId", giftCertificateTag.getGiftCertificateId())

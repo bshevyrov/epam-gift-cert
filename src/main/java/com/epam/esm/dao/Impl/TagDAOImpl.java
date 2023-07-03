@@ -90,6 +90,7 @@ public class TagDAOImpl implements TagDAO {
      * @deprecated Unsupported operation.
      */
     @Override
+    @Deprecated
     public void update(Tag tag) {
         throw new UnsupportedOperationException();
     }

@@ -33,12 +33,12 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
      * Method create relationship between tag and giftCertificate.
      * Checks if giftCertificate id valid
      * - if false throw {@code GiftCertificateIdException}
-     * - if {@code true} checks if giftCertificate exist
+     * Then  checks if giftCertificate exist
      * - if false throws (@code GiftCertificateNotFoundException) exception
      * Then checks if tag id valid
      * - if false throw {@code TagIdException}
-     * * - if {@code true} checks if tag exist
-     * *  - if false throws (@code TagNotFoundException) exception
+     * Then checks if tag exist
+     * - if false throws (@code TagNotFoundException) exception
      *
      * @param giftCertificateTag entity with tag and giftCertificate ids
      * @return null
@@ -47,18 +47,18 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     public long create(GiftCertificateTag giftCertificateTag) {
         if (!InputVerification.verifyId(giftCertificateTag.getGiftCertificateId())) {
             throw new GiftCertificateIdException(giftCertificateTag.getGiftCertificateId());
-        } else {
-            if (!tagDAO.existById(giftCertificateTag.getGiftCertificateId())) {
-                throw new GiftCertificateNotFoundException(giftCertificateTag.getGiftCertificateId());
-            }
         }
+        if (!tagDAO.existById(giftCertificateTag.getGiftCertificateId())) {
+            throw new GiftCertificateNotFoundException(giftCertificateTag.getGiftCertificateId());
+        }
+
         if (!InputVerification.verifyId(giftCertificateTag.getTagId())) {
             throw new TagIdException(giftCertificateTag.getTagId());
-        } else {
-            if (giftCertificateDAO.existById(giftCertificateTag.getTagId())) {
-                throw new TagNotFoundException(giftCertificateTag.getTagId());
-            }
         }
+        if (giftCertificateDAO.existById(giftCertificateTag.getTagId())) {
+            throw new TagNotFoundException(giftCertificateTag.getTagId());
+        }
+
         return giftCertificateTagDAO.create(giftCertificateTag);
     }
 
