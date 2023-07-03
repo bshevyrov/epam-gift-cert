@@ -5,8 +5,10 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Parent of all entity.
+ */
 @Component
-
 public abstract class BaseEntity implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;

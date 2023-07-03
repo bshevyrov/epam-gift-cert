@@ -1,7 +1,9 @@
 package com.epam.esm.entity;
 
 import java.util.Objects;
-
+/**
+ * Entity that represent gift_certificate_has_tag table.
+ */
 public class GiftCertificateTag extends BaseEntity {
     private long giftCertificateId;
     private long tagId;

@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Entity that represent gift_certificate table.
+ */
 public class GiftCertificate extends BaseEntity {
     private String description;
     private double price;

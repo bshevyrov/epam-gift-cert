@@ -1,5 +1,8 @@
 package com.epam.esm.entity;
 
+/**
+ * Entity that represent tag table.
+ */
 public class Tag extends BaseEntity {
     public Tag() {
     }
