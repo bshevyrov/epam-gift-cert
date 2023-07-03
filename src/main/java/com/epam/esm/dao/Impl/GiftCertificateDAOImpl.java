@@ -2,10 +2,8 @@ package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.util.DAOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -54,27 +52,25 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
      * Method search gift certificate in DB by id.
      *
      * @param id Id of gift certificate that we want to find.
-     * @return GiftCertificate that was found or throw GiftCertificateNotFoundException.
+     * @return GiftCertificate that was found.
      */
     @Override
     public GiftCertificate findById(long id) {
         String query = "SELECT * FROM gift_certificate WHERE id=:id";
-        try {
-            return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(GiftCertificate.class));
-        } catch (EmptyResultDataAccessException e) {
-            throw new GiftCertificateNotFoundException(id);
-        }
+        return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(GiftCertificate.class));
     }
 
+
     /**
-     * Method gets all records from table gift_certificate.
+     * Guaranteed to throw an exception and leave.
      *
-     * @return List of all GiftCertificate that was in DB.
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
      */
     @Override
+    @Deprecated
     public List<GiftCertificate> findAll() {
-        String query = "SELECT * FROM gift_certificate";
-        return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -115,5 +111,17 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         String query = DAOUtils.createUpdateQuery(map);
         SqlParameterSource parameterSource = new MapSqlParameterSource().addValues(map);
         namedParameterJdbcTemplate.update(query, parameterSource);
+    }
+
+    /**
+     * Checks if record with id exists
+     *
+     * @param id gift certificate id value
+     * @return {@code true} if record exists
+     */
+    @Override
+    public boolean existById(long id) {
+        String query = "SELECT COUNT(*) FROM gift_certificate WHERE id = :id";
+        return Objects.equals(namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), Integer.class), 0);
     }
 }

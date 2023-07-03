@@ -36,7 +36,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     }
 
     @Override
-    public List<GiftCertificateTag> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType) {
+    public List<GiftCertificateTag> findAll() {
         return giftCertificateTagDAO.findAll();
     }
 

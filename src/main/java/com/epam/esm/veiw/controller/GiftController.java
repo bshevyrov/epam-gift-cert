@@ -52,12 +52,13 @@ public class GiftController {
 
     @RequestMapping(method = RequestMethod.GET,
             value = "")
-    public List<GiftCertificateDTO> findAll(@RequestParam(required = false, value = "name") Optional<String> certName,
+    public List<GiftCertificateDTO> findAll(@RequestParam(required = false, value = "tagName") Optional<String> tagName,
+                                            @RequestParam(required = false, value = "name") Optional<String> giftCertificateName,
                                             @RequestParam(required = false) Optional<String> description,
                                             @RequestParam(required = false, defaultValue = "name") String sortField,
                                             @RequestParam(required = false, defaultValue = "asc") String sortType) {
         //todo check sort field and sort type
-        return giftCertificateFacade.findAll(certName, description, sortField, sortType);
+        return giftCertificateFacade.findAll(tagName,giftCertificateName, description, sortField, sortType);
     }
 
     @RequestMapping(value = "/{id}",
@@ -75,11 +76,11 @@ public class GiftController {
         giftCertificateFacade.update(giftCertificateDTO);
     }
 
-    @RequestMapping(value = "/tag/{name}",
+/*    @RequestMapping(value = "/tag/{name}",
             method = RequestMethod.GET)
     public List<GiftCertificateDTO> findByTagName(@PathVariable String name) {
         return giftCertificateFacade.findAllByTagName(name);
-    }
+    }*/
 
 
     @ExceptionHandler(GiftCertificateNotFoundException.class)

@@ -112,11 +112,11 @@ public final class DAOUtils {
         query.append("SELECT * FROM gift_certificate gs ");
        if (tagName.isPresent()){
 
-           @Override
+         /*  @Override
            public List<GiftCertificate> findAllByTagName(String name) {
                String query = "SELECT gs.id,gs.name, gs.description,gs.price,gs.duration,gs.price,gs.create_date,gs.last_update_date FROM gift_certificate as gs INNER JOIN gift_certificate_has_tag gcht on gs.id = gcht.gift_certificate_id INNER JOIN tag t on gcht.tag_id = t.id WHERE t.name = :name";
                return namedParameterJdbcTemplate.query(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(GiftCertificate.class));
-           }       }
+           }  */     }
         if (certName.isPresent()) {
             query.append("WHERE gs.name = :certName ");
             if (description.isPresent()) {

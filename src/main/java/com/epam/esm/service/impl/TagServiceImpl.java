@@ -42,7 +42,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findAll(Optional<String> tagName, Optional<String> giftCertificateName, Optional<String> description, String sortField, String sortType) {
+    public List<Tag> findAll() {
         return tagDAO.findAll();
     }
 
