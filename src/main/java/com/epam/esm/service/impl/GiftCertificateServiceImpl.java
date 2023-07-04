@@ -41,7 +41,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * Method creates gift certificate.
      * Checks if tag have valid name
-     * - if false throws{@code TagNameException}
+     * - if false throws{@link  TagNameException}
      * Checks if tag with this name exist
      * - if true add tag id to giftCertificate
      * - if false create new tag and add id of this tag to gift certificate
@@ -71,17 +71,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * Method finds gift certificate by id
      * Checks if gift certificate exists:
      * - if true - finds gift certificate by id and set tags to it
-     * - if false - throws {@code GiftCertificateNotFoundException} exception
+     * - if false - throws {@link GiftCertificateNotFoundException} exception
      *
      * @param id requested parameter
-     * @return {@code GiftCertificate} found object
+     * @return {@link  GiftCertificate} found object
      */
     @Override
     public GiftCertificate findById(long id) {
         if (!InputVerification.verifyId(id)) {
             throw new GiftCertificateIdException(id);
         }
-        if (giftCertificateDAO.existById(id)) {
+        if (!giftCertificateDAO.existById(id)) {
             throw new GiftCertificateNotFoundException(id);
 
         }
@@ -117,6 +117,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Method updates gift certificate.
+     * Checks if giftCertificate  if id valid:
+     * - if true proceed to next operation
+     * * - if false thrown {@link GiftCertificateIdException}
      * Checks if giftCertificate  is exists by id:
      * - if true proceed to next operation
      * - if false throws GiftCertificateNotFoundException exception
@@ -133,7 +136,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional(rollbackFor = {SQLException.class})
     public void update(GiftCertificate giftCertificate) {
-        if (giftCertificateDAO.existById(giftCertificate.getId())) {
+        if (!InputVerification.verifyId(giftCertificate.getId())) {
+            throw new GiftCertificateIdException(giftCertificate.getId());
+        }
+        if (!giftCertificateDAO.existById(giftCertificate.getId())) {
             throw new GiftCertificateNotFoundException(giftCertificate.getId());
         }
         if (ListUtils.emptyIfNull(giftCertificate.getTags()).size() > 0) {
@@ -157,7 +163,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * Method deletes gift certificate
      * Checks if gift certificate id is valid:
-     * - if false throws {@code GiftCertificateIdException}
+     * - if false throws {@link  GiftCertificateIdException}
      * Checks if gift certificate exists by id:
      * - if true - deletes from database
      * - if false - throws GiftCertificateNotFoundException exception
@@ -169,10 +175,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!InputVerification.verifyId(id)) {
             throw new GiftCertificateIdException(id);
         }
-        if (giftCertificateDAO.existById(id)) {
+        if (!giftCertificateDAO.existById(id)) {
             throw new GiftCertificateNotFoundException(id);
         }
         giftCertificateDAO.deleteById(id);
     }
-
 }

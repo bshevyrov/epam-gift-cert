@@ -32,11 +32,11 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     /**
      * Method create relationship between tag and giftCertificate.
      * Checks if giftCertificate id valid
-     * - if false throw {@code GiftCertificateIdException}
+     * - if false throw {@link  GiftCertificateIdException}
      * Then  checks if giftCertificate exist
      * - if false throws (@code GiftCertificateNotFoundException) exception
      * Then checks if tag id valid
-     * - if false throw {@code TagIdException}
+     * - if false throw {@link  TagIdException}
      * Then checks if tag exist
      * - if false throws (@code TagNotFoundException) exception
      *
@@ -55,7 +55,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
         if (!InputVerification.verifyId(giftCertificateTag.getTagId())) {
             throw new TagIdException(giftCertificateTag.getTagId());
         }
-        if (giftCertificateDAO.existById(giftCertificateTag.getTagId())) {
+        if (!giftCertificateDAO.existById(giftCertificateTag.getTagId())) {
             throw new TagNotFoundException(giftCertificateTag.getTagId());
         }
 

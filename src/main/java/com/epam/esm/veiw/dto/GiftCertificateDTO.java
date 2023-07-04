@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * GiftCertificateDTO is the data class, which used for data transportation .
+ */
 public class GiftCertificateDTO extends BaseDTO {
     private String description;
     private double price;

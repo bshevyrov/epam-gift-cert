@@ -41,7 +41,7 @@ public class TagFacadeImpl implements TagFacade {
      * Method consume id value and return dto object.
      *
      * @param id request parameter
-     * @return {@code TagDTO} created object
+     * @return {@link  TagDTO} created object
      */
     @Override
     public TagDTO findById(long id) {

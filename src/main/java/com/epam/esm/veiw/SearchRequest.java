@@ -2,6 +2,9 @@ package com.epam.esm.veiw;
 
 import java.util.Optional;
 
+/**
+ * SearchRequest is the data class, which used for transferring search parameters.
+ */
 public class SearchRequest {
 
     public SearchRequest() {

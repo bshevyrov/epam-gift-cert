@@ -120,9 +120,9 @@ class TagDAOImplTest {
 
     @Test
     void existByName() {
+        tagThree.setId(tagDAO.create(tagThree));
         tagOne.setId(tagDAO.create(tagOne));
         tagTwo.setId(tagDAO.create(tagTwo));
-        tagThree.setId(tagDAO.create(tagThree));
         assertTrue(tagDAO.existByName(tagThree.getName()));
         assertFalse(tagDAO.existByName("new Name"));
     }

@@ -18,10 +18,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ContextConfiguration(classes = {AppConfig.class})
 @WebAppConfiguration
@@ -65,9 +63,11 @@ class GiftCertificateTagDAOImplTest {
         giftCertificate.setPrice(22);
         giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
         giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tag.getId()));
-        assertEquals(Arrays.asList(giftCertificate), giftCertificateDAO.findAllByTagName(tag.getName()));
+        assertEquals(giftCertificate, giftCertificateDAO.findById(giftCertificate.getId()));
+        assertEquals(1,tagDAO.findAllByGiftCertificateId(giftCertificate.getId()).size());
         giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificate.getId());
-        assertEquals(0, giftCertificateDAO.findAllByTagName(tag.getName()).size());
+        assertNull(giftCertificateDAO.findById(giftCertificate.getId()).getTags());
+        assertEquals(0,tagDAO.findAllByGiftCertificateId(giftCertificate.getId()).size());
         assertEquals(tag, tagDAO.findById(tag.getId()));
         assertEquals(giftCertificate, giftCertificateDAO.findById(tag.getId()));
     }

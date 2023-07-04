@@ -3,10 +3,7 @@ package com.epam.esm.dao.Impl;
 import com.epam.esm.config.AppConfig;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.GiftCertificateTag;
 import com.epam.esm.entity.Tag;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -21,7 +18,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ContextConfiguration(classes = {AppConfig.class})
 @WebAppConfiguration
@@ -70,21 +67,7 @@ class GiftCertificateDAOImplTest {
 
     @Test
     void findAll() {
-
-        List<GiftCertificate> actual = giftCertificateDAO.findAll();
-        assertEquals(0, actual.size());
-
-        giftCertificateDAO.create(giftCertificate);
-        giftCertificateDAO.create(giftCertificate);
-        giftCertificateDAO.create(giftCertificate);
-        actual = giftCertificateDAO.findAll();
-
-        assertEquals(3, actual.size());
-    }
-
-    @Test
-    void testFindAll() {
-
+        assertThrowsExactly(UnsupportedOperationException.class, () -> giftCertificateDAO.findAll());
     }
 
     @Test
@@ -93,58 +76,31 @@ class GiftCertificateDAOImplTest {
         List<GiftCertificate> expected = new ArrayList<>();
         giftCertificate.setName("first");
         giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-        expected.add(SerializationUtils.clone(giftCertificate));
+        assertEquals(giftCertificate, giftCertificateDAO.findById(giftCertificate.getId()));
+        expected.add(giftCertificate);
 
+        giftCertificate = new GiftCertificate();
         giftCertificate.setName("second");
         long secondId = giftCertificateDAO.create(giftCertificate);
+        giftCertificate.setId(secondId);
+        assertEquals(giftCertificate, giftCertificateDAO.findById(secondId));
 
+        giftCertificate = new GiftCertificate();
         giftCertificate.setName("third");
         giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-        expected.add(SerializationUtils.clone(giftCertificate));
+        assertEquals(giftCertificate, giftCertificateDAO.findById(giftCertificate.getId()));
+        expected.add(giftCertificate);
 
         giftCertificateDAO.deleteById(secondId);
-        assertEquals(expected, giftCertificateDAO.findAll());
-        assertEquals(expected.size(), giftCertificateDAO.findAll().size());
+        assertThrows(Exception.class, () -> giftCertificateDAO.findById(secondId));
     }
 
-
-    @Test
-    void findByTagName() {
-        List<GiftCertificate> expected = new ArrayList<>();
-
-        long tagId = tagDAO.create(tag);
-        tag.setId(tagId);
-        long tagNameId = tagDAO.create(tagName);
-        tagName.setId(tagNameId);
-
-        giftCertificate.setName("first");
-        giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-        expected.add(SerializationUtils.clone(giftCertificate));
-        giftCertificateDAO.create(giftCertificate);
-        giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagNameId));
-
-        giftCertificate.setName("second");
-        giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-        expected.add(SerializationUtils.clone(giftCertificate));
-        giftCertificateDAO.create(giftCertificate);
-        giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagNameId));
-        giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagId));
-
-        giftCertificate.setName("third");
-        giftCertificate.setTags(new ArrayList<Tag>() {{
-            add(tag);
-        }});
-        giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-        giftCertificateDAO.create(giftCertificate);
-        giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagId));
-
-        assertEquals(2, giftCertificateDAO.findAllByTagName("tagName").size());
-        assertEquals(expected, giftCertificateDAO.findAllByTagName("tagName"));
-    }
 
     @Test
     void update() {
-        GiftCertificate giftCertificateUpdate = ObjectUtils.clone(giftCertificate);
+        GiftCertificate giftCertificateUpdate = new GiftCertificate();
+        giftCertificateUpdate.setDuration(2);
+        giftCertificateUpdate.setPrice(2);
         giftCertificateUpdate.setName("first");
         giftCertificateUpdate.setId(giftCertificateDAO.create(giftCertificateUpdate));
         giftCertificateUpdate.setName("second");

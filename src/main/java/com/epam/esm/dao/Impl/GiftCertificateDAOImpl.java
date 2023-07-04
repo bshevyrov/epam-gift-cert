@@ -113,7 +113,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
      * Checks if record with id exists
      *
      * @param id gift certificate id value
-     * @return {@code true} if record exists
+     * @return true if record exists
      */
     @Override
     public boolean existById(long id) {

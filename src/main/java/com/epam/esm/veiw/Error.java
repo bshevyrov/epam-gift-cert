@@ -1,5 +1,8 @@
 package com.epam.esm.veiw;
 
+/**
+ * Error is the data class, which used for shoving error.
+ */
 public class Error {
     private final int code;
     private final String message;

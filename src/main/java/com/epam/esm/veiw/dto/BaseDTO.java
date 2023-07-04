@@ -2,6 +2,9 @@ package com.epam.esm.veiw.dto;
 
 import java.util.Objects;
 
+/**
+ * BaseDTO is the superclass to all DtoRequest entities
+ */
 public abstract class BaseDTO {
 
     private long id;

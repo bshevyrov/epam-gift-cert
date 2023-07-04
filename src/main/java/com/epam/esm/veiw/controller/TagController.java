@@ -19,7 +19,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-
+/**
+ * TagController class is the REST controller which consumes JSON as the request, forwards to relevant
+ * method in facade and produces JSON as the result of model's operations
+ */
 @RestController
 @RequestMapping(value = "/tags",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -32,7 +35,14 @@ public class TagController {
         this.tagFacade = tagFacade;
     }
 
-
+    /**
+     * Method consumes request object.
+     * Produces response object as the result of create operation.
+     *
+     * @param tagDTO object for creation
+     * @param ucb    UriComponentsBuilder
+     * @return response header with uri of created object.
+     */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<TagDTO> create(@RequestBody TagDTO tagDTO, UriComponentsBuilder ucb) {
         long tagId = tagFacade.create(tagDTO);
@@ -45,19 +55,37 @@ public class TagController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    /**
+     * Method consumes URL param.
+     * Produces response object as the result of find by id operation.
+     *
+     * @param id URL parameter, which holds gift certificate id value
+     * @return found {@link TagDTO}
+     **/
     @RequestMapping(value = "/{id}",
             method = RequestMethod.GET)
-    public TagDTO tagById(@PathVariable long id) {
+    public TagDTO findById(@PathVariable long id) {
         return tagFacade.findById(id);
     }
 
-
+    /**
+     * Method produces set of response objects
+     *
+     * @return list of all {@link TagDTO}
+     */
     @RequestMapping(value = "",
             method = RequestMethod.GET)
     public List<TagDTO> findAll() {
         return tagFacade.findAll();
     }
 
+    /**
+     * Method consumes URL param.
+     * Produces response object as the result of delete operation.
+     *
+     * @param id URL parameter, which holds tag id value
+     * @return Http status
+     */
     @RequestMapping(value = "/{id}",
             method = RequestMethod.DELETE)
     public ResponseEntity<TagDTO> deleteById(@PathVariable long id) {
@@ -93,7 +121,8 @@ public class TagController {
         }
         return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Error in id Tag [" + tagId + "].");
     }
-   @ExceptionHandler(TagExistException.class)
+
+    @ExceptionHandler(TagExistException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Error tagIdError(TagExistException e) {
         String tagName = e.getTagName();
@@ -102,6 +131,5 @@ public class TagController {
         }
         return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "07"), "Tag with name [" + tagName + "] already exist.");
     }
-
 }
 

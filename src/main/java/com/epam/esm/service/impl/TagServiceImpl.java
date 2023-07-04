@@ -35,7 +35,7 @@ public class TagServiceImpl implements TagService {
     /**
      * Method creates tag.
      * Checks if tag have valid name
-     * - if false throws{@code TagNameException}
+     * - if false throws{@link  TagNameException}
      * Checks if tag with this name exist
      * - if true throws TagExistException
      *
@@ -47,7 +47,7 @@ public class TagServiceImpl implements TagService {
         if (!InputVerification.verifyName(tag.getName())) {
             throw new TagNameException(tag.getName());
         }
-        if (tagDAO.existByName(tag.getName())) {
+        if (!tagDAO.existByName(tag.getName())) {
             throw new TagExistException(tag.getName());
         }
         return tagDAO.create(tag);
@@ -56,7 +56,7 @@ public class TagServiceImpl implements TagService {
     /**
      * Method return tag that was found by id
      * Checks if tag have valid id
-     * - if false throws{@code TagIdException}
+     * - if false throws{@link  TagIdException}
      * Checks if tag with this name exist
      * - if false throws TagNotFoundException
      *

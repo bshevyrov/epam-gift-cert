@@ -75,7 +75,7 @@ public final class DAOUtils {
                 .collect(
                         Collectors.toMap(field -> field, field -> methods.stream()
                                 .filter(method -> method.getName().toLowerCase().contains(field))
-                                .findFirst().get()));
+                                .findFirst().orElseThrow(()->  new GiftCertificateUpdateException(giftCertificate.getId()))));
 
         fieldMethodMap.forEach((key, value) -> {
             try {
@@ -156,29 +156,30 @@ public final class DAOUtils {
                 || searchRequest.getGiftCertificateName().isPresent()
                 || searchRequest.getDescription().isPresent()) {
             query.append("WHERE ");
+            if (searchRequest.getTagName().isPresent()) {
+                query.append("t.name LIKE '%")
+                        .append(searchRequest.getTagName().get())
+                        .append("%' ");
+            }
+            if (searchRequest.getGiftCertificateName().isPresent()) {
+                query.append(searchRequest.getTagName().isPresent()
+                        ? "AND "
+                        : "WHERE ");
+                query.append("gc.name LIKE '%")
+                        .append(searchRequest.getGiftCertificateName().get())
+                        .append("%' ");
+            }
+            if (searchRequest.getDescription().isPresent()) {
+                query.append(searchRequest.getTagName().isPresent()
+                        || searchRequest.getGiftCertificateName().isPresent()
+                        ? "AND "
+                        : "WHERE ");
+                query.append("gs.description = '%")
+                        .append(searchRequest.getDescription().get())
+                        .append("%' ");
+            }
         }
-        if (searchRequest.getTagName().isPresent()) {
-            query.append("t.name LIKE '%")
-                    .append(searchRequest.getTagName().get())
-                    .append("%' ");
-        }
-        if (searchRequest.getGiftCertificateName().isPresent()) {
-            query.append(searchRequest.getTagName().isPresent()
-                    ? "AND "
-                    : "WHERE ");
-            query.append("gc.name LIKE '%")
-                    .append(searchRequest.getGiftCertificateName().get())
-                    .append("%' ");
-        }
-        if (searchRequest.getDescription().isPresent()) {
-            query.append(searchRequest.getTagName().isPresent()
-                    || searchRequest.getGiftCertificateName().isPresent()
-                    ? "AND "
-                    : "WHERE ");
-            query.append("gs.description = '%")
-                    .append(searchRequest.getDescription().get())
-                    .append("%' ");
-        }
+
         query.append("ORDER BY ");
         query.append("gc.")
                 .append(searchRequest.getSortField())

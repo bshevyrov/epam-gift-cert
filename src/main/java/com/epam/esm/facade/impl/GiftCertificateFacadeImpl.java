@@ -50,7 +50,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
      * Method consume id value and return dto object.
      *
      * @param id request parameter
-     * @return {@code GiftCertificateDTO} created object
+     * @return {@link  GiftCertificateDTO} created object
      */
     @Override
     public GiftCertificateDTO findById(long id) {

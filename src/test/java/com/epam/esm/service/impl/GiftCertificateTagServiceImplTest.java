@@ -1,6 +1,8 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.GiftCertificateTagDAO;
+import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificateTag;
 import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
 import com.epam.esm.exception.tag.TagIdException;
@@ -9,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.Mockito.*;
 
@@ -23,6 +25,10 @@ class GiftCertificateTagServiceImplTest {
 
     @Mock
     private GiftCertificateTagDAO giftCertificateTagDAO;
+    @Mock
+    private GiftCertificateDAO giftCertificateDAO;
+    @Mock
+    private TagDAO tagDAO;
 
     @BeforeAll
     public void init() {
@@ -50,32 +56,31 @@ class GiftCertificateTagServiceImplTest {
         long giftCertificateId = 1L;
         long tagId = 1L;
         GiftCertificateTag giftCertificateTag = new GiftCertificateTag(giftCertificateId, tagId);
+        when(tagDAO.existById(tagId)).thenReturn(true);
+        when(giftCertificateDAO.existById(giftCertificateId)).thenReturn(true);
         giftCertificateTagService.create(giftCertificateTag);
         verify(giftCertificateTagDAO, times(1)).create(giftCertificateTag);
     }
-//TODO
-/*    @Test
+
+    @Test
     void update() {
-        giftCertificateTagService.update(anyMap());
-        verify(giftCertificateTagDAO, Mockito.times(1)).update(anyMap());
-    }*/
+        assertThrows(UnsupportedOperationException.class,  ()->giftCertificateTagService.update(new GiftCertificateTag(0,0)));
+    }
 
     @Test
     void delete() {
-        giftCertificateTagService.delete(anyLong());
-        verify(giftCertificateTagDAO, Mockito.times(1)).deleteById(anyLong());
+        assertThrows(UnsupportedOperationException.class, () ->giftCertificateTagService.delete(-1L));
+
     }
 
     @Test
     void findAll() {
-        giftCertificateTagService.findAll(tagName, giftCertificateName, description, sortField, sortType);
-        verify(giftCertificateTagDAO, Mockito.times(1)).findAll();
+        assertThrowsExactly(UnsupportedOperationException.class, () ->giftCertificateTagService.findAll());
     }
 
     @Test
     void findById() {
-        giftCertificateTagService.findById(anyLong());
-        verify(giftCertificateTagDAO, Mockito.times(1)).findById(anyLong());
+   assertThrows(UnsupportedOperationException.class, ()->  giftCertificateTagService.findById(-2L));
     }
 
 }

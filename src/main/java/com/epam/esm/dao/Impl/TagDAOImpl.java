@@ -106,7 +106,7 @@ public class TagDAOImpl implements TagDAO {
     @Override
     public boolean existByName(String name) {
         String query = "SELECT COUNT(*) FROM tag WHERE name = :name";
-        return Objects.equals(namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), Integer.class), 0);
+        return !Objects.equals(namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), Integer.class), 0);
     }
 
     /**
@@ -126,7 +126,7 @@ public class TagDAOImpl implements TagDAO {
      * Checks if record with id exists
      *
      * @param id tag id value
-     * @return {@code true} if record exists
+     * @return  true if record exists
      */
     @Override
     public boolean existById(long id) {

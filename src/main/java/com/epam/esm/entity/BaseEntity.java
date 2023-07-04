@@ -9,7 +9,7 @@ import java.util.Objects;
  * Parent of all entity.
  */
 @Component
-public abstract class BaseEntity implements Serializable, Cloneable {
+public abstract class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private long id;
@@ -53,14 +53,4 @@ public abstract class BaseEntity implements Serializable, Cloneable {
         return Objects.hash(name, id);
     }
 
-    @Override
-    public BaseEntity clone() {
-        try {
-            BaseEntity clone = (BaseEntity) super.clone();
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
-    }
 }
