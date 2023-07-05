@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class H2DataSourceConfig {
     /**
-     *
      * @return Configured DataSource for H2
      */
     @Bean
