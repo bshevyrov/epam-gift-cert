@@ -1,10 +1,11 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.entity.AbstractEntity;
 import com.epam.esm.entity.BaseEntity;
 
 import java.util.List;
 
-public interface BaseDAO<E extends BaseEntity> {
+public interface BaseDAO<E extends AbstractEntity> {
     E findById(long id);
 
     List<E> findAll();

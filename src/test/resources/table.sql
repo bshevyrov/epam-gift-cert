@@ -4,8 +4,8 @@ CREATE TABLE gift_certificate (
                                   name varchar(45) NULL,
                                   description varchar(45) NULL,
                                   price double NULL,
-                                  create_date datetime NULL,
-                                  last_update_date datetime NULL,
+                                  create_date datetime DEFAULT CURRENT_TIMESTAMP,
+                                  last_update_date datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                   duration int NULL
 );
 drop table if exists tag;

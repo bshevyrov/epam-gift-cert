@@ -12,7 +12,6 @@ import com.epam.esm.exception.tag.TagNameException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.InputVerification;
 import com.epam.esm.veiw.SearchRequest;
-import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +59,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             if (tagDAO.existByName(tag.getName())) {
                 giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificateId, tagDAO.findByName(tag.getName()).getId()));
             } else {
-                long tagId = tagDAO.create(new Tag(tag.getName()));
+                long tagId = tagDAO.create(tag);
                 giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificateId, tagId));
             }
         });
@@ -142,7 +141,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!giftCertificateDAO.existById(giftCertificate.getId())) {
             throw new GiftCertificateNotFoundException(giftCertificate.getId());
         }
-        if (ListUtils.emptyIfNull(giftCertificate.getTags()).size() > 0) {
+        if (giftCertificate.getTags() != null
+                && giftCertificate.getTags().size() > 0){
             giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificate.getId());
             giftCertificate.getTags().forEach(tag -> {
                 if (!InputVerification.verifyName(tag.getName())) {
@@ -151,7 +151,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 if (tagDAO.existByName(tag.getName())) {
                     giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagDAO.findByName(tag.getName()).getId()));
                 } else {
-                    long tagId = tagDAO.create(new Tag(tag.getName()));
+                    long tagId = tagDAO.create(tag);
                     giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tagId));
                 }
             });

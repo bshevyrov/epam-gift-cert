@@ -3,7 +3,7 @@ package com.epam.esm.dao.Impl;
 import com.epam.esm.config.AppConfig;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -15,10 +15,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ContextConfiguration(classes = {AppConfig.class})
 @WebAppConfiguration
@@ -31,14 +27,7 @@ class GiftCertificateDAOImplTest {
     @Autowired
     private GiftCertificateDAO giftCertificateDAO;
 
-    @Autowired
-    private TagDAOImpl tagDAO;
-    @Autowired
-    private GiftCertificateTagDAOImpl giftCertificateTagDAO;
-
     private GiftCertificate giftCertificate;
-    private Tag tagName;
-    private Tag tag;
 
 
     @BeforeAll
@@ -49,10 +38,6 @@ class GiftCertificateDAOImplTest {
         giftCertificate.setDescription("tes22");
         giftCertificate.setDuration(2);
         giftCertificate.setPrice(2);
-
-        tagName = new Tag("tagName");
-        tag = new Tag("tag");
-
     }
 
 
@@ -62,37 +47,35 @@ class GiftCertificateDAOImplTest {
         long createdGiftCertificateId = giftCertificateDAO.create(giftCertificate);
         giftCertificate.setId(createdGiftCertificateId);
         GiftCertificate byId = giftCertificateDAO.findById(createdGiftCertificateId);
-        assertEquals(giftCertificate, byId);
+        Assertions.assertEquals(giftCertificate, byId);
     }
 
     @Test
     void findAll() {
-        assertThrowsExactly(UnsupportedOperationException.class, () -> giftCertificateDAO.findAll());
+        Assertions.assertThrowsExactly(UnsupportedOperationException.class, () -> giftCertificateDAO.findAll());
     }
 
     @Test
     void deleteById() {
         GiftCertificate giftCertificate = new GiftCertificate();
-        List<GiftCertificate> expected = new ArrayList<>();
         giftCertificate.setName("first");
         giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-        assertEquals(giftCertificate, giftCertificateDAO.findById(giftCertificate.getId()));
-        expected.add(giftCertificate);
+        Assertions.assertEquals(giftCertificate, giftCertificateDAO.findById(giftCertificate.getId()));
 
         giftCertificate = new GiftCertificate();
         giftCertificate.setName("second");
         long secondId = giftCertificateDAO.create(giftCertificate);
         giftCertificate.setId(secondId);
-        assertEquals(giftCertificate, giftCertificateDAO.findById(secondId));
+        Assertions.assertEquals(giftCertificate, giftCertificateDAO.findById(secondId));
 
         giftCertificate = new GiftCertificate();
         giftCertificate.setName("third");
         giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-        assertEquals(giftCertificate, giftCertificateDAO.findById(giftCertificate.getId()));
-        expected.add(giftCertificate);
+        Assertions.assertEquals(giftCertificate, giftCertificateDAO.findById(giftCertificate.getId()));
 
         giftCertificateDAO.deleteById(secondId);
-        assertThrows(Exception.class, () -> giftCertificateDAO.findById(secondId));
+        Assertions.assertThrows(Exception.class, () -> giftCertificateDAO.findById(secondId));
+
     }
 
 
@@ -105,7 +88,7 @@ class GiftCertificateDAOImplTest {
         giftCertificateUpdate.setId(giftCertificateDAO.create(giftCertificateUpdate));
         giftCertificateUpdate.setName("second");
         giftCertificateDAO.update(giftCertificateUpdate);
-        assertEquals(giftCertificateUpdate, giftCertificateDAO.findById(giftCertificateUpdate.getId()));
+        Assertions.assertEquals(giftCertificateUpdate, giftCertificateDAO.findById(giftCertificateUpdate.getId()));
 
     }
 

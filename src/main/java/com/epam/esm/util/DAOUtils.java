@@ -9,7 +9,12 @@ import org.apache.commons.lang3.ClassUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+
+import java.util.Map;
+import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -75,7 +80,7 @@ public final class DAOUtils {
                 .collect(
                         Collectors.toMap(field -> field, field -> methods.stream()
                                 .filter(method -> method.getName().toLowerCase().contains(field))
-                                .findFirst().orElseThrow(()->  new GiftCertificateUpdateException(giftCertificate.getId()))));
+                                .findFirst().orElseThrow(() -> new GiftCertificateUpdateException(giftCertificate.getId()))));
 
         fieldMethodMap.forEach((key, value) -> {
             try {
@@ -117,9 +122,6 @@ public final class DAOUtils {
         Field[] fields = ArrayUtils.addAll(childFields, parentFields);
 
         for (Field field : fields) {
-            if (field.getName().equals("serialVersionUID")) {
-                continue;
-            }
             field.setAccessible(true);
             try {
                 if (ClassUtils.isAssignable(field.getType(), Number.class)) {

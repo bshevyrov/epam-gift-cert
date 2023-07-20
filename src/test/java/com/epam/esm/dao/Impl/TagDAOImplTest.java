@@ -41,9 +41,13 @@ class TagDAOImplTest {
 
     @BeforeAll
     public void setup() {
-        tagOne = new Tag("First tag");
-        tagTwo = new Tag("Second tag");
-        tagThree = new Tag("Third tag");
+        tagOne = new Tag();
+        tagOne.setName("First tag");
+        tagTwo = new Tag();
+        tagOne.setName("Second tag");
+        tagThree = new Tag();
+        tagOne.setName("Third tag");
+
     }
 
     @Test
@@ -79,7 +83,8 @@ class TagDAOImplTest {
         tagTwo.setId(tagDAO.create(tagTwo));
         tagThree.setId(tagDAO.create(tagThree));
 
-        Tag newTag = new Tag("new Tag");
+        Tag newTag = new Tag();
+        newTag.setName("new Tag");
         newTag.setId(tagDAO.create(newTag));
         newTag.setName("update name");
 
