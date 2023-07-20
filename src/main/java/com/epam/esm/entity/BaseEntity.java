@@ -1,56 +1,17 @@
 package com.epam.esm.entity;
 
-import org.springframework.stereotype.Component;
-
-import java.io.Serializable;
-import java.util.Objects;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * Parent of all entity.
  */
-@Component
-public abstract class BaseEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Data
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+public abstract class BaseEntity implements Entity {
     private long id;
     private String name;
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "BaseEntity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BaseEntity that = (BaseEntity) o;
-        return Objects.equals(name, that.name) && Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, id);
-    }
 
 }

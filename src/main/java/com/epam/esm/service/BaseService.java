@@ -1,11 +1,10 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.BaseEntity;
+import com.epam.esm.entity.Entity;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface BaseService<E extends BaseEntity> {
+public interface BaseService<E extends Entity> {
     long create(E entity);
 
     E findById(long id);
