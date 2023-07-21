@@ -1,14 +1,9 @@
 package com.epam.esm.veiw.controller;
 
-import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
-import com.epam.esm.exception.giftcertificate.GiftCertificateUpdateException;
-import com.epam.esm.exception.tag.TagNameException;
 import com.epam.esm.facade.GiftCertificateFacade;
-import com.epam.esm.veiw.ErrorResponse;
 import com.epam.esm.veiw.SearchRequest;
 import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

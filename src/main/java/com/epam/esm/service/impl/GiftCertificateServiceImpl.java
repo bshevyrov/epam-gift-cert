@@ -5,7 +5,6 @@ import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateTag;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.exception.tag.TagNameException;
@@ -142,7 +141,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new GiftCertificateNotFoundException(giftCertificate.getId());
         }
         if (giftCertificate.getTags() != null
-                && giftCertificate.getTags().size() > 0){
+                && giftCertificate.getTags().size() > 0) {
             giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificate.getId());
             giftCertificate.getTags().forEach(tag -> {
                 if (!InputVerification.verifyName(tag.getName())) {

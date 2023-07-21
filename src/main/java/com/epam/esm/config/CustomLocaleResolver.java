@@ -1,4 +1,4 @@
-package com.epam.esm.util;
+package com.epam.esm.config;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

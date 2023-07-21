@@ -20,9 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -45,17 +43,11 @@ class GiftCertificateServiceImplTest {
 
     @Mock
     private GiftCertificate giftCertificate;
-    private List<Tag> tags;
 
 
     @BeforeAll
     public void init() {
         MockitoAnnotations.openMocks(this);
-
-        tags = new ArrayList<Tag>() {{
-            add(new Tag("11"));
-        }};
-
     }
 
     @Test
@@ -63,7 +55,8 @@ class GiftCertificateServiceImplTest {
         try (MockedStatic<InputVerification> utilities = mockStatic(InputVerification.class)) {
             utilities.when(() ->
                     InputVerification.verifyName(anyString())).thenReturn(true);
-            Tag tag2 = new Tag("two");
+            Tag tag2 = new Tag();
+            tag2.setName("two");
             when(tagDAO.existByName(tag2.getName())).thenReturn(true);
             when(giftCertificateTagDAO.create(any(GiftCertificateTag.class))).thenReturn(1L);
             when(tagDAO.findByName(tag2.getName())).thenReturn(tag2);
@@ -81,7 +74,8 @@ class GiftCertificateServiceImplTest {
             utilities.when(() ->
                     InputVerification.verifyName(anyString())).thenReturn(true);
 
-            Tag tag1 = new Tag("one");
+            Tag tag1 = new Tag();
+            tag1.setName("one");
             when(tagDAO.existByName(tag1.getName())).thenReturn(false);
             when(giftCertificateTagDAO.create(any(GiftCertificateTag.class))).thenReturn(1L);
             when(tagDAO.findByName(anyString())).thenReturn(tag1);

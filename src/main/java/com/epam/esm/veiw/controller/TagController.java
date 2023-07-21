@@ -1,18 +1,12 @@
 package com.epam.esm.veiw.controller;
 
-import com.epam.esm.exception.tag.TagExistException;
-import com.epam.esm.exception.tag.TagIdException;
-import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.facade.TagFacade;
-import com.epam.esm.veiw.ErrorResponse;
 import com.epam.esm.veiw.dto.TagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
