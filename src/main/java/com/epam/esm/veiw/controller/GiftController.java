@@ -4,7 +4,7 @@ import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateUpdateException;
 import com.epam.esm.exception.tag.TagNameException;
 import com.epam.esm.facade.GiftCertificateFacade;
-import com.epam.esm.veiw.Error;
+import com.epam.esm.veiw.ErrorResponse;
 import com.epam.esm.veiw.SearchRequest;
 import com.epam.esm.veiw.dto.GiftCertificateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,33 +111,4 @@ public class GiftController {
         giftCertificateFacade.update(giftCertificateDTO);
     }
 
-    @ExceptionHandler(GiftCertificateNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Error giftCertificateNotFound(GiftCertificateNotFoundException giftCertificateNotFoundException) {
-        long certId = giftCertificateNotFoundException.getGiftCertificateId();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new Error(Integer.parseInt(HttpStatus.NOT_FOUND.value() + "04"), "Gift Certificate [" + certId + "] не знайдено.");
-        }
-        return new Error(Integer.parseInt(HttpStatus.NOT_FOUND.value() + "04"), "Gift Certificate [" + certId + "] not found");
-    }
-
-    @ExceptionHandler(TagNameException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error tagNameError(TagNameException e) {
-        String tagName = e.getTagName();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "05"), "Помилка в імені Tag [" + tagName + "].");
-        }
-        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "05"), "Error in name Tag [" + tagName + "].");
-    }
-
-    @ExceptionHandler(GiftCertificateUpdateException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Error giftCertificateUpdateException(GiftCertificateUpdateException giftCertificateUpdateException) {
-        long certId = giftCertificateUpdateException.getGiftCertificateId();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Помилка в параметрах Gift Certificate [" + certId + "] .");
-        }
-        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Error in parameters Gift Certificate [" + certId + "] .");
-    }
 }

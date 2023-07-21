@@ -4,7 +4,7 @@ import com.epam.esm.exception.tag.TagExistException;
 import com.epam.esm.exception.tag.TagIdException;
 import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.facade.TagFacade;
-import com.epam.esm.veiw.Error;
+import com.epam.esm.veiw.ErrorResponse;
 import com.epam.esm.veiw.dto.TagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -91,45 +91,6 @@ public class TagController {
     public ResponseEntity<TagDTO> deleteById(@PathVariable long id) {
         tagFacade.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @ExceptionHandler(TagNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Error tagNotFound(TagNotFoundException e) {
-        long tagId = e.getTagId();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new Error(Integer.parseInt(HttpStatus.NOT_FOUND + "04"), "Tag [" + tagId + "] не знайдено.");
-        }
-        return new Error(Integer.parseInt(HttpStatus.NOT_FOUND + "04"), "Tag [" + tagId + "] not found.");
-    }
-
-    @ExceptionHandler({HttpMessageNotReadableException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error emptyEntity(HttpMessageNotReadableException e) {
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "04"), "Не вірне тіло Tag.");
-        }
-        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "04"), "Wrong body of Tag.");
-    }
-
-    @ExceptionHandler(TagIdException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error tagIdError(TagIdException e) {
-        long tagId = e.getTagId();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Помилка в айді Tag [" + tagId + "].");
-        }
-        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Error in id Tag [" + tagId + "].");
-    }
-
-    @ExceptionHandler(TagExistException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error tagIdError(TagExistException e) {
-        String tagName = e.getTagName();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "07"), "Tag з ім'ям  [" + tagName + "] вже існує.");
-        }
-        return new Error(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "07"), "Tag with name [" + tagName + "] already exist.");
     }
 }
 
