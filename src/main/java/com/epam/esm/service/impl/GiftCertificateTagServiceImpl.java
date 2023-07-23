@@ -11,7 +11,9 @@ import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.service.GiftCertificateTagService;
 import com.epam.esm.util.InputVerification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -44,6 +46,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
      * @return null
      */
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public long create(GiftCertificateTagEntity giftCertificateTagEntity) {
         if (!InputVerification.verifyId(giftCertificateTagEntity.getGiftCertificateId())) {
             throw new GiftCertificateIdException(giftCertificateTagEntity.getGiftCertificateId());

@@ -75,6 +75,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @return {@link  GiftCertificateEntity} found object
      */
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public GiftCertificateEntity findById(long id) {
         if (!InputVerification.verifyId(id)) {
             throw new GiftCertificateIdException(id);
@@ -107,6 +108,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @return List of objects
      */
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public List<GiftCertificateEntity> findAll(SearchRequest searchRequest) {
         List<GiftCertificateEntity> giftCertificateEntityList = giftCertificateDAO.findAll(searchRequest);
         giftCertificateEntityList.forEach(giftCertificate -> giftCertificate.setTagEntities(tagDAO.findAllByGiftCertificateId(giftCertificate.getId())));
@@ -170,6 +172,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @param id requested parameter
      */
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public void delete(long id) {
         if (!InputVerification.verifyId(id)) {
             throw new GiftCertificateIdException(id);

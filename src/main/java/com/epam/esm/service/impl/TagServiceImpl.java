@@ -13,7 +13,9 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.util.InputVerification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -43,6 +45,7 @@ public class TagServiceImpl implements TagService {
      * @return id fon created object
      */
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public long create(TagEntity tagEntity) {
         if (!InputVerification.verifyName(tagEntity.getName())) {
             throw new TagNameException(tagEntity.getName());
@@ -64,6 +67,7 @@ public class TagServiceImpl implements TagService {
      * @return tag entity
      */
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public TagEntity findById(long id) {
         if (!InputVerification.verifyId(id)) {
             throw new TagIdException(id);
@@ -80,6 +84,7 @@ public class TagServiceImpl implements TagService {
      * @return List of tags
      */
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public List<TagEntity> findAll() {
         return tagDAO.findAll();
     }
@@ -106,6 +111,7 @@ public class TagServiceImpl implements TagService {
      * @param id request parameter
      */
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public void delete(long id) {
         if (!InputVerification.verifyId(id)) {
             throw new TagIdException(id);
@@ -128,6 +134,7 @@ public class TagServiceImpl implements TagService {
      */
 
     @Override
+    @Transactional(rollbackFor = {SQLException.class})
     public List<TagEntity> findAllByGiftCertificateId(long id) {
         if (!InputVerification.verifyId(id)) {
             throw new GiftCertificateIdException(id);
