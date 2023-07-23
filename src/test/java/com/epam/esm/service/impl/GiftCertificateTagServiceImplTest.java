@@ -4,8 +4,8 @@ import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificateTagEntity;
-import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
-import com.epam.esm.exception.tag.TagIdException;
+import com.epam.esm.exception.giftcertificate.GiftCertificateInvalidIdException;
+import com.epam.esm.exception.tag.TagInvalidIdException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -40,7 +40,7 @@ class GiftCertificateTagServiceImplTest {
         long giftCertificateId = 0L;
         long tagId = 1L;
         GiftCertificateTagEntity giftCertificateTagEntity = new GiftCertificateTagEntity(giftCertificateId, tagId);
-        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateTagService.create(giftCertificateTagEntity));
+        assertThrowsExactly(GiftCertificateInvalidIdException.class, () -> giftCertificateTagService.create(giftCertificateTagEntity));
     }
 
     @Test
@@ -48,7 +48,7 @@ class GiftCertificateTagServiceImplTest {
         long giftCertificateId = 1L;
         long tagId = 0L;
         GiftCertificateTagEntity giftCertificateTagEntity = new GiftCertificateTagEntity(giftCertificateId, tagId);
-        assertThrowsExactly(TagIdException.class, () -> giftCertificateTagService.create(giftCertificateTagEntity));
+        assertThrowsExactly(TagInvalidIdException.class, () -> giftCertificateTagService.create(giftCertificateTagEntity));
     }
 
     @Test

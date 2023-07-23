@@ -4,9 +4,9 @@ import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificateTagEntity;
-import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
+import com.epam.esm.exception.giftcertificate.GiftCertificateInvalidIdException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
-import com.epam.esm.exception.tag.TagIdException;
+import com.epam.esm.exception.tag.TagInvalidIdException;
 import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.service.GiftCertificateTagService;
 import com.epam.esm.util.InputVerification;
@@ -34,11 +34,11 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     /**
      * Method create relationship between tag and giftCertificate.
      * Checks if giftCertificate id valid
-     * - if false throw {@link  GiftCertificateIdException}
+     * - if false throw {@link  GiftCertificateInvalidIdException}
      * Then  checks if giftCertificate exist
      * - if false throws (@code GiftCertificateNotFoundException) exception
      * Then checks if tag id valid
-     * - if false throw {@link  TagIdException}
+     * - if false throw {@link  TagInvalidIdException}
      * Then checks if tag exist
      * - if false throws (@code TagNotFoundException) exception
      *
@@ -49,14 +49,14 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     @Transactional(rollbackFor = {SQLException.class})
     public long create(GiftCertificateTagEntity giftCertificateTagEntity) {
         if (!InputVerification.verifyId(giftCertificateTagEntity.getGiftCertificateId())) {
-            throw new GiftCertificateIdException(giftCertificateTagEntity.getGiftCertificateId());
+            throw new GiftCertificateInvalidIdException(giftCertificateTagEntity.getGiftCertificateId());
         }
         if (!tagDAO.existById(giftCertificateTagEntity.getGiftCertificateId())) {
             throw new GiftCertificateNotFoundException(giftCertificateTagEntity.getGiftCertificateId());
         }
 
         if (!InputVerification.verifyId(giftCertificateTagEntity.getTagId())) {
-            throw new TagIdException(giftCertificateTagEntity.getTagId());
+            throw new TagInvalidIdException(giftCertificateTagEntity.getTagId());
         }
         if (!giftCertificateDAO.existById(giftCertificateTagEntity.getTagId())) {
             throw new TagNotFoundException(giftCertificateTagEntity.getTagId());

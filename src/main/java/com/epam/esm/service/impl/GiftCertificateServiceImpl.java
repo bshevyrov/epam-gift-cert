@@ -5,9 +5,9 @@ import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificateEntity;
 import com.epam.esm.entity.GiftCertificateTagEntity;
-import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
+import com.epam.esm.exception.giftcertificate.GiftCertificateInvalidIdException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
-import com.epam.esm.exception.tag.TagNameException;
+import com.epam.esm.exception.tag.TagInvalidNameException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.InputVerification;
 import com.epam.esm.veiw.SearchRequest;
@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Used  to manipulate GiftCertificate objects and collecting data.
@@ -39,7 +40,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * Method creates gift certificate.
      * Checks if tag have valid name
-     * - if false throws{@link  TagNameException}
+     * - if false throws{@link  TagInvalidNameException}
      * Checks if tag with this name exist
      * - if true add tag id to giftCertificate
      * - if false create new tag and add id of this tag to gift certificate
@@ -53,7 +54,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         long giftCertificateId = giftCertificateDAO.create(giftCertificateEntity);
         giftCertificateEntity.getTagEntities().forEach(tag -> {
             if (!InputVerification.verifyName(tag.getName())) {
-                throw new TagNameException(tag.getName());
+                throw new TagInvalidNameException(tag.getName());
             }
             if (tagDAO.existByName(tag.getName())) {
                 giftCertificateTagDAO.create(new GiftCertificateTagEntity(giftCertificateId, tagDAO.findByName(tag.getName()).getId()));
@@ -78,13 +79,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional(rollbackFor = {SQLException.class})
     public GiftCertificateEntity findById(long id) {
         if (!InputVerification.verifyId(id)) {
-            throw new GiftCertificateIdException(id);
+            throw new GiftCertificateInvalidIdException(id);
         }
         if (!giftCertificateDAO.existById(id)) {
             throw new GiftCertificateNotFoundException(id);
 
         }
-        GiftCertificateEntity giftCertificateEntity = giftCertificateDAO.findById(id);
+        Optional<GiftCertificateEntity> giftCertificateEntity = giftCertificateDAO.findById(id);
         giftCertificateEntity.setTagEntities(tagDAO.findAllByGiftCertificateId(giftCertificateEntity.getId()));
         return giftCertificateEntity;
     }
@@ -119,7 +120,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * Method updates gift certificate.
      * Checks if giftCertificate  if id valid:
      * - if true proceed to next operation
-     * * - if false thrown {@link GiftCertificateIdException}
+     * * - if false thrown {@link GiftCertificateInvalidIdException}
      * Checks if giftCertificate  is exists by id:
      * - if true proceed to next operation
      * - if false throws GiftCertificateNotFoundException exception
@@ -137,7 +138,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional(rollbackFor = {SQLException.class})
     public void update(GiftCertificateEntity giftCertificateEntity) {
         if (!InputVerification.verifyId(giftCertificateEntity.getId())) {
-            throw new GiftCertificateIdException(giftCertificateEntity.getId());
+            throw new GiftCertificateInvalidIdException(giftCertificateEntity.getId());
         }
         if (!giftCertificateDAO.existById(giftCertificateEntity.getId())) {
             throw new GiftCertificateNotFoundException(giftCertificateEntity.getId());
@@ -147,7 +148,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificateEntity.getId());
             giftCertificateEntity.getTagEntities().forEach(tag -> {
                 if (!InputVerification.verifyName(tag.getName())) {
-                    throw new TagNameException(tag.getName());
+                    throw new TagInvalidNameException(tag.getName());
                 }
                 if (tagDAO.existByName(tag.getName())) {
                     giftCertificateTagDAO.create(new GiftCertificateTagEntity(giftCertificateEntity.getId(), tagDAO.findByName(tag.getName()).getId()));
@@ -164,7 +165,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * Method deletes gift certificate
      * Checks if gift certificate id is valid:
-     * - if false throws {@link  GiftCertificateIdException}
+     * - if false throws {@link  GiftCertificateInvalidIdException}
      * Checks if gift certificate exists by id:
      * - if true - deletes from database
      * - if false - throws GiftCertificateNotFoundException exception
@@ -175,7 +176,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional(rollbackFor = {SQLException.class})
     public void delete(long id) {
         if (!InputVerification.verifyId(id)) {
-            throw new GiftCertificateIdException(id);
+            throw new GiftCertificateInvalidIdException(id);
         }
         if (!giftCertificateDAO.existById(id)) {
             throw new GiftCertificateNotFoundException(id);

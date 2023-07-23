@@ -6,17 +6,9 @@ package com.epam.esm.exception.giftcertificate;
  */
 public class GiftCertificateUpdateException extends RuntimeException {
 
-    private final long giftCertificateId;
-
-    public GiftCertificateUpdateException(long giftCertificateId) {
-        this.giftCertificateId = giftCertificateId;
+    public GiftCertificateUpdateException(String message) {
+        super(message);
     }
-
-    public long getGiftCertificateId() {
-        return giftCertificateId;
-    }
-
-
 }
 
 

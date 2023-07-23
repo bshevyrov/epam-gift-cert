@@ -6,7 +6,7 @@ import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificateEntity;
 import com.epam.esm.entity.GiftCertificateTagEntity;
 import com.epam.esm.entity.TagEntity;
-import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
+import com.epam.esm.exception.giftcertificate.GiftCertificateInvalidIdException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.util.InputVerification;
 import com.epam.esm.veiw.SearchRequest;
@@ -89,7 +89,7 @@ class GiftCertificateServiceImplTest {
     @ParameterizedTest(name = "gift certificate id - {0}")
     @ValueSource(longs = {0, -1, Long.MIN_VALUE})
     void throwsExceptionWhenGiftCertificateFindByIdIdLessOne(long giftCertificateId) {
-        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateService.findById(giftCertificateId));
+        assertThrowsExactly(GiftCertificateInvalidIdException.class, () -> giftCertificateService.findById(giftCertificateId));
     }
 
 
@@ -97,7 +97,7 @@ class GiftCertificateServiceImplTest {
     void throwsExceptionWhenGiftCertificateUpdateIdLessOne() {
         GiftCertificateEntity giftCertificateEntity1 = new GiftCertificateEntity();
         giftCertificateEntity1.setId(-1);
-        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateService.update(giftCertificateEntity1));
+        assertThrowsExactly(GiftCertificateInvalidIdException.class, () -> giftCertificateService.update(giftCertificateEntity1));
     }
 
 
@@ -112,7 +112,7 @@ class GiftCertificateServiceImplTest {
     @ParameterizedTest(name = "gift certificate id - {0}")
     @ValueSource(longs = {0, -1, Long.MIN_VALUE})
     void throwsExceptionWhenGiftCertificateDeleteByIdIdLessOne(long giftCertificateId) {
-        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateService.delete(giftCertificateId));
+        assertThrowsExactly(GiftCertificateInvalidIdException.class, () -> giftCertificateService.delete(giftCertificateId));
     }
 
 

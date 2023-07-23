@@ -3,8 +3,8 @@ package com.epam.esm.exception;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateUpdateException;
 import com.epam.esm.exception.tag.TagExistException;
-import com.epam.esm.exception.tag.TagIdException;
-import com.epam.esm.exception.tag.TagNameException;
+import com.epam.esm.exception.tag.TagInvalidIdException;
+import com.epam.esm.exception.tag.TagInvalidNameException;
 import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.veiw.ErrorResponse;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -64,9 +64,9 @@ public class GlobalExceptionHandler {
         }
     }
 
-    @ExceptionHandler(TagNameException.class)
+    @ExceptionHandler(TagInvalidNameException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleTagNameException(TagNameException e) {
+    public ErrorResponse handleTagNameException(TagInvalidNameException e) {
         String tagName = e.getTagName();
         if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
             return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "05"), "Помилка в імені Tag [" + tagName + "].");
@@ -74,9 +74,9 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "05"), "Error in name Tag [" + tagName + "].");
     }
 
-    @ExceptionHandler(TagIdException.class)
+    @ExceptionHandler(TagInvalidIdException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleTagIdException(TagIdException e) {
+    public ErrorResponse handleTagIdException(TagInvalidIdException e) {
         long tagId = e.getTagId();
         if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
             return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Помилка в айді Tag [" + tagId + "].");

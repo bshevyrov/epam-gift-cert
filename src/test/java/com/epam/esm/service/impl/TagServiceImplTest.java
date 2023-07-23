@@ -2,9 +2,9 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.TagEntity;
-import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
-import com.epam.esm.exception.tag.TagIdException;
-import com.epam.esm.exception.tag.TagNameException;
+import com.epam.esm.exception.giftcertificate.GiftCertificateInvalidIdException;
+import com.epam.esm.exception.tag.TagInvalidIdException;
+import com.epam.esm.exception.tag.TagInvalidNameException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -37,12 +37,12 @@ class TagServiceImplTest {
     void throwsExceptionWhenCreateNameNotAlphaName(String tagName) {
         TagEntity tagEntity = new TagEntity();
         tagEntity.setName(tagName);
-        assertThrowsExactly(TagNameException.class, () -> tagService.create(tagEntity));
+        assertThrowsExactly(TagInvalidNameException.class, () -> tagService.create(tagEntity));
     }
 
     @Test
     void throwsExceptionWhenTagFindByIdIdLessOne() {
-        assertThrowsExactly(TagIdException.class, () -> tagService.findById(0));
+        assertThrowsExactly(TagInvalidIdException.class, () -> tagService.findById(0));
     }
 
     @Test
@@ -60,13 +60,13 @@ class TagServiceImplTest {
     @ParameterizedTest(name = "tagId id - {0}")
     @ValueSource(longs = {0, -1, Long.MIN_VALUE, Long.MAX_VALUE + 1})
     void throwsExceptionWhenDeleteTagIdLessOne(long tagId) {
-        assertThrowsExactly(TagIdException.class, () -> tagService.delete(tagId));
+        assertThrowsExactly(TagInvalidIdException.class, () -> tagService.delete(tagId));
     }
 
     @ParameterizedTest(name = "giftCertificate id - {0}")
     @ValueSource(longs = {0L, -1L, Long.MIN_VALUE, Long.MAX_VALUE + 1})
     void throwsExceptionWhenFindAllByGCIdLessOne(long giftCertificateId) {
-        assertThrowsExactly(GiftCertificateIdException.class, () -> tagService.findAllByGiftCertificateId(giftCertificateId));
+        assertThrowsExactly(GiftCertificateInvalidIdException.class, () -> tagService.findAllByGiftCertificateId(giftCertificateId));
     }
 
 }
