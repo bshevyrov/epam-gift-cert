@@ -4,9 +4,9 @@ import com.epam.esm.config.AppConfig;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.GiftCertificateTag;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.GiftCertificateEntity;
+import com.epam.esm.entity.GiftCertificateTagEntity;
+import com.epam.esm.entity.TagEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,39 +39,39 @@ class GiftCertificateTagDAOImplTest {
 
     @Test
     void create() {
-        Tag tag = new Tag();
-        tag.setName("First tag");
-        tag.setId(tagDAO.create(tag));
-        GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setName("Gift name");
-        giftCertificate.setDuration(2);
-        giftCertificate.setPrice(22);
-        giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-        giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tag.getId()));
+        TagEntity tagEntity = new TagEntity();
+        tagEntity.setName("First tag");
+        tagEntity.setId(tagDAO.create(tagEntity));
+        GiftCertificateEntity giftCertificateEntity = new GiftCertificateEntity();
+        giftCertificateEntity.setName("Gift name");
+        giftCertificateEntity.setDuration(2);
+        giftCertificateEntity.setPrice(22);
+        giftCertificateEntity.setId(giftCertificateDAO.create(giftCertificateEntity));
+        giftCertificateTagDAO.create(new GiftCertificateTagEntity(giftCertificateEntity.getId(), tagEntity.getId()));
 
-        assertEquals(new ArrayList<Tag>() {{
-            add(tag);
-        }}, tagDAO.findAllByGiftCertificateId(giftCertificate.getId()));
+        assertEquals(new ArrayList<TagEntity>() {{
+            add(tagEntity);
+        }}, tagDAO.findAllByGiftCertificateId(giftCertificateEntity.getId()));
     }
 
     @Test
     void deleteByGiftCertificateId() {
-        Tag tag = new Tag();
-        tag.setName("First tag");
-        tag.setId(tagDAO.create(tag));
-        GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setName("Gift name");
-        giftCertificate.setDuration(2);
-        giftCertificate.setPrice(22);
-        giftCertificate.setId(giftCertificateDAO.create(giftCertificate));
-        giftCertificateTagDAO.create(new GiftCertificateTag(giftCertificate.getId(), tag.getId()));
-        assertEquals(giftCertificate, giftCertificateDAO.findById(giftCertificate.getId()));
-        assertEquals(1,tagDAO.findAllByGiftCertificateId(giftCertificate.getId()).size());
-        giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificate.getId());
-        assertNull(giftCertificateDAO.findById(giftCertificate.getId()).getTags());
-        assertEquals(0,tagDAO.findAllByGiftCertificateId(giftCertificate.getId()).size());
-        assertEquals(tag, tagDAO.findById(tag.getId()));
-        assertEquals(giftCertificate, giftCertificateDAO.findById(tag.getId()));
+        TagEntity tagEntity = new TagEntity();
+        tagEntity.setName("First tag");
+        tagEntity.setId(tagDAO.create(tagEntity));
+        GiftCertificateEntity giftCertificateEntity = new GiftCertificateEntity();
+        giftCertificateEntity.setName("Gift name");
+        giftCertificateEntity.setDuration(2);
+        giftCertificateEntity.setPrice(22);
+        giftCertificateEntity.setId(giftCertificateDAO.create(giftCertificateEntity));
+        giftCertificateTagDAO.create(new GiftCertificateTagEntity(giftCertificateEntity.getId(), tagEntity.getId()));
+        assertEquals(giftCertificateEntity, giftCertificateDAO.findById(giftCertificateEntity.getId()));
+        assertEquals(1,tagDAO.findAllByGiftCertificateId(giftCertificateEntity.getId()).size());
+        giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificateEntity.getId());
+        assertNull(giftCertificateDAO.findById(giftCertificateEntity.getId()).getTagEntities());
+        assertEquals(0,tagDAO.findAllByGiftCertificateId(giftCertificateEntity.getId()).size());
+        assertEquals(tagEntity, tagDAO.findById(tagEntity.getId()));
+        assertEquals(giftCertificateEntity, giftCertificateDAO.findById(tagEntity.getId()));
     }
 
     @Test
@@ -98,7 +98,7 @@ class GiftCertificateTagDAOImplTest {
     @Test
     void update() {
         assertThrows(UnsupportedOperationException.class, () -> {
-            giftCertificateTagDAO.update(new GiftCertificateTag(1L, 1L));
+            giftCertificateTagDAO.update(new GiftCertificateTagEntity(1L, 1L));
         });
     }
 

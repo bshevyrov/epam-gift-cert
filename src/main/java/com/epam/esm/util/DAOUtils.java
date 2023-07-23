@@ -1,6 +1,6 @@
 package com.epam.esm.util;
 
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateEntity;
 import com.epam.esm.exception.giftcertificate.GiftCertificateUpdateException;
 import com.epam.esm.veiw.SearchRequest;
 import org.apache.commons.lang3.ArrayUtils;
@@ -53,13 +53,13 @@ public final class DAOUtils {
      * First by reflection gets fields and methods.
      * Then creates field value map
      *
-     * @param giftCertificate entity to scan.
+     * @param giftCertificateEntity entity to scan.
      * @return map field,value
      */
-    public static Map<String, Object> objectToMap(GiftCertificate giftCertificate) {
-        List<String> filledFieldsNames = getAllFilledFieldsNames(giftCertificate);
-        List<Method> methods = getAllGetMethods(giftCertificate);
-        return createNameValueMap(filledFieldsNames, methods, giftCertificate);
+    public static Map<String, Object> objectToMap(GiftCertificateEntity giftCertificateEntity) {
+        List<String> filledFieldsNames = getAllFilledFieldsNames(giftCertificateEntity);
+        List<Method> methods = getAllGetMethods(giftCertificateEntity);
+        return createNameValueMap(filledFieldsNames, methods, giftCertificateEntity);
     }
 
     /**
@@ -70,21 +70,21 @@ public final class DAOUtils {
      *
      * @param fieldNameList   list of not null or 0 fields.
      * @param methods         list of all methods in entity.
-     * @param giftCertificate entity.
+     * @param giftCertificateEntity entity.
      * @return map
      */
-    private static Map<String, Object> createNameValueMap(List<String> fieldNameList, List<Method> methods, GiftCertificate giftCertificate) {
+    private static Map<String, Object> createNameValueMap(List<String> fieldNameList, List<Method> methods, GiftCertificateEntity giftCertificateEntity) {
         Map<String, Object> result = new HashMap<>();
 
         Map<String, Method> fieldMethodMap = fieldNameList.stream()
                 .collect(
                         Collectors.toMap(field -> field, field -> methods.stream()
                                 .filter(method -> method.getName().toLowerCase().contains(field))
-                                .findFirst().orElseThrow(() -> new GiftCertificateUpdateException(giftCertificate.getId()))));
+                                .findFirst().orElseThrow(() -> new GiftCertificateUpdateException(giftCertificateEntity.getId()))));
 
         fieldMethodMap.forEach((key, value) -> {
             try {
-                result.put(key, (value).invoke(giftCertificate));
+                result.put(key, (value).invoke(giftCertificateEntity));
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
@@ -95,12 +95,12 @@ public final class DAOUtils {
     /**
      * Method gets all  methods and after filtering keeps only GET methods.
      *
-     * @param giftCertificate entity.
+     * @param giftCertificateEntity entity.
      * @return list of methods
      */
-    private static List<Method> getAllGetMethods(GiftCertificate giftCertificate) {
-        Method[] childMethods = giftCertificate.getClass().getDeclaredMethods();
-        Method[] parentsMethods = giftCertificate.getClass().getSuperclass().getDeclaredMethods();
+    private static List<Method> getAllGetMethods(GiftCertificateEntity giftCertificateEntity) {
+        Method[] childMethods = giftCertificateEntity.getClass().getDeclaredMethods();
+        Method[] parentsMethods = giftCertificateEntity.getClass().getSuperclass().getDeclaredMethods();
 
         return Arrays.stream(ArrayUtils.addAll(childMethods, parentsMethods))
                 .filter(method -> method.getName().contains("get"))
@@ -111,25 +111,25 @@ public final class DAOUtils {
      * Method gets all fields then filtering them.
      * If count of not null or 0 fields less than 1 throws GiftCertificateUpdateException
      *
-     * @param giftCertificate entity
+     * @param giftCertificateEntity entity
      * @return list of field names
      */
-    private static List<String> getAllFilledFieldsNames(GiftCertificate giftCertificate) {
+    private static List<String> getAllFilledFieldsNames(GiftCertificateEntity giftCertificateEntity) {
         List<String> notNullFields = new ArrayList<>();
 
-        Field[] childFields = giftCertificate.getClass().getDeclaredFields();
-        Field[] parentFields = giftCertificate.getClass().getSuperclass().getDeclaredFields();
+        Field[] childFields = giftCertificateEntity.getClass().getDeclaredFields();
+        Field[] parentFields = giftCertificateEntity.getClass().getSuperclass().getDeclaredFields();
         Field[] fields = ArrayUtils.addAll(childFields, parentFields);
 
         for (Field field : fields) {
             field.setAccessible(true);
             try {
                 if (ClassUtils.isAssignable(field.getType(), Number.class)) {
-                    if (((Number) field.get(giftCertificate)).doubleValue() > 0) {
+                    if (((Number) field.get(giftCertificateEntity)).doubleValue() > 0) {
                         notNullFields.add(field.getName());
                     }
                 } else {
-                    if (field.get(giftCertificate) != null) {
+                    if (field.get(giftCertificateEntity) != null) {
                         notNullFields.add(field.getName());
                     }
                 }
@@ -138,7 +138,7 @@ public final class DAOUtils {
             }
         }
         if (notNullFields.size() <= 1) {
-            throw new GiftCertificateUpdateException(giftCertificate.getId());
+            throw new GiftCertificateUpdateException(giftCertificateEntity.getId());
         }
         return notNullFields;
     }

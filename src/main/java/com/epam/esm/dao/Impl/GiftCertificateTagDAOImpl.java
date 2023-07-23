@@ -1,7 +1,7 @@
 package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.GiftCertificateTagDAO;
-import com.epam.esm.entity.GiftCertificateTag;
+import com.epam.esm.entity.GiftCertificateTagEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -31,7 +31,7 @@ public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
      */
     @Override
     @Deprecated
-    public GiftCertificateTag findById(long id) {
+    public GiftCertificateTagEntity findById(long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -43,7 +43,7 @@ public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
      */
     @Override
     @Deprecated
-    public List<GiftCertificateTag> findAll() {
+    public List<GiftCertificateTagEntity> findAll() {
         throw new UnsupportedOperationException();
     }
 
@@ -62,15 +62,15 @@ public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
     /**
      * Method save to DB gift certificate tag entity.
      *
-     * @param giftCertificateTag entity to save in DB.
+     * @param giftCertificateTagEntity entity to save in DB.
      * @return null.
      */
     @Override
-    public long create(GiftCertificateTag giftCertificateTag) {
+    public long create(GiftCertificateTagEntity giftCertificateTagEntity) {
         String query = "INSERT INTO gift_certificate_has_tag (gift_certificate_id, tag_id) VALUES (:giftId,:tagId)";
         SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("giftId", giftCertificateTag.getGiftCertificateId())
-                .addValue("tagId", giftCertificateTag.getTagId());
+                .addValue("giftId", giftCertificateTagEntity.getGiftCertificateId())
+                .addValue("tagId", giftCertificateTagEntity.getTagId());
         return namedParameterJdbcTemplate.update(query, parameterSource);
     }
 
@@ -82,7 +82,7 @@ public class GiftCertificateTagDAOImpl implements GiftCertificateTagDAO {
      */
     @Override
     @Deprecated
-    public void update(GiftCertificateTag giftCertificateTag) {
+    public void update(GiftCertificateTagEntity giftCertificateTagEntity) {
         throw new UnsupportedOperationException();
     }
 

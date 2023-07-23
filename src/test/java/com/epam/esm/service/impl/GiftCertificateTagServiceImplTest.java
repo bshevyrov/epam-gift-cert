@@ -3,7 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.entity.GiftCertificateTag;
+import com.epam.esm.entity.GiftCertificateTagEntity;
 import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
 import com.epam.esm.exception.tag.TagIdException;
 import org.junit.jupiter.api.BeforeAll;
@@ -39,32 +39,32 @@ class GiftCertificateTagServiceImplTest {
     void throwsExceptionWhenGiftCertificateTagCreateGiftCertificateIdLessOne() {
         long giftCertificateId = 0L;
         long tagId = 1L;
-        GiftCertificateTag giftCertificateTag = new GiftCertificateTag(giftCertificateId, tagId);
-        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateTagService.create(giftCertificateTag));
+        GiftCertificateTagEntity giftCertificateTagEntity = new GiftCertificateTagEntity(giftCertificateId, tagId);
+        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateTagService.create(giftCertificateTagEntity));
     }
 
     @Test
     void throwsExceptionWhenGiftCertificateTagCreateTagLessOne() {
         long giftCertificateId = 1L;
         long tagId = 0L;
-        GiftCertificateTag giftCertificateTag = new GiftCertificateTag(giftCertificateId, tagId);
-        assertThrowsExactly(TagIdException.class, () -> giftCertificateTagService.create(giftCertificateTag));
+        GiftCertificateTagEntity giftCertificateTagEntity = new GiftCertificateTagEntity(giftCertificateId, tagId);
+        assertThrowsExactly(TagIdException.class, () -> giftCertificateTagService.create(giftCertificateTagEntity));
     }
 
     @Test
     void whenAllIdsOkThenOk() {
         long giftCertificateId = 1L;
         long tagId = 1L;
-        GiftCertificateTag giftCertificateTag = new GiftCertificateTag(giftCertificateId, tagId);
+        GiftCertificateTagEntity giftCertificateTagEntity = new GiftCertificateTagEntity(giftCertificateId, tagId);
         when(tagDAO.existById(tagId)).thenReturn(true);
         when(giftCertificateDAO.existById(giftCertificateId)).thenReturn(true);
-        giftCertificateTagService.create(giftCertificateTag);
-        verify(giftCertificateTagDAO, times(1)).create(giftCertificateTag);
+        giftCertificateTagService.create(giftCertificateTagEntity);
+        verify(giftCertificateTagDAO, times(1)).create(giftCertificateTagEntity);
     }
 
     @Test
     void update() {
-        assertThrows(UnsupportedOperationException.class,  ()->giftCertificateTagService.update(new GiftCertificateTag(0,0)));
+        assertThrows(UnsupportedOperationException.class,  ()->giftCertificateTagService.update(new GiftCertificateTagEntity(0,0)));
     }
 
     @Test

@@ -10,5 +10,5 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
-public class Tag extends BaseEntity {
+public class TagEntity extends BaseEntity {
 }

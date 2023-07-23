@@ -3,9 +3,9 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.GiftCertificateTag;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.GiftCertificateEntity;
+import com.epam.esm.entity.GiftCertificateTagEntity;
+import com.epam.esm.entity.TagEntity;
 import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.util.InputVerification;
@@ -38,11 +38,11 @@ class GiftCertificateServiceImplTest {
     @Mock
     private TagDAO tagDAO;
     @Mock
-    private Tag tag;
+    private TagEntity tagEntity;
 
 
     @Mock
-    private GiftCertificate giftCertificate;
+    private GiftCertificateEntity giftCertificateEntity;
 
 
     @BeforeAll
@@ -55,16 +55,16 @@ class GiftCertificateServiceImplTest {
         try (MockedStatic<InputVerification> utilities = mockStatic(InputVerification.class)) {
             utilities.when(() ->
                     InputVerification.verifyName(anyString())).thenReturn(true);
-            Tag tag2 = new Tag();
-            tag2.setName("two");
-            when(tagDAO.existByName(tag2.getName())).thenReturn(true);
-            when(giftCertificateTagDAO.create(any(GiftCertificateTag.class))).thenReturn(1L);
-            when(tagDAO.findByName(tag2.getName())).thenReturn(tag2);
-            when(tag.getId()).thenReturn(2L);
-            when(giftCertificate.getTags()).thenReturn(Arrays.asList(tag2));
+            TagEntity tagEntity2 = new TagEntity();
+            tagEntity2.setName("two");
+            when(tagDAO.existByName(tagEntity2.getName())).thenReturn(true);
+            when(giftCertificateTagDAO.create(any(GiftCertificateTagEntity.class))).thenReturn(1L);
+            when(tagDAO.findByName(tagEntity2.getName())).thenReturn(tagEntity2);
+            when(tagEntity.getId()).thenReturn(2L);
+            when(giftCertificateEntity.getTagEntities()).thenReturn(Arrays.asList(tagEntity2));
 
-            giftCertificateService.create(giftCertificate);
-            verify(tagDAO, never()).create(tag2);
+            giftCertificateService.create(giftCertificateEntity);
+            verify(tagDAO, never()).create(tagEntity2);
         }
     }
 
@@ -74,15 +74,15 @@ class GiftCertificateServiceImplTest {
             utilities.when(() ->
                     InputVerification.verifyName(anyString())).thenReturn(true);
 
-            Tag tag1 = new Tag();
-            tag1.setName("one");
-            when(tagDAO.existByName(tag1.getName())).thenReturn(false);
-            when(giftCertificateTagDAO.create(any(GiftCertificateTag.class))).thenReturn(1L);
-            when(tagDAO.findByName(anyString())).thenReturn(tag1);
-            when(tag.getId()).thenReturn(10L);
-            when(giftCertificate.getTags()).thenReturn(Arrays.asList(tag1));
-            giftCertificateService.create(giftCertificate);
-            verify(tagDAO, times(1)).create(tag1);
+            TagEntity tagEntity1 = new TagEntity();
+            tagEntity1.setName("one");
+            when(tagDAO.existByName(tagEntity1.getName())).thenReturn(false);
+            when(giftCertificateTagDAO.create(any(GiftCertificateTagEntity.class))).thenReturn(1L);
+            when(tagDAO.findByName(anyString())).thenReturn(tagEntity1);
+            when(tagEntity.getId()).thenReturn(10L);
+            when(giftCertificateEntity.getTagEntities()).thenReturn(Arrays.asList(tagEntity1));
+            giftCertificateService.create(giftCertificateEntity);
+            verify(tagDAO, times(1)).create(tagEntity1);
         }
     }
 
@@ -95,18 +95,18 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void throwsExceptionWhenGiftCertificateUpdateIdLessOne() {
-        GiftCertificate giftCertificate1 = new GiftCertificate();
-        giftCertificate1.setId(-1);
-        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateService.update(giftCertificate1));
+        GiftCertificateEntity giftCertificateEntity1 = new GiftCertificateEntity();
+        giftCertificateEntity1.setId(-1);
+        assertThrowsExactly(GiftCertificateIdException.class, () -> giftCertificateService.update(giftCertificateEntity1));
     }
 
 
     @Test
     void throwsGiftCertificateNotFoundExceptionWhenGiftCertificateUpdateIdBiggerZero() {
-        GiftCertificate giftCertificate1 = new GiftCertificate();
-        giftCertificate1.setId(1);
+        GiftCertificateEntity giftCertificateEntity1 = new GiftCertificateEntity();
+        giftCertificateEntity1.setId(1);
         when(giftCertificateDAO.existById(anyLong())).thenReturn(false);
-        assertThrowsExactly(GiftCertificateNotFoundException.class, () -> giftCertificateService.update(giftCertificate1));
+        assertThrowsExactly(GiftCertificateNotFoundException.class, () -> giftCertificateService.update(giftCertificateEntity1));
     }
 
     @ParameterizedTest(name = "gift certificate id - {0}")

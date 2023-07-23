@@ -1,14 +1,14 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.TagEntity;
 
 import java.util.List;
 
-public interface TagDAO extends BaseDAO<Tag> {
+public interface TagDAO extends BaseDAO<TagEntity> {
 
-    List<Tag> findAllByGiftCertificateId(long id);
+    List<TagEntity> findAllByGiftCertificateId(long id);
 
     boolean existByName(String name);
 
-    Tag findByName(String name);
+    TagEntity findByName(String name);
 }

@@ -1,7 +1,7 @@
 package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.TagEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -33,9 +33,9 @@ public class TagDAOImpl implements TagDAO {
      * @return Tag that was found or throw TagNotFoundException.
      */
     @Override
-    public Tag findById(long id) {
+    public TagEntity findById(long id) {
         String query = "SELECT * FROM tag where id=:id";
-        return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(Tag.class));
+        return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(TagEntity.class));
     }
 
     /**
@@ -44,9 +44,9 @@ public class TagDAOImpl implements TagDAO {
      * @return List of all Tag that was in DB.
      */
     @Override
-    public List<Tag> findAll() {
+    public List<TagEntity> findAll() {
         String query = "SELECT * FROM tag";
-        return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(Tag.class));
+        return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(TagEntity.class));
     }
 
     /**
@@ -63,14 +63,14 @@ public class TagDAOImpl implements TagDAO {
     /**
      * Method save to DB.
      *
-     * @param tag entity to save in DB.
+     * @param tagEntity entity to save in DB.
      * @return id of created tag in DB.
      */
     @Override
-    public long create(Tag tag) {
+    public long create(TagEntity tagEntity) {
         String query = "insert into tag (name) values(:name)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("name", tag.getName()), keyHolder);
+        namedParameterJdbcTemplate.update(query, new MapSqlParameterSource().addValue("name", tagEntity.getName()), keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
@@ -82,7 +82,7 @@ public class TagDAOImpl implements TagDAO {
      */
     @Override
     @Deprecated
-    public void update(Tag tag) {
+    public void update(TagEntity tagEntity) {
         throw new UnsupportedOperationException();
     }
 
@@ -92,9 +92,9 @@ public class TagDAOImpl implements TagDAO {
      * @return List of all Tag that was in DB.
      */
     @Override
-    public List<Tag> findAllByGiftCertificateId(long id) {
+    public List<TagEntity> findAllByGiftCertificateId(long id) {
         String query = "SELECT * FROM tag as t INNER JOIN gift_certificate_has_tag gcht on t.id = gcht.tag_id WHERE gcht.gift_certificate_id=:id";
-        return namedParameterJdbcTemplate.query(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(Tag.class));
+        return namedParameterJdbcTemplate.query(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(TagEntity.class));
     }
 
     /**
@@ -117,9 +117,9 @@ public class TagDAOImpl implements TagDAO {
      * @return Tag that was found or throw TagNotFoundException.
      */
     @Override
-    public Tag findByName(String name) {
+    public TagEntity findByName(String name) {
         String query = "SELECT * FROM tag where name=:name";
-        return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(Tag.class));
+        return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("name", name), new BeanPropertyRowMapper<>(TagEntity.class));
     }
 
     /**

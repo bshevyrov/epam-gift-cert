@@ -1,11 +1,11 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateEntity;
 import com.epam.esm.veiw.SearchRequest;
 
 import java.util.List;
 
-public interface GiftCertificateService extends BaseService<GiftCertificate> {
+public interface GiftCertificateService extends BaseService<GiftCertificateEntity> {
 
-    List<GiftCertificate> findAll(SearchRequest searchRequest);
+    List<GiftCertificateEntity> findAll(SearchRequest searchRequest);
 }

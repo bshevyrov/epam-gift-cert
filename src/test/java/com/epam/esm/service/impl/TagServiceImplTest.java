@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.TagEntity;
 import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
 import com.epam.esm.exception.tag.TagIdException;
 import com.epam.esm.exception.tag.TagNameException;
@@ -35,9 +35,9 @@ class TagServiceImplTest {
     @ParameterizedTest(name = "tagName is  - {0}")
     @ValueSource(strings = {"1", " ", "", "a ", "a1"})
     void throwsExceptionWhenCreateNameNotAlphaName(String tagName) {
-        Tag tag = new Tag();
-        tag.setName(tagName);
-        assertThrowsExactly(TagNameException.class, () -> tagService.create(tag));
+        TagEntity tagEntity = new TagEntity();
+        tagEntity.setName(tagName);
+        assertThrowsExactly(TagNameException.class, () -> tagService.create(tagEntity));
     }
 
     @Test

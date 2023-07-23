@@ -1,7 +1,7 @@
 package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.GiftCertificateDAO;
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateEntity;
 import com.epam.esm.util.DAOUtils;
 import com.epam.esm.veiw.SearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +32,18 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     /**
      * Method save to DB gift certificate.
      *
-     * @param giftCertificate entity to save in DB.
+     * @param giftCertificateEntity entity to save in DB.
      * @return id of created gift certificate in DB.
      */
     @Override
-    public long create(GiftCertificate giftCertificate) {
+    public long create(GiftCertificateEntity giftCertificateEntity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String query = "insert into gift_certificate (name,description,duration,price) values (:name,:description,:duration,:price)";
         SqlParameterSource paramSource = new MapSqlParameterSource()
-                .addValue("name", giftCertificate.getName())
-                .addValue("description", giftCertificate.getDescription())
-                .addValue("price", giftCertificate.getPrice())
-                .addValue("duration", giftCertificate.getDuration());
+                .addValue("name", giftCertificateEntity.getName())
+                .addValue("description", giftCertificateEntity.getDescription())
+                .addValue("price", giftCertificateEntity.getPrice())
+                .addValue("duration", giftCertificateEntity.getDuration());
         namedParameterJdbcTemplate.update(query, paramSource, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
@@ -55,9 +55,9 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
      * @return GiftCertificate that was found.
      */
     @Override
-    public GiftCertificate findById(long id) {
+    public GiftCertificateEntity findById(long id) {
         String query = "SELECT * FROM gift_certificate WHERE id=:id";
-        return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(GiftCertificate.class));
+        return namedParameterJdbcTemplate.queryForObject(query, new MapSqlParameterSource().addValue("id", id), new BeanPropertyRowMapper<>(GiftCertificateEntity.class));
     }
 
 
@@ -69,7 +69,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
      */
     @Override
     @Deprecated
-    public List<GiftCertificate> findAll() {
+    public List<GiftCertificateEntity> findAll() {
         throw new UnsupportedOperationException();
     }
 
@@ -80,9 +80,9 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
      * @return List of all GiftCertificate that was found by parameter and sorted in DB.
      */
     @Override
-    public List<GiftCertificate> findAll(SearchRequest searchRequest) {
+    public List<GiftCertificateEntity> findAll(SearchRequest searchRequest) {
         String query = DAOUtils.createQueryFindAll(searchRequest);
-        return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(GiftCertificate.class));
+        return namedParameterJdbcTemplate.query(query, new BeanPropertyRowMapper<>(GiftCertificateEntity.class));
     }
 
     /**
@@ -99,11 +99,11 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     /**
      * Method update record in DB.
      *
-     * @param giftCertificate parameters that wil be updated. Only not NULL or 0 values will be saved other values from entity will be ignored.
+     * @param giftCertificateEntity parameters that wil be updated. Only not NULL or 0 values will be saved other values from entity will be ignored.
      */
     @Override
-    public void update(GiftCertificate giftCertificate) {
-        Map<String, Object> map = DAOUtils.objectToMap(giftCertificate);
+    public void update(GiftCertificateEntity giftCertificateEntity) {
+        Map<String, Object> map = DAOUtils.objectToMap(giftCertificateEntity);
         String query = DAOUtils.createUpdateQuery(map);
         SqlParameterSource parameterSource = new MapSqlParameterSource().addValues(map);
         namedParameterJdbcTemplate.update(query, parameterSource);

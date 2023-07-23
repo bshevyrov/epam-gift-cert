@@ -3,7 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.entity.GiftCertificateTag;
+import com.epam.esm.entity.GiftCertificateTagEntity;
 import com.epam.esm.exception.giftcertificate.GiftCertificateIdException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.exception.tag.TagIdException;
@@ -40,26 +40,26 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
      * Then checks if tag exist
      * - if false throws (@code TagNotFoundException) exception
      *
-     * @param giftCertificateTag entity with tag and giftCertificate ids
+     * @param giftCertificateTagEntity entity with tag and giftCertificate ids
      * @return null
      */
     @Override
-    public long create(GiftCertificateTag giftCertificateTag) {
-        if (!InputVerification.verifyId(giftCertificateTag.getGiftCertificateId())) {
-            throw new GiftCertificateIdException(giftCertificateTag.getGiftCertificateId());
+    public long create(GiftCertificateTagEntity giftCertificateTagEntity) {
+        if (!InputVerification.verifyId(giftCertificateTagEntity.getGiftCertificateId())) {
+            throw new GiftCertificateIdException(giftCertificateTagEntity.getGiftCertificateId());
         }
-        if (!tagDAO.existById(giftCertificateTag.getGiftCertificateId())) {
-            throw new GiftCertificateNotFoundException(giftCertificateTag.getGiftCertificateId());
-        }
-
-        if (!InputVerification.verifyId(giftCertificateTag.getTagId())) {
-            throw new TagIdException(giftCertificateTag.getTagId());
-        }
-        if (!giftCertificateDAO.existById(giftCertificateTag.getTagId())) {
-            throw new TagNotFoundException(giftCertificateTag.getTagId());
+        if (!tagDAO.existById(giftCertificateTagEntity.getGiftCertificateId())) {
+            throw new GiftCertificateNotFoundException(giftCertificateTagEntity.getGiftCertificateId());
         }
 
-        return giftCertificateTagDAO.create(giftCertificateTag);
+        if (!InputVerification.verifyId(giftCertificateTagEntity.getTagId())) {
+            throw new TagIdException(giftCertificateTagEntity.getTagId());
+        }
+        if (!giftCertificateDAO.existById(giftCertificateTagEntity.getTagId())) {
+            throw new TagNotFoundException(giftCertificateTagEntity.getTagId());
+        }
+
+        return giftCertificateTagDAO.create(giftCertificateTagEntity);
     }
 
     /**
@@ -70,7 +70,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
      */
     @Override
     @Deprecated
-    public GiftCertificateTag findById(long id) {
+    public GiftCertificateTagEntity findById(long id) {
         throw new UnsupportedOperationException();
     }
 
@@ -82,7 +82,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
      */
     @Override
     @Deprecated
-    public List<GiftCertificateTag> findAll() {
+    public List<GiftCertificateTagEntity> findAll() {
         throw new UnsupportedOperationException();
     }
 
@@ -106,7 +106,7 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
      */
     @Override
     @Deprecated
-    public void update(GiftCertificateTag giftCertificateTag) {
+    public void update(GiftCertificateTagEntity giftCertificateTagEntity) {
         throw new UnsupportedOperationException();
     }
 }

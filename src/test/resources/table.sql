@@ -8,8 +8,8 @@ CREATE TABLE gift_certificate (
                                   last_update_date datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                   duration int NULL
 );
-drop table if exists tag;
-CREATE TABLE tag (
+drop table if exists tagEntity;
+CREATE TABLE tagEntity (
                      id int PRIMARY KEY AUTO_INCREMENT,
                      name varchar(45) NULL
 );

@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 //@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
-public class GiftCertificateTag implements Entity {
+public class GiftCertificateTagEntity implements Entity {
     private long giftCertificateId;
     private long tagId;
 }
