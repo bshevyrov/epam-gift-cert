@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = {AppConfig.class})
 @WebAppConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles("DEV")
+@ActiveProfiles("test")
 @Sql("/table.sql")
 @ExtendWith(SpringExtension.class)
 class GiftCertificateTagDAOImplTest {
@@ -39,7 +39,8 @@ class GiftCertificateTagDAOImplTest {
 
     @Test
     void create() {
-        Tag tag = new Tag("First tag");
+        Tag tag = new Tag();
+        tag.setName("First tag");
         tag.setId(tagDAO.create(tag));
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setName("Gift name");
@@ -55,7 +56,8 @@ class GiftCertificateTagDAOImplTest {
 
     @Test
     void deleteByGiftCertificateId() {
-        Tag tag = new Tag("First tag");
+        Tag tag = new Tag();
+        tag.setName("First tag");
         tag.setId(tagDAO.create(tag));
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setName("Gift name");

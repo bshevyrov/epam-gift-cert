@@ -19,7 +19,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @ContextConfiguration(classes = {AppConfig.class})
 @WebAppConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles("DEV")
+@ActiveProfiles("test")
 @Sql("/table.sql")
 @ExtendWith(SpringExtension.class)
 class GiftCertificateDAOImplTest {

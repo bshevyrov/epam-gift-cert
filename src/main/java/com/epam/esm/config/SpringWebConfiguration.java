@@ -20,7 +20,6 @@ public class SpringWebConfiguration implements WebApplicationInitializer {
     public void onStartup(ServletContext container) {
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
         rootContext.register(AppConfig.class);
-        container.setInitParameter("spring.profiles.active", "PROD");
         container.addListener(new ContextLoaderListener(rootContext));
 
         ServletRegistration.Dynamic dispatcher = container

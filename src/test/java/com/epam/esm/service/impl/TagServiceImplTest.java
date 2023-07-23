@@ -35,7 +35,9 @@ class TagServiceImplTest {
     @ParameterizedTest(name = "tagName is  - {0}")
     @ValueSource(strings = {"1", " ", "", "a ", "a1"})
     void throwsExceptionWhenCreateNameNotAlphaName(String tagName) {
-        assertThrowsExactly(TagNameException.class, () -> tagService.create(new Tag(tagName)));
+        Tag tag = new Tag();
+        tag.setName(tagName);
+        assertThrowsExactly(TagNameException.class, () -> tagService.create(tag));
     }
 
     @Test
