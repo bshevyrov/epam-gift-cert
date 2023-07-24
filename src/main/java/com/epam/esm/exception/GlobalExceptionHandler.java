@@ -3,16 +3,14 @@ package com.epam.esm.exception;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateUpdateException;
 import com.epam.esm.exception.tag.TagExistException;
-import com.epam.esm.exception.tag.TagInvalidIdException;
-import com.epam.esm.exception.tag.TagInvalidNameException;
 import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.veiw.ErrorResponse;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.validation.ConstraintViolationException;
 
 /**
  * Class catch exceptions which might occur during code execution.
@@ -24,83 +22,40 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(GiftCertificateNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleGiftCertificateNotFoundException(GiftCertificateNotFoundException giftCertificateNotFoundException) {
-        long certId = giftCertificateNotFoundException.getGiftCertificateId();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new ErrorResponse(Integer.parseInt(HttpStatus.NOT_FOUND.value() + "04"), "Gift Certificate [" + certId + "] не знайдено.");
-        }
-        return new ErrorResponse(Integer.parseInt(HttpStatus.NOT_FOUND.value() + "04"), "Gift Certificate [" + certId + "] not found");
+    public ErrorResponse handleGiftCertificateNotFoundException(GiftCertificateNotFoundException e) {
+        return new ErrorResponse(Integer.parseInt(HttpStatus.NOT_FOUND.value() + "04"), e.getMessage());
     }
 
     @ExceptionHandler(GiftCertificateUpdateException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleGiftCertificateUpdateException(GiftCertificateUpdateException giftCertificateUpdateException) {
-        long certId = giftCertificateUpdateException.getGiftCertificateId();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Помилка в параметрах Gift Certificate [" + certId + "] .");
-        }
-        return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Error in parameters Gift Certificate [" + certId + "] .");
+    public ErrorResponse handleGiftCertificateUpdateException(GiftCertificateUpdateException e) {
+        return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), e.getMessage());
     }
 
-
-    @ExceptionHandler({HttpMessageNotReadableException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "04"), "Не вірне тіло Tag.");
-        }
-        return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "04"), "Wrong body of Tag.");
-    }
 
     @ExceptionHandler(TagNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleTagNotFoundException(TagNotFoundException e) {
-        long tagId = e.getTagId();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new ErrorResponse(Integer.parseInt(HttpStatus.NOT_FOUND.value() + "04"), "Tag [" + tagId + "] не знайдено.");
-        } else {
-
-            return new ErrorResponse(Integer.parseInt(HttpStatus.NOT_FOUND.value() + "04"), "Tag [" + tagId + "] not found.");
-        }
+        return new ErrorResponse(Integer.parseInt(HttpStatus.NOT_FOUND.value() + "04"), e.getMessage());
     }
 
-    @ExceptionHandler(TagInvalidNameException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleTagNameException(TagInvalidNameException e) {
-        String tagName = e.getTagName();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "05"), "Помилка в імені Tag [" + tagName + "].");
-        }
-        return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "05"), "Error in name Tag [" + tagName + "].");
-    }
-
-    @ExceptionHandler(TagInvalidIdException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleTagIdException(TagInvalidIdException e) {
-        long tagId = e.getTagId();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Помилка в айді Tag [" + tagId + "].");
-        }
-        return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "06"), "Error in id Tag [" + tagId + "].");
-    }
 
     @ExceptionHandler(TagExistException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleTagExistException(TagExistException e) {
-        String tagName = e.getTagName();
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "07"), "Tag з ім'ям  [" + tagName + "] вже існує.");
-        }
-        return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "07"), "Tag with name [" + tagName + "] already exist.");
+        return new ErrorResponse(Integer.parseInt(HttpStatus.BAD_REQUEST.value() + "07"), e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception e) {
+        return new ErrorResponse(Integer.parseInt(HttpStatus.INTERNAL_SERVER_ERROR.value() + "00"), e.getMessage());
+    }
 
-        if (LocaleContextHolder.getLocale().getLanguage().equals("uk")) {
-            return new ErrorResponse(Integer.parseInt(HttpStatus.INTERNAL_SERVER_ERROR.value() + "00"), "Помилка серверу. " + " " + e.getMessage());
-        }
-        return new ErrorResponse(Integer.parseInt(HttpStatus.INTERNAL_SERVER_ERROR.value() + "00"), "Server error. " + e.getMessage());
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponse handleException(ConstraintViolationException e) {
+        return new ErrorResponse(Integer.parseInt(HttpStatus.INTERNAL_SERVER_ERROR.value() + "00"), e.getConstraintViolations().iterator().next().getPropertyPath().toString());
+
     }
 }

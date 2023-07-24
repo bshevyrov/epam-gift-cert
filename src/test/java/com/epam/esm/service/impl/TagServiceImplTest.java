@@ -2,9 +2,6 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.TagEntity;
-import com.epam.esm.exception.giftcertificate.GiftCertificateInvalidIdException;
-import com.epam.esm.exception.tag.TagInvalidIdException;
-import com.epam.esm.exception.tag.TagInvalidNameException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

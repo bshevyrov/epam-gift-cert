@@ -55,7 +55,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     @Override
     public GiftCertificateDTO findById(long id) {
         GiftCertificateDTO giftCertificateDTO = giftCertificateMapper.toDTO(giftCertificateService.findById(id));
-        giftCertificateDTO.setTags(tagListMapper.toDTOList(tagService.findAllByGiftCertificateId(id)));
+        giftCertificateDTO.setTagDTOS(tagListMapper.toDTOList(tagService.findAllByGiftCertificateId(id)));
         return giftCertificateDTO;
     }
 

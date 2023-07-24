@@ -4,12 +4,11 @@ import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificateTagEntity;
-import com.epam.esm.exception.giftcertificate.GiftCertificateInvalidIdException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
-import com.epam.esm.exception.tag.TagInvalidIdException;
 import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.service.GiftCertificateTagService;
-import com.epam.esm.util.InputVerification;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,21 +23,19 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     private final GiftCertificateTagDAO giftCertificateTagDAO;
     private final GiftCertificateDAO giftCertificateDAO;
     private final TagDAO tagDAO;
+    private final MessageSource messageSource;
 
-    public GiftCertificateTagServiceImpl(GiftCertificateTagDAO giftCertificateTagDAO, GiftCertificateDAO giftCertificateDAO, TagDAO tagDAO) {
+    public GiftCertificateTagServiceImpl(GiftCertificateTagDAO giftCertificateTagDAO, GiftCertificateDAO giftCertificateDAO, TagDAO tagDAO, MessageSource messageSource) {
         this.giftCertificateTagDAO = giftCertificateTagDAO;
         this.giftCertificateDAO = giftCertificateDAO;
         this.tagDAO = tagDAO;
+        this.messageSource = messageSource;
     }
 
     /**
      * Method create relationship between tag and giftCertificate.
-     * Checks if giftCertificate id valid
-     * - if false throw {@link  GiftCertificateInvalidIdException}
-     * Then  checks if giftCertificate exist
+     * Checks if giftCertificate exist
      * - if false throws (@code GiftCertificateNotFoundException) exception
-     * Then checks if tag id valid
-     * - if false throw {@link  TagInvalidIdException}
      * Then checks if tag exist
      * - if false throws (@code TagNotFoundException) exception
      *
@@ -48,20 +45,17 @@ public class GiftCertificateTagServiceImpl implements GiftCertificateTagService 
     @Override
     @Transactional(rollbackFor = {SQLException.class})
     public long create(GiftCertificateTagEntity giftCertificateTagEntity) {
-        if (!InputVerification.verifyId(giftCertificateTagEntity.getGiftCertificateId())) {
-            throw new GiftCertificateInvalidIdException(giftCertificateTagEntity.getGiftCertificateId());
-        }
-        if (!tagDAO.existById(giftCertificateTagEntity.getGiftCertificateId())) {
-            throw new GiftCertificateNotFoundException(giftCertificateTagEntity.getGiftCertificateId());
-        }
 
-        if (!InputVerification.verifyId(giftCertificateTagEntity.getTagId())) {
-            throw new TagInvalidIdException(giftCertificateTagEntity.getTagId());
+        if (!tagDAO.existById(giftCertificateTagEntity.getGiftCertificateId())) {
+            throw new GiftCertificateNotFoundException(messageSource.getMessage("giftcertificate.notfound.exception",
+                    new Object[]{giftCertificateTagEntity.getGiftCertificateId()},
+                    LocaleContextHolder.getLocale()));
         }
         if (!giftCertificateDAO.existById(giftCertificateTagEntity.getTagId())) {
-            throw new TagNotFoundException(giftCertificateTagEntity.getTagId());
+            throw new TagNotFoundException(messageSource.getMessage("tag.notfound.exception",
+                    new Object[]{giftCertificateTagEntity.getTagId()},
+                    LocaleContextHolder.getLocale()));
         }
-
         return giftCertificateTagDAO.create(giftCertificateTagEntity);
     }
 

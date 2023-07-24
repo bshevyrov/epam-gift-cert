@@ -3,13 +3,18 @@ package com.epam.esm.veiw.controller;
 import com.epam.esm.facade.TagFacade;
 import com.epam.esm.veiw.dto.TagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.net.URI;
 import java.util.List;
 
@@ -21,12 +26,15 @@ import java.util.List;
 @RequestMapping(value = "/tags",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
+@Validated
 public class TagController {
     private final TagFacade tagFacade;
+    private final MessageSource messageSource;
 
     @Autowired
-    public TagController(TagFacade tagFacade) {
+    public TagController(TagFacade tagFacade, MessageSource messageSource) {
         this.tagFacade = tagFacade;
+        this.messageSource = messageSource;
     }
 
     /**
@@ -37,8 +45,8 @@ public class TagController {
      * @param ucb    UriComponentsBuilder
      * @return response header with uri of created object.
      */
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<TagDTO> create(@RequestBody TagDTO tagDTO, UriComponentsBuilder ucb) {
+    @PostMapping
+    public ResponseEntity<TagDTO> create(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
         long tagId = tagFacade.create(tagDTO);
         HttpHeaders headers = new HttpHeaders();
         URI locationUri = ucb.path("/tags/")
@@ -56,9 +64,9 @@ public class TagController {
      * @param id URL parameter, which holds gift certificate id value
      * @return found {@link TagDTO}
      **/
-    @RequestMapping(value = "/{id}",
-            method = RequestMethod.GET)
-    public TagDTO findById(@PathVariable long id) {
+    @GetMapping(value = "/{id}")
+    public TagDTO findById(@PathVariable @Min(value = 1)
+                           @Max(Long.MAX_VALUE) long id) {
         return tagFacade.findById(id);
     }
 
@@ -67,8 +75,7 @@ public class TagController {
      *
      * @return list of all {@link TagDTO}
      */
-    @RequestMapping(value = "",
-            method = RequestMethod.GET)
+    @GetMapping(value = "")
     public List<TagDTO> findAll() {
         return tagFacade.findAll();
     }
@@ -80,9 +87,8 @@ public class TagController {
      * @param id URL parameter, which holds tag id value
      * @return Http status
      */
-    @RequestMapping(value = "/{id}",
-            method = RequestMethod.DELETE)
-    public ResponseEntity<TagDTO> deleteById(@PathVariable long id) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<TagDTO> deleteById(@PathVariable @Min(1) @Max(Long.MAX_VALUE) long id) {
         tagFacade.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

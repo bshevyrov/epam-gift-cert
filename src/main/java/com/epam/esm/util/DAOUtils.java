@@ -5,16 +5,14 @@ import com.epam.esm.exception.giftcertificate.GiftCertificateUpdateException;
 import com.epam.esm.veiw.SearchRequest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import java.util.Map;
-import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -22,6 +20,9 @@ import java.util.stream.Collectors;
  */
 public final class DAOUtils {
 
+private static MessageSource getMessageSource(){
+   return BeanUtils.instantiateClass(MessageSource.class);
+}
     private DAOUtils() {
     }
 
@@ -68,22 +69,25 @@ public final class DAOUtils {
      * Then calls these methods to get the returned values.
      * After creates map field, value.
      *
-     * @param fieldNameList   list of not null or 0 fields.
-     * @param methods         list of all methods in entity.
+     * @param fieldNameList         list of not null or 0 fields.
+     * @param methods               list of all methods in entity.
      * @param giftCertificateEntity entity.
      * @return map
      */
     private static Map<String, Object> createNameValueMap(List<String> fieldNameList, List<Method> methods, GiftCertificateEntity giftCertificateEntity) {
+//        MessageSource messageSource = BeanUtils.instantiateClass(MessageSource.class);
         Map<String, Object> result = new HashMap<>();
 
         Map<String, Method> fieldMethodMap = fieldNameList.stream()
                 .collect(
                         Collectors.toMap(field -> field, field -> methods.stream()
                                 .filter(method -> method.getName().toLowerCase().contains(field))
-                                .findFirst().orElseThrow(() -> new GiftCertificateUpdateException(giftCertificateEntity.getId()))));
-
+                                .findFirst().orElseThrow(() -> new GiftCertificateUpdateException(getMessageSource().getMessage("giftcertificate.update.exception",
+                                        new Object[]{giftCertificateEntity.getId()},
+                                        LocaleContextHolder.getLocale())))));
         fieldMethodMap.forEach((key, value) -> {
             try {
+
                 result.put(key, (value).invoke(giftCertificateEntity));
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
@@ -115,6 +119,7 @@ public final class DAOUtils {
      * @return list of field names
      */
     private static List<String> getAllFilledFieldsNames(GiftCertificateEntity giftCertificateEntity) {
+//        MessageSource messageSource = BeanUtils.instantiateClass(MessageSource.class);
         List<String> notNullFields = new ArrayList<>();
 
         Field[] childFields = giftCertificateEntity.getClass().getDeclaredFields();
@@ -138,8 +143,12 @@ public final class DAOUtils {
             }
         }
         if (notNullFields.size() <= 1) {
-            throw new GiftCertificateUpdateException(giftCertificateEntity.getId());
+            throw new GiftCertificateUpdateException(getMessageSource().getMessage("giftcertificate.update.exception",
+                    new Object[]{giftCertificateEntity.getId()},
+                    LocaleContextHolder.getLocale()));
         }
+        //remove tagEntoties because they were already update.
+        notNullFields.remove("tagEntities");
         return notNullFields;
     }
 

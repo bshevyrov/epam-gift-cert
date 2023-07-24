@@ -6,7 +6,6 @@ import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificateEntity;
 import com.epam.esm.entity.GiftCertificateTagEntity;
 import com.epam.esm.entity.TagEntity;
-import com.epam.esm.exception.giftcertificate.GiftCertificateInvalidIdException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
 import com.epam.esm.util.InputVerification;
 import com.epam.esm.veiw.SearchRequest;

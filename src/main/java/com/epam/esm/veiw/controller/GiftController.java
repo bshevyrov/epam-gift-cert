@@ -8,9 +8,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.net.URI;
 import java.util.List;
 
@@ -19,9 +23,8 @@ import java.util.List;
  * method in facade and produces JSON as the result of model's operations.
  */
 @RestController
-@RequestMapping(value = "/gifts",
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/gifts", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@Validated
 public class GiftController {
     private final GiftCertificateFacade giftCertificateFacade;
 
@@ -38,14 +41,12 @@ public class GiftController {
      * @param ucb                UriComponentsBuilder
      * @return response header with uri of created object.
      */
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<GiftCertificateDTO> create(@RequestBody GiftCertificateDTO giftCertificateDTO, UriComponentsBuilder ucb) {
+    @PostMapping
+    public ResponseEntity<GiftCertificateDTO> create(@RequestBody @Validated GiftCertificateDTO giftCertificateDTO, UriComponentsBuilder ucb) {
         long id = giftCertificateFacade.create(giftCertificateDTO);
 
         HttpHeaders headers = new HttpHeaders();
-        URI locationUri = ucb.path("/gifts/")
-                .path(String.valueOf(id))
-                .build().toUri();
+        URI locationUri = ucb.path("/gifts/").path(String.valueOf(id)).build().toUri();
 
         headers.setLocation(locationUri);
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
@@ -58,9 +59,10 @@ public class GiftController {
      * @param id URL parameter, which holds gift certificate id value
      * @return found {@link GiftCertificateDTO}
      **/
-    @RequestMapping(method = RequestMethod.GET,
-            value = "/{id}")
-    public GiftCertificateDTO findById(@PathVariable long id) {
+    @GetMapping(value = "/{id}")
+    public GiftCertificateDTO findById(@PathVariable
+                                           @Min(1)
+                                           @Max(Long.MAX_VALUE) long id) {
         return giftCertificateFacade.findById(id);
     }
 
@@ -71,8 +73,7 @@ public class GiftController {
      * @param searchRequest object, which holds URL request params for search
      * @return {@link  GiftCertificateDTO} as the result of search based on URL params
      */
-    @RequestMapping(method = RequestMethod.GET,
-            value = "")
+    @GetMapping(value = "")
     public List<GiftCertificateDTO> findAll(SearchRequest searchRequest) {
         return giftCertificateFacade.findAll(searchRequest);
     }
@@ -84,9 +85,8 @@ public class GiftController {
      * @param id URL parameter, which holds gift certificate id value
      * @return Http status
      */
-    @RequestMapping(value = "/{id}",
-            method = RequestMethod.DELETE)
-    public ResponseEntity<GiftCertificateDTO> deleteById(@PathVariable long id) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<GiftCertificateDTO> deleteById(@PathVariable @Min(1) @Max(Long.MAX_VALUE) long id) {
         giftCertificateFacade.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -98,12 +98,9 @@ public class GiftController {
      * @param giftCertificateDTO GiftCertificateDtoRequest request object for update
      * @param id                 URL parameter, which holds gift certificate id value
      */
-    @RequestMapping(value = "/{id}",
-            method = RequestMethod.PATCH)
-    public void update(@RequestBody GiftCertificateDTO giftCertificateDTO,
-                       @PathVariable long id) {
+    @PatchMapping(value = "/{id}")
+    public void update(@RequestBody @Valid GiftCertificateDTO giftCertificateDTO, @PathVariable @Min(1) @Max(Long.MAX_VALUE) long id) {
         giftCertificateDTO.setId(id);
         giftCertificateFacade.update(giftCertificateDTO);
     }
-
 }

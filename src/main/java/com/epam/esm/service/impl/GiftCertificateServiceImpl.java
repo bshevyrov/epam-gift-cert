@@ -5,19 +5,17 @@ import com.epam.esm.dao.GiftCertificateTagDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.GiftCertificateEntity;
 import com.epam.esm.entity.GiftCertificateTagEntity;
-import com.epam.esm.exception.giftcertificate.GiftCertificateInvalidIdException;
 import com.epam.esm.exception.giftcertificate.GiftCertificateNotFoundException;
-import com.epam.esm.exception.tag.TagInvalidNameException;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.util.InputVerification;
 import com.epam.esm.veiw.SearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Used  to manipulate GiftCertificate objects and collecting data.
@@ -28,19 +26,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateDAO giftCertificateDAO;
     private final GiftCertificateTagDAO giftCertificateTagDAO;
     private final TagDAO tagDAO;
+    private final MessageSource messageSource;
 
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDAO giftCertificateDAO, GiftCertificateTagDAO giftCertificateTagDAO, TagDAO tagDAO) {
+    public GiftCertificateServiceImpl(GiftCertificateDAO giftCertificateDAO, GiftCertificateTagDAO giftCertificateTagDAO, TagDAO tagDAO, MessageSource messageSource) {
         this.giftCertificateDAO = giftCertificateDAO;
         this.giftCertificateTagDAO = giftCertificateTagDAO;
         this.tagDAO = tagDAO;
+        this.messageSource = messageSource;
     }
 
     /**
      * Method creates gift certificate.
-     * Checks if tag have valid name
-     * - if false throws{@link  TagInvalidNameException}
      * Checks if tag with this name exist
      * - if true add tag id to giftCertificate
      * - if false create new tag and add id of this tag to gift certificate
@@ -53,9 +51,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public long create(GiftCertificateEntity giftCertificateEntity) {
         long giftCertificateId = giftCertificateDAO.create(giftCertificateEntity);
         giftCertificateEntity.getTagEntities().forEach(tag -> {
-            if (!InputVerification.verifyName(tag.getName())) {
-                throw new TagInvalidNameException(tag.getName());
-            }
             if (tagDAO.existByName(tag.getName())) {
                 giftCertificateTagDAO.create(new GiftCertificateTagEntity(giftCertificateId, tagDAO.findByName(tag.getName()).getId()));
             } else {
@@ -78,14 +73,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional(rollbackFor = {SQLException.class})
     public GiftCertificateEntity findById(long id) {
-        if (!InputVerification.verifyId(id)) {
-            throw new GiftCertificateInvalidIdException(id);
-        }
+
         if (!giftCertificateDAO.existById(id)) {
-            throw new GiftCertificateNotFoundException(id);
+            throw new GiftCertificateNotFoundException((messageSource.getMessage("giftcertificate.notfound.exception",
+                    new Object[]{id},
+                    LocaleContextHolder.getLocale())));
 
         }
-        Optional<GiftCertificateEntity> giftCertificateEntity = giftCertificateDAO.findById(id);
+        GiftCertificateEntity giftCertificateEntity = giftCertificateDAO.findById(id);
         giftCertificateEntity.setTagEntities(tagDAO.findAllByGiftCertificateId(giftCertificateEntity.getId()));
         return giftCertificateEntity;
     }
@@ -118,38 +113,25 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Method updates gift certificate.
-     * Checks if giftCertificate  if id valid:
-     * - if true proceed to next operation
-     * * - if false thrown {@link GiftCertificateInvalidIdException}
-     * Checks if giftCertificate  is exists by id:
-     * - if true proceed to next operation
-     * - if false throws GiftCertificateNotFoundException exception
+     * Checks if giftCertificate  is exists by id.
      * Then checks if tags set is null or empty:
-     * - if true - doesn't  proceed to update tags
-     * - if false - removes all connection with  tags,  and checks is tag name correct
-     * - if false throws TagNameException
-     * - if true  checks if tags already exist
-     * - if true adds tag id to giftCertificate and creates relation between tag and giftCertificate
-     * - if false creates new tag and adds tag id to giftCertificate, creates relation between tag and giftCertificate
-     *
+     * Creates new or updates existing tags
      * @param giftCertificateEntity candidate for update
      */
     @Override
     @Transactional(rollbackFor = {SQLException.class})
     public void update(GiftCertificateEntity giftCertificateEntity) {
-        if (!InputVerification.verifyId(giftCertificateEntity.getId())) {
-            throw new GiftCertificateInvalidIdException(giftCertificateEntity.getId());
-        }
+
         if (!giftCertificateDAO.existById(giftCertificateEntity.getId())) {
-            throw new GiftCertificateNotFoundException(giftCertificateEntity.getId());
+            throw new GiftCertificateNotFoundException((messageSource.getMessage("giftcertificate.notfound.exception", new Object[]{giftCertificateEntity.getId()},
+                    LocaleContextHolder.getLocale())));
         }
+
         if (giftCertificateEntity.getTagEntities() != null
                 && giftCertificateEntity.getTagEntities().size() > 0) {
             giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificateEntity.getId());
             giftCertificateEntity.getTagEntities().forEach(tag -> {
-                if (!InputVerification.verifyName(tag.getName())) {
-                    throw new TagInvalidNameException(tag.getName());
-                }
+
                 if (tagDAO.existByName(tag.getName())) {
                     giftCertificateTagDAO.create(new GiftCertificateTagEntity(giftCertificateEntity.getId(), tagDAO.findByName(tag.getName()).getId()));
                 } else {
@@ -158,14 +140,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 }
             });
         }
-        giftCertificateEntity.setTagEntities(null);
         giftCertificateDAO.update(giftCertificateEntity);
     }
 
     /**
      * Method deletes gift certificate
-     * Checks if gift certificate id is valid:
-     * - if false throws {@link  GiftCertificateInvalidIdException}
      * Checks if gift certificate exists by id:
      * - if true - deletes from database
      * - if false - throws GiftCertificateNotFoundException exception
@@ -175,11 +154,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional(rollbackFor = {SQLException.class})
     public void delete(long id) {
-        if (!InputVerification.verifyId(id)) {
-            throw new GiftCertificateInvalidIdException(id);
-        }
+
         if (!giftCertificateDAO.existById(id)) {
-            throw new GiftCertificateNotFoundException(id);
+            throw new GiftCertificateNotFoundException((messageSource.getMessage("giftcertificate.notfound.exception", new Object[]{id},
+                    LocaleContextHolder.getLocale())));
         }
         giftCertificateDAO.deleteById(id);
     }

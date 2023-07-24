@@ -104,6 +104,9 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
     @Override
     public void update(GiftCertificateEntity giftCertificateEntity) {
         Map<String, Object> map = DAOUtils.objectToMap(giftCertificateEntity);
+        if(map.size()==1){
+            return;
+        }
         String query = DAOUtils.createUpdateQuery(map);
         SqlParameterSource parameterSource = new MapSqlParameterSource().addValues(map);
         namedParameterJdbcTemplate.update(query, parameterSource);
