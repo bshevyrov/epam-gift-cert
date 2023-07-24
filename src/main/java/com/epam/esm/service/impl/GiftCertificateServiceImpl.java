@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Used  to manipulate GiftCertificate objects and collecting data.
@@ -127,7 +128,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     LocaleContextHolder.getLocale())));
         }
 
-        if (giftCertificateEntity.getTagEntities() != null
+        if (Objects.nonNull(giftCertificateEntity.getTagEntities())
                 && giftCertificateEntity.getTagEntities().size() > 0) {
             giftCertificateTagDAO.deleteByGiftCertificateId(giftCertificateEntity.getId());
             giftCertificateEntity.getTagEntities().forEach(tag -> {

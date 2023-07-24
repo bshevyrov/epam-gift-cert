@@ -134,7 +134,7 @@ private static MessageSource getMessageSource(){
                         notNullFields.add(field.getName());
                     }
                 } else {
-                    if (field.get(giftCertificateEntity) != null) {
+                    if (Objects.nonNull(field.get(giftCertificateEntity))) {
                         notNullFields.add(field.getName());
                     }
                 }
